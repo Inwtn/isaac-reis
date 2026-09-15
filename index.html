@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Isaac Reis — Software Engineer. Java, Spring Boot, AI-driven development and automation.">
+<meta name="theme-color" content="#0a0e14">
+<title>Isaac Reis · Software Engineer</title>
+
+<!-- Favicon inline (gradiente) -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2300f0ff'/%3E%3Cstop offset='.5' stop-color='%23a855f7'/%3E%3Cstop offset='1' stop-color='%2339ff88'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%230d1117'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='28' fill='url(%23g)' text-anchor='middle' font-weight='bold'%3EIR%3C/text%3E%3C/svg%3E">
+
+<!-- Fontes -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Ícones: Font Awesome (UI) + Devicon (tecnologias) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/devicon.min.css">
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+============================================================ */
+:root{
+  --bg:#0a0e14;
+  --bg2:#0d1117;
+  --surface:rgba(255,255,255,.035);
+  --border:rgba(148,163,184,.15);
+  --text:#d8e0ec;
+  --muted:#8f9bb0;
+  --cyan:#00f0ff;
+  --purple:#a855f7;
+  --green:#39ff88;
+  --grad:linear-gradient(90deg,var(--cyan),var(--purple),var(--green));
+  --font-sans:'Space Grotesk',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --nav-h:68px;
+  --radius:16px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-sans);
+  line-height:1.65;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+/* auroras fixas de cor no fundo */
+body::before,body::after{
+  content:'';position:fixed;z-index:-3;border-radius:50%;filter:blur(120px);pointer-events:none;
+}
+body::before{width:55vw;height:55vw;top:-20vw;right:-15vw;background:radial-gradient(circle,rgba(168,85,247,.14),transparent 70%)}
+body::after{width:45vw;height:45vw;bottom:-18vw;left:-12vw;background:radial-gradient(circle,rgba(0,240,255,.10),transparent 70%)}
+
+::selection{background:var(--cyan);color:#04121a}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#1d2634;border-radius:6px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:#2b3a4f}
+
+a{color:inherit}
+img{max-width:100%}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px}
+
+.mono{font-family:var(--font-mono)}
+.container{width:min(1120px,92%);margin-inline:auto}
+section[id]{scroll-margin-top:calc(var(--nav-h) + 10px)}
+.section{padding:5.5rem 0}
+@media(min-width:900px){.section{padding:7rem 0}}
+
+/* ============================================================
+   FUNDO: GRID + CANVAS DE PARTÍCULAS
+============================================================ */
+.bg-grid{
+  position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,240,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,240,255,.04) 1px,transparent 1px);
+  background-size:46px 46px;
+  -webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 40%,transparent 100%);
+  mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 40%,transparent 100%);
+}
+#bg-canvas{position:fixed;inset:0;z-index:-1;pointer-events:none}
+
+/* ============================================================
+   ANIMAÇÕES DE ENTRADA (Intersection Observer)
+============================================================ */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .75s ease,transform .75s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+#navbar{
+  position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);
+  display:flex;align-items:center;
+  transition:background .35s ease,border-color .35s ease,box-shadow .35s ease;
+  border-bottom:1px solid transparent;
+}
+#navbar.scrolled{
+  background:rgba(10,14,20,.82);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom-color:var(--border);
+  box-shadow:0 10px 30px -18px rgba(0,0,0,.9);
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;width:min(1120px,92%);margin-inline:auto}
+.brand{font-family:var(--font-mono);font-weight:700;font-size:1.05rem;text-decoration:none;color:#fff;letter-spacing:.02em}
+.brand-tag{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav-links{display:flex;align-items:center;gap:.4rem;list-style:none}
+.nav-link{
+  position:relative;font-family:var(--font-mono);font-size:.82rem;color:var(--muted);
+  text-decoration:none;padding:.5rem .7rem;transition:color .25s;
+}
+.nav-link::after{
+  content:'';position:absolute;left:.7rem;right:.7rem;bottom:.25rem;height:2px;border-radius:2px;
+  background:var(--grad);transform:scaleX(0);transform-origin:left;transition:transform .3s ease;
+}
+.nav-link:hover{color:#fff}
+.nav-link.active{color:var(--cyan)}
+.nav-link.active::after,.nav-link:hover::after{transform:scaleX(1)}
+
+/* hamburger (mobile) */
+.nav-toggle{display:none;background:none;border:1px solid var(--border);border-radius:8px;width:42px;height:38px;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.nav-toggle span{display:block;width:18px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
+body.menu-open .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+body.menu-open .nav-toggle span:nth-child(2){opacity:0}
+body.menu-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+@media(max-width:860px){
+  .nav-toggle{display:flex}
+  .nav-links{
+    position:absolute;top:var(--nav-h);left:0;right:0;flex-direction:column;align-items:stretch;gap:0;
+    background:rgba(10,14,20,.97);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+    max-height:0;overflow:hidden;transition:max-height .4s ease;
+  }
+  body.menu-open .nav-links{max-height:420px}
+  .nav-link{display:block;padding:1rem 8%;font-size:.95rem;border-left:2px solid transparent}
+  .nav-link.active{border-left-color:var(--cyan);background:rgba(0,240,255,.05)}
+  .nav-link::after{display:none}
+}
+
+/* skip link (acessibilidade) */
+.skip-link{position:fixed;top:-60px;left:1rem;z-index:2000;background:var(--cyan);color:#04121a;font-family:var(--font-mono);font-size:.8rem;padding:.6rem 1rem;border-radius:8px;text-decoration:none;transition:top .3s}
+.skip-link:focus{top:1rem}
+
+/* ============================================================
+   HERO
+============================================================ */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:var(--nav-h);padding-bottom:4rem}
+.hero-grid{display:grid;gap:3.5rem;align-items:center}
+@media(min-width:960px){.hero-grid{grid-template-columns:1.15fr .85fr}}
+
+.status{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--font-mono);font-size:.75rem;color:var(--green);border:1px solid rgba(57,255,136,.35);background:rgba(57,255,136,.06);padding:.4rem .95rem;border-radius:99px;margin-bottom:1.5rem}
+.status .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.hero-kicker{font-family:var(--font-mono);color:var(--green);font-size:.95rem;margin-bottom:.8rem}
+.hero h1{
+  font-size:clamp(2.6rem,7.5vw,4.6rem);font-weight:700;line-height:1.08;letter-spacing:-.02em;margin-bottom:1.1rem;color:#fff;
+}
+.grad-text{background:var(--grad);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gradShift 9s ease infinite}
+@keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+.typed-line{display:flex;align-items:center;gap:.7rem;font-family:var(--font-mono);font-size:clamp(1rem,2.6vw,1.35rem);color:#fff;margin-bottom:1.4rem;min-height:1.9em;flex-wrap:wrap}
+.typed-line .prompt{color:var(--purple)}
+#typed{color:var(--cyan)}
+.type-cursor{display:inline-block;width:.62em;height:1.25em;background:var(--cyan);box-shadow:0 0 10px rgba(0,240,255,.7);animation:blink 1s steps(1) infinite;border-radius:2px}
+@keyframes blink{50%{opacity:0}}
+
+.hero-desc{color:var(--muted);max-width:34rem;font-size:1.02rem;margin-bottom:2.2rem}
+.hero-desc strong{color:var(--text);font-weight:600}
+
+.hero-cta{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-bottom:2rem}
+
+.btn{display:inline-flex;align-items:center;gap:.65rem;font-family:var(--font-mono);font-size:.88rem;font-weight:600;padding:.85rem 1.5rem;border-radius:10px;text-decoration:none;transition:.28s ease;cursor:pointer;border:1px solid transparent}
+.btn-primary{background:var(--grad);background-size:190% auto;color:#04121a;box-shadow:0 6px 26px -8px rgba(0,240,255,.5)}
+.btn-primary:hover{background-position:100% center;transform:translateY(-3px);box-shadow:0 10px 34px -8px rgba(168,85,247,.6)}
+.btn-ghost{border-color:rgba(0,240,255,.45);color:var(--cyan)}
+.btn-ghost:hover{background:rgba(0,240,255,.09);transform:translateY(-3px);box-shadow:0 0 26px -8px rgba(0,240,255,.45)}
+
+.social{display:flex;gap:.9rem}
+.social a{width:46px;height:46px;display:grid;place-items:center;border:1px solid var(--border);border-radius:50%;color:var(--muted);font-size:1.15rem;transition:.28s;background:rgba(255,255,255,.02)}
+.social a:hover{color:#04121a;border-color:transparent;background:var(--grad);transform:translateY(-4px) rotate(-4deg);box-shadow:0 8px 22px -6px rgba(0,240,255,.5)}
+
+/* terminal fake */
+.terminal{
+  width:100%;max-width:540px;justify-self:center;
+  background:rgba(13,17,23,.85);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border:1px solid rgba(148,163,184,.18);border-radius:14px;overflow:hidden;
+  box-shadow:0 30px 70px -24px rgba(0,0,0,.85),0 0 90px -35px rgba(168,85,247,.45);
+  animation:float 7s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.term-bar{display:flex;align-items:center;gap:.5rem;padding:.7rem .95rem;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border)}
+.term-bar .dot{width:11px;height:11px;border-radius:50%}
+.dot.red{background:#ff5f57}.dot.yellow{background:#febc2e}.dot.green{background:#28c840}
+.term-title{margin-left:auto;margin-right:auto;font-family:var(--font-mono);font-size:.72rem;color:var(--muted)}
+.term-body{padding:1.15rem 1.25rem;font-family:var(--font-mono);font-size:.8rem;line-height:1.75;overflow-x:auto;color:#c7d2e0}
+.tk-key{color:var(--cyan)}
+.tk-str{color:var(--green)}
+.tk-bool{color:var(--purple)}
+.tk-p{color:#6b7a90}
+.t-p{color:var(--green)}
+.t-c{color:var(--cyan)}
+.t-cursor{color:var(--cyan);animation:blink 1s steps(1) infinite}
+
+.scroll-hint{position:absolute;bottom:1.6rem;left:50%;transform:translateX(-50%);color:var(--muted);font-size:1rem;text-decoration:none;animation:bounce 2.6s infinite}
+.scroll-hint:hover{color:var(--cyan)}
+@keyframes bounce{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,10px)}}
+
+/* ============================================================
+   CABEÇALHO DE SEÇÃO
+============================================================ */
+.sec-head{display:flex;align-items:center;gap:1rem;margin-bottom:3rem}
+.sec-num{font-family:var(--font-mono);color:var(--cyan);font-size:.95rem;font-weight:600}
+.sec-head h2{font-size:clamp(1.55rem,4vw,2.15rem);color:#fff;font-weight:600;letter-spacing:-.01em}
+.sec-line{flex:1;height:1px;min-width:36px;background:linear-gradient(90deg,rgba(0,240,255,.4),rgba(168,85,247,.25),transparent)}
+
+/* ============================================================
+   ABOUT
+============================================================ */
+.about-grid{display:grid;gap:2.6rem}
+@media(min-width:920px){.about-grid{grid-template-columns:1.5fr 1fr;align-items:start}}
+.about-text p{color:var(--muted);margin-bottom:1.15rem;font-size:1.01rem}
+.about-text p strong{color:var(--text);font-weight:600}
+.about-text p em{color:var(--cyan);font-style:normal;font-family:var(--font-mono);font-size:.95em}
+.highlight-phrase{color:var(--text);font-weight:600}
+
+.about-side{display:grid;gap:1rem}
+.mini-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem 1.35rem;transition:.3s;
+}
+.mini-card:hover{border-color:rgba(0,240,255,.4);transform:translateY(-3px);box-shadow:0 12px 34px -14px rgba(0,240,255,.3)}
+.mini-card .mc-label{font-family:var(--font-mono);font-size:.72rem;color:var(--purple);margin-bottom:.55rem;display:flex;align-items:center;gap:.5rem}
+.mini-card ul{list-style:none}
+.mini-card li{color:var(--muted);font-size:.9rem;padding:.28rem 0;display:flex;gap:.55rem;align-items:baseline}
+.mini-card li::before{content:'▸';color:var(--green);font-size:.75rem}
+
+/* ============================================================
+   SKILLS
+============================================================ */
+.skills-grid{display:grid;gap:1.4rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.skill-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.5rem 1.4rem;transition:.32s ease;position:relative;overflow:hidden;
+}
+.skill-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);opacity:0;transition:opacity .35s}
+.skill-card:hover{transform:translateY(-5px);border-color:rgba(168,85,247,.4);box-shadow:0 18px 44px -18px rgba(168,85,247,.35)}
+.skill-card:hover::before{opacity:1}
+.sc-head{display:flex;align-items:center;gap:.75rem;margin-bottom:.35rem}
+.sc-head i{font-size:1.15rem;color:var(--cyan)}
+.sc-head h3{color:#fff;font-size:1.05rem;font-weight:600}
+.sc-code{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);margin-bottom:1.15rem}
+.chips{display:flex;flex-wrap:wrap;gap:.55rem}
+.skill{
+  display:inline-flex;align-items:center;gap:.5rem;padding:.48rem .8rem;
+  background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:9px;
+  font-family:var(--font-mono);font-size:.76rem;color:var(--text);transition:.25s ease;cursor:default;
+}
+.skill i{font-size:1.05rem;transition:transform .25s ease}
+.skill:hover{transform:translateY(-3px) scale(1.03);border-color:rgba(0,240,255,.55);box-shadow:0 6px 20px -6px rgba(0,240,255,.35);color:#fff}
+.skill:hover i{transform:scale(1.3) rotate(-6deg)}
+/* cores para ícones FA genéricos */
+.ic-c{color:var(--cyan)}.ic-p{color:var(--purple)}.ic-g{color:var(--green)}
+
+/* ============================================================
+   EXPERIENCE — TIMELINE
+============================================================ */
+.timeline{position:relative;padding-left:2rem}
+.timeline::before{
+  content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;border-radius:2px;
+  background:linear-gradient(180deg,var(--cyan),var(--purple),var(--green));opacity:.45;
+}
+.tl-item{position:relative;padding-bottom:3rem}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{
+  position:absolute;left:-2rem;top:6px;width:16px;height:16px;border-radius:50%;
+  background:var(--bg);border:3px solid var(--cyan);box-shadow:0 0 16px rgba(0,240,255,.6);transform:translateX(-.5px);
+}
+.tl-item.current .tl-dot{animation:dotPulse 2s infinite}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,240,255,.45)}50%{box-shadow:0 0 0 9px rgba(0,240,255,0)}}
+.tl-date{font-family:var(--font-mono);font-size:.76rem;color:var(--cyan);margin-bottom:.4rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.tl-date .loc{color:var(--muted)}
+.tl-item h3{color:#fff;font-size:1.22rem;font-weight:600}
+.tl-company{color:#c9a6ff;font-size:.92rem;margin:.15rem 0 .9rem;font-family:var(--font-mono)}
+.tl-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.35rem 1.5rem;transition:.3s;
+}
+.tl-card:hover{border-color:rgba(0,240,255,.35);box-shadow:0 14px 40px -18px rgba(0,240,255,.25)}
+.tl-card ul{list-style:none}
+.tl-card li{color:var(--muted);font-size:.92rem;padding:.3rem 0 .3rem 1.25rem;position:relative}
+.tl-card li::before{content:'▸';position:absolute;left:0;color:var(--green);font-size:.78rem}
+.tl-card li strong{color:var(--text);font-weight:600}
+.tl-tags{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1rem}
+
+.tag{font-family:var(--font-mono);font-size:.68rem;padding:.26rem .6rem;border-radius:6px;border:1px solid rgba(0,240,255,.22);background:rgba(0,240,255,.07);color:var(--cyan)}
+.tag.tp{border-color:rgba(168,85,247,.25);background:rgba(168,85,247,.08);color:#c9a6ff}
+.tag.tg{border-color:rgba(57,255,136,.22);background:rgba(57,255,136,.07);color:var(--green)}
+
+/* ============================================================
+   PROJECTS — CARDS GLASS + SPOTLIGHT
+============================================================ */
+.projects-grid{display:grid;gap:1.6rem}
+@media(min-width:880px){.projects-grid{grid-template-columns:1fr 1fr}}
+.project{
+  position:relative;overflow:hidden;
+  background:rgba(255,255,255,.045);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border:1px solid var(--border);border-radius:var(--radius);padding:1.8rem 1.7rem;
+  display:flex;flex-direction:column;transition:.35s ease;
+}
+/* spotlight que segue o mouse */
+.project::before{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;
+  background:radial-gradient(380px circle at var(--mx,50%) var(--my,50%),rgba(0,240,255,.09),transparent 62%);
+}
+.project:hover::before{opacity:1}
+.project:hover{
+  transform:translateY(-6px);border-color:rgba(0,240,255,.4);
+  box-shadow:0 24px 60px -22px rgba(0,240,255,.3),0 24px 60px -30px rgba(168,85,247,.35),0 0 40px -28px rgba(57,255,136,.4);
+}
+.pr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
+.pr-folder{font-size:2.1rem;color:var(--purple);filter:drop-shadow(0 0 12px rgba(168,85,247,.5));transition:.3s}
+.project:hover .pr-folder{color:var(--cyan);filter:drop-shadow(0 0 12px rgba(0,240,255,.6))}
+.pr-links{display:flex;gap:1rem}
+.pr-links a{color:var(--muted);font-size:1.15rem;transition:.25s}
+.pr-links a:hover{color:var(--cyan);transform:translateY(-3px)}
+.pr-date{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);margin-bottom:.4rem}
+.project h3{color:#fff;font-size:1.28rem;font-weight:600;margin-bottom:.7rem;transition:.3s}
+.project:hover h3{color:var(--cyan)}
+.project p{color:var(--muted);font-size:.93rem;margin-bottom:1.1rem}
+.pr-features{list-style:none;margin-bottom:1.2rem}
+.pr-features li{display:flex;gap:.55rem;align-items:flex-start;color:var(--muted);font-size:.87rem;padding:.22rem 0}
+.pr-features i{color:var(--green);font-size:.72rem;margin-top:.32rem}
+.pr-tags{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:auto}
+
+/* ============================================================
+   CERTIFICATIONS
+============================================================ */
+.certs-grid{display:grid;gap:1.3rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
+.cert{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.5rem 1.5rem;transition:.32s ease;position:relative;overflow:hidden;
+}
+.cert::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad);opacity:0;transition:opacity .35s}
+.cert:hover{transform:translateY(-5px);border-color:rgba(168,85,247,.45);box-shadow:0 16px 42px -18px rgba(168,85,247,.4)}
+.cert:hover::after{opacity:1}
+.cert-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.cert-org{font-family:var(--font-mono);font-size:.78rem;display:flex;align-items:center;gap:.55rem;color:var(--text)}
+.cert-org i{font-size:1.05rem}
+.org-google{color:#5aa9ff}.org-ibm{color:#7aa7ff}.org-santander{color:#ff6b6b}
+.cert-year{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:.15rem .5rem}
+.cert h3{color:#fff;font-size:1rem;font-weight:600;margin-bottom:.5rem}
+.cert p{color:var(--muted);font-size:.86rem}
+
+/* ============================================================
+   EDUCATION & LANGUAGES
+============================================================ */
+.edu-grid{display:grid;gap:1.6rem}
+@media(min-width:880px){.edu-grid{grid-template-columns:1fr 1fr}}
+.panel{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.9rem 1.8rem;transition:.3s;
+}
+.panel:hover{border-color:rgba(57,255,136,.35);box-shadow:0 16px 44px -20px rgba(57,255,136,.3)}
+.panel-tag{font-family:var(--font-mono);font-size:.72rem;color:var(--green);margin-bottom:1rem;display:flex;align-items:center;gap:.55rem}
+.edu-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:1.4rem;color:#04121a;background:var(--grad);margin-bottom:1.2rem;box-shadow:0 8px 24px -8px rgba(168,85,247,.5)}
+.panel h3{color:#fff;font-size:1.2rem;font-weight:600;margin-bottom:.3rem}
+.edu-school{font-family:var(--font-mono);color:#c9a6ff;font-size:.88rem;margin-bottom:.4rem}
+.edu-meta{font-family:var(--font-mono);font-size:.75rem;color:var(--muted);margin-bottom:1rem;display:flex;gap:1rem;flex-wrap:wrap}
+.edu-meta i{color:var(--cyan);margin-right:.35rem}
+.panel p.edu-field{color:var(--muted);font-size:.9rem;margin-bottom:1.1rem}
+.edu-link{font-family:var(--font-mono);font-size:.8rem;color:var(--cyan);text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;transition:.25s}
+.edu-link:hover{color:#fff;gap:.75rem}
+
+.lang{margin-bottom:1rem}
+.lang:last-child{margin-bottom:0}
+.lang-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.4rem}
+.lang-name{color:#fff;font-weight:600;font-size:.95rem}
+.lang-level{font-family:var(--font-mono);font-size:.72rem;color:var(--cyan)}
+.bar{height:7px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden}
+.bar-fill{height:100%;width:0;border-radius:99px;background:var(--grad);transition:width 1.3s cubic-bezier(.16,1,.3,1) .25s}
+.reveal.visible .bar-fill{width:var(--val)}
+.lang-divider{height:1px;background:var(--border);margin:1.4rem 0}
+.lang-sub{display:grid;gap:.7rem}
+.lang-note{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);margin-top:1.1rem}
+
+/* ============================================================
+   CONTACT + FOOTER
+============================================================ */
+.contact{text-align:center;padding-bottom:6rem}
+.contact-kicker{font-family:var(--font-mono);color:var(--green);font-size:.85rem;margin-bottom:1rem}
+.contact h2{font-size:clamp(2rem,5.5vw,3.2rem);color:#fff;font-weight:700;letter-spacing:-.02em;margin-bottom:1.3rem}
+.contact-desc{color:var(--muted);max-width:38rem;margin:0 auto 2.4rem;font-size:1rem}
+.contact-meta{display:flex;justify-content:center;flex-wrap:wrap;gap:1.6rem;margin-top:2.6rem;font-family:var(--font-mono);font-size:.8rem;color:var(--muted)}
+.contact-meta a,.contact-meta span{display:inline-flex;align-items:center;gap:.55rem;text-decoration:none;transition:.25s}
+.contact-meta i{color:var(--cyan)}
+.contact-meta a:hover{color:var(--cyan)}
+
+footer{border-top:1px solid var(--border);padding:2rem 0 2.4rem}
+.foot-inner{display:flex;flex-direction:column;gap:.5rem;align-items:center;text-align:center}
+.foot-inner p{font-family:var(--font-mono);font-size:.75rem;color:var(--muted)}
+.foot-inner .f-heart i{color:var(--purple)}
+.foot-brand{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
+
+/* ============================================================
+   MOVIMENTO REDUZIDO (acessibilidade)
+============================================================ */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+  .bar-fill{width:var(--val)}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<a class="skip-link" href="#about">Skip to content</a>
+
+<!-- ================= NAVBAR ================= -->
+<header id="navbar">
+  <nav class="nav-inner" aria-label="Main navigation">
+    <a href="#hero" class="brand"><span class="brand-tag">&lt;</span>isaac.reis<span class="brand-tag">/&gt;</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a class="nav-link" href="#about">About</a></li>
+      <li><a class="nav-link" href="#skills">Skills</a></li>
+      <li><a class="nav-link" href="#experience">Experience</a></li>
+      <li><a class="nav-link" href="#projects">Projects</a></li>
+      <li><a class="nav-link" href="#certifications">Certifications</a></li>
+      <li><a class="nav-link" href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <div class="status reveal"><span class="dot"></span>Available for new challenges</div>
+      <p class="hero-kicker reveal d1">// hello world, my name is</p>
+      <h1 class="reveal d1">Isaac <span class="grad-text">Reis</span></h1>
+      <div class="typed-line reveal d2" aria-label="Isaac is a Software Engineer, works with Java and Spring Boot, builds with AI and is learning Cybersecurity">
+        <span class="prompt">&gt;_</span><span id="typed"></span><span class="type-cursor" aria-hidden="true"></span>
+      </div>
+      <p class="hero-desc reveal d3">
+        Backend-focused software engineer building <strong>full-stack ERP features</strong>,
+        <strong>Spring Boot microservices</strong> and <strong>AI-powered automations</strong>.
+        Ex-financial analyst — now I make systems reconcile themselves.
+      </p>
+      <div class="hero-cta reveal d4">
+        <a class="btn btn-primary" href="#projects"><i class="fa-solid fa-code"></i>View Projects</a>
+        <a class="btn btn-ghost" href="#contact"><i class="fa-solid fa-envelope"></i>Contact</a>
+      </div>
+      <div class="social reveal d4">
+        <a href="https://github.com/Inwtn" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">
+          <i class="fa-brands fa-github"></i>
+        </a>
+        <a href="mailto:isaacreis.dev@gmail.com" aria-label="Send an email">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Terminal decorativo -->
+    <div class="terminal reveal d2" aria-hidden="true">
+      <div class="term-bar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="term-title">isaac@dev: ~/portfolio</span>
+      </div>
+      <pre class="term-body"><span class="t-p">isaac@dev</span><span class="tk-p">:</span><span class="t-c">~</span><span class="tk-p">$</span> cat profile.json
+{
+  <span class="tk-key">"name"</span><span class="tk-p">:</span> <span class="tk-str">"Isaac Reis"</span><span class="tk-p">,</span>
+  <span class="tk-key">"role"</span><span class="tk-p">:</span> <span class="tk-str">"Software Engineer"</span><span class="tk-p">,</span>
+  <span class="tk-key">"base"</span><span class="tk-p">:</span> <span class="tk-str">"Brazil"</span><span class="tk-p">,</span>
+  <span class="tk-key">"stack"</span><span class="tk-p">:</span> <span class="tk-p">[</span><span class="tk-str">"Java"</span><span class="tk-p">,</span> <span class="tk-str">"Spring Boot"</span><span class="tk-p">,</span> <span class="tk-str">"JS"</span><span class="tk-p">,</span> <span class="tk-str">"PHP"</span><span class="tk-p">,</span> <span class="tk-str">"Python"</span><span class="tk-p">],</span>
+  <span class="tk-key">"currently"</span><span class="tk-p">:</span> <span class="tk-p">[</span><span class="tk-str">"Backend Dev"</span><span class="tk-p">,</span> <span class="tk-str">"Databases"</span><span class="tk-p">,</span> <span class="tk-str">"GenAI"</span><span class="tk-p">,</span> <span class="tk-str">"Cybersecurity"</span><span class="tk-p">],</span>
+  <span class="tk-key">"motto"</span><span class="tk-p">:</span> <span class="tk-str">"automate everything"</span><span class="tk-p">,</span>
+  <span class="tk-key">"hireable"</span><span class="tk-p">:</span> <span class="tk-bool">true</span>
+}
+<span class="t-p">isaac@dev</span><span class="tk-p">:</span><span class="t-c">~</span><span class="tk-p">$</span> <span class="t-cursor">▊</span></pre>
+    </div>
+  </div>
+  <a href="#about" class="scroll-hint" aria-label="Scroll down"><i class="fa-solid fa-chevron-down"></i></a>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">01.</span><h2>About Me</h2><span class="sec-line"></span>
+    </div>
+    <div class="about-grid">
+      <div class="about-text reveal d1">
+        <p>
+          I'm a <strong>Software Engineer</strong> with hands-on experience building full-stack features for
+          internal <strong>ERP systems</strong> and backend <strong>microservices in Java and Spring Boot</strong>.
+          Skilled in JavaScript, PHP, Laravel and Python, with a strong focus on
+          <span class="highlight-phrase">automating workflows, integrating APIs and consolidating data</span> across systems.
+        </p>
+        <p>
+          Passionate about applying <em>Generative AI</em>, <em>LLMs</em> and <em>AI-driven development</em> to boost
+          productivity — from building custom scripts and automations to refining features with prompt engineering.
+          Currently expanding my skill set into <strong>cybersecurity</strong>, driven by a genuine interest in building
+          more secure and resilient systems.
+        </p>
+        <p>
+          My background also includes hands-on experience in financial operations — cash flow management, bank
+          reconciliation and accounts payable/receivable — which shaped a practical, detail-oriented approach to
+          problem-solving that I bring into every line of code.
+        </p>
+        <p class="highlight-phrase">Always looking to learn, automate, and build things that make a real difference.</p>
+      </div>
+      <div class="about-side">
+        <div class="mini-card reveal d2">
+          <div class="mc-label"><i class="fa-solid fa-location-dot"></i>// location</div>
+          <ul>
+            <li>Brazil</li>
+            <li>Open to remote work</li>
+          </ul>
+        </div>
+        <div class="mini-card reveal d3">
+          <div class="mc-label"><i class="fa-solid fa-bolt"></i>// currently</div>
+          <ul>
+            <li>Building ERP features @ 3D LAB</li>
+            <li>Backend: Java, Spring Boot &amp; REST APIs</li>
+            <li>Databases: MySQL &amp; PostgreSQL</li>
+            <li>Automating workflows with GenAI &amp; LLMs</li>
+            <li>Deep-diving into Cybersecurity</li>
+          </ul>
+        </div>
+        <div class="mini-card reveal d4">
+          <div class="mc-label"><i class="fa-solid fa-rotate"></i>// background</div>
+          <ul>
+            <li>5+ years in financial operations</li>
+            <li>Software Engineer since 2025</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SKILLS ================= -->
+<section class="section" id="skills">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">02.</span><h2>Skills</h2><span class="sec-line"></span>
+    </div>
+    <div class="skills-grid">
+
+      <div class="skill-card reveal d1">
+        <div class="sc-head"><i class="fa-solid fa-server"></i><h3>Backend &amp; APIs</h3></div>
+        <div class="sc-code">// rest_apis · microservices · integrations</div>
+        <div class="chips">
+          <span class="skill"><i class="devicon-java-plain"></i>Java</span>
+          <span class="skill"><i class="devicon-spring-original"></i>Spring Boot</span>
+          <span class="skill"><i class="devicon-dotnetcore-plain"></i>ASP.NET MVC</span>
+          <span class="skill"><i class="devicon-php-plain"></i>PHP</span>
+          <span class="skill"><i class="devicon-laravel-original"></i>Laravel</span>
+          <span class="skill"><i class="devicon-python-plain"></i>Python</span>
+          <span class="skill"><i class="devicon-javascript-plain"></i>JavaScript</span>
+        </div>
+      </div>
+
+      <div class="skill-card reveal d2">
+        <div class="sc-head"><i class="fa-solid fa-laptop-code"></i><h3>Frontend &amp; Mobile</h3></div>
+        <div class="sc-code">// interfaces · apps · components</div>
+        <div class="chips">
+          <span class="skill"><i class="devicon-kotlin-original"></i>Kotlin</span>
+          <span class="skill"><i class="devicon-android-plain"></i>Android Studio</span>
+          <span class="skill"><i class="fa-solid fa-layer-group ic-p"></i>Jetpack Compose</span>
+          <span class="skill"><i class="devicon-react-original"></i>React</span>
+          <span class="skill"><i class="devicon-html5-plain"></i>HTML / CSS / JS</span>
+          <span class="skill"><i class="fa-solid fa-cubes ic-c"></i>JS Frameworks</span>
+        </div>
+      </div>
+
+      <div class="skill-card reveal d3">
+        <div class="sc-head"><i class="fa-solid fa-database"></i><h3>Data &amp; Tools</h3></div>
+        <div class="sc-code">// storage · versioning · testing</div>
+        <div class="chips">
+          <span class="skill"><i class="devicon-mysql-plain"></i>MySQL</span>
+          <span class="skill"><i class="devicon-postgresql-plain"></i>PostgreSQL</span>
+          <span class="skill"><i class="devicon-git-plain"></i>Git / GitHub</span>
+          <span class="skill"><i class="fa-brands fa-gitlab ic-p"></i>GitLab</span>
+          <span class="skill"><i class="devicon-postman-plain"></i>Postman</span>
+          <span class="skill"><i class="devicon-firebase-plain"></i>Firebase</span>
+        </div>
+      </div>
+
+      <div class="skill-card reveal d1">
+        <div class="sc-head"><i class="fa-solid fa-microchip"></i><h3>AI &amp; Automation</h3></div>
+        <div class="sc-code">// llms · agents · workflows</div>
+        <div class="chips">
+          <span class="skill"><i class="fa-solid fa-wand-magic-sparkles ic-c"></i>Generative AI</span>
+          <span class="skill"><i class="fa-solid fa-brain ic-p"></i>LLMs</span>
+          <span class="skill"><i class="fa-solid fa-robot ic-g"></i>AI Agents</span>
+          <span class="skill"><i class="fa-solid fa-terminal ic-c"></i>Prompt Engineering</span>
+          <span class="skill"><i class="fa-solid fa-diagram-project ic-p"></i>AI-Driven Dev</span>
+        </div>
+      </div>
+
+      <div class="skill-card reveal d2">
+        <div class="sc-head"><i class="fa-solid fa-shield-halved"></i><h3>Cybersecurity</h3></div>
+        <div class="sc-code">// defense · monitoring · hardening</div>
+        <div class="chips">
+          <span class="skill"><i class="fa-solid fa-lock ic-g"></i>Security Fundamentals</span>
+          <span class="skill"><i class="fa-solid fa-network-wired ic-c"></i>Network Security</span>
+          <span class="skill"><i class="fa-brands fa-linux ic-p"></i>Linux</span>
+          <span class="skill"><i class="fa-solid fa-eye ic-g"></i>SIEM &amp; IDS</span>
+          <span class="skill"><i class="fa-solid fa-bug ic-p"></i>Vuln &amp; Risk Mgmt</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= EXPERIENCE ================= -->
+<section class="section" id="experience">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">03.</span><h2>Experience</h2><span class="sec-line"></span>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item current reveal">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-date"><i class="fa-regular fa-calendar"></i>Sep 2026 — Present<span class="loc"><i class="fa-solid fa-location-dot"></i> Brazil</span></div>
+        <h3>Software Engineer</h3>
+        <div class="tl-company">@ 3D LAB</div>
+        <div class="tl-card">
+          <ul>
+            <li>Building <strong>internal ERP modules</strong> — architecting, planning and implementing full-stack features for web systems.</li>
+            <li>Applying <strong>Generative AI, LLMs, AI agents, prompt engineering &amp; AI-driven development</strong> to create scripts and automations, refine features and improve productivity.</li>
+            <li>Developing and maintaining solutions with <strong>JavaScript, PHP, Laravel, Python</strong>, databases and API integrations.</li>
+            <li>Working in <strong>agile cycles</strong> (sprints, planning, review), feature testing, structured bug reporting and technical documentation.</li>
+          </ul>
+          <div class="tl-tags">
+            <span class="tag">JavaScript</span><span class="tag tp">PHP · Laravel</span><span class="tag tg">Python</span>
+            <span class="tag tp">GenAI · LLMs</span><span class="tag">API Integrations</span><span class="tag tg">Agile</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-date"><i class="fa-regular fa-calendar"></i>Dec 2025 — Jun 2026<span class="loc"><i class="fa-solid fa-location-dot"></i> Brazil</span></div>
+        <h3>Software Developer</h3>
+        <div class="tl-company">@ Backend Automation</div>
+        <div class="tl-card">
+          <ul>
+            <li>Developed and deployed a <strong>Java backend system</strong> focused on automating repetitive tasks, eliminating manual processes and boosting team productivity.</li>
+            <li>Implemented automated <strong>cash flow integrations (up to R$100k/month)</strong> through automatic data feeds into smart spreadsheets.</li>
+            <li>Modeled data, refactored code and structured <strong>event-driven architectures</strong> for the systematic capture of critical business information.</li>
+            <li>Maintained and evolved <strong>Java &amp; Spring Boot microservices</strong>, focusing on continuous automation of administrative workflows.</li>
+            <li>Created <strong>REST APIs</strong> and optimized external integrations for real-time consolidation of financial data.</li>
+            <li>Built scripts and algorithms for manipulation, validation and automatic entry of data into <strong>relational databases</strong> and dynamic spreadsheets.</li>
+          </ul>
+          <div class="tl-tags">
+            <span class="tag">Java 17</span><span class="tag tp">Spring Boot</span><span class="tag tg">REST APIs</span>
+            <span class="tag">Event-Driven</span><span class="tag tp">Data Modeling</span><span class="tag tg">Automation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-date"><i class="fa-regular fa-calendar"></i>Jan 2020 — Jan 2025<span class="loc"><i class="fa-solid fa-location-dot"></i> Brazil</span></div>
+        <h3>Financial Analyst</h3>
+        <div class="tl-company">@ Benericks Cocktail Co</div>
+        <div class="tl-card">
+          <ul>
+            <li>Controlled and monitored the company's <strong>cash flow</strong>, accounts payable/receivable and financial deadline compliance.</li>
+            <li>Performed <strong>bank reconciliation</strong> and verification of financial transactions; issued and controlled invoices, payment slips and financial documents.</li>
+            <li>Prepared <strong>management reports and KPIs</strong>; supported the monthly financial close and organized accounting information.</li>
+            <li>Controlled expenses, budget and operating costs; liaised with financial institutions for payments, receipts and banking services.</li>
+            <li><strong>Automated financial processes</strong> using advanced spreadsheets and digital tools, reducing manual activities and increasing efficiency.</li>
+            <li>Supported administrative, accounting and tax areas, ensuring the integrity of financial information and driving continuous process improvement.</li>
+          </ul>
+          <div class="tl-tags">
+            <span class="tag">Cash Flow</span><span class="tag tp">Bank Reconciliation</span><span class="tag tg">Reporting</span>
+            <span class="tag">Process Automation</span><span class="tag tp">Spreadsheets</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROJECTS ================= -->
+<section class="section" id="projects">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">04.</span><h2>Featured Projects</h2><span class="sec-line"></span>
+    </div>
+    <div class="projects-grid">
+
+      <article class="project reveal d1">
+        <div class="pr-top">
+          <i class="fa-solid fa-folder-open pr-folder" aria-hidden="true"></i>
+          <div class="pr-links">
+            <a href="https://github.com/Inwtn/API-Finance-Sync" target="_blank" rel="noopener noreferrer" aria-label="Finance Sync API on GitHub"><i class="fa-brands fa-github"></i></a>
+          </div>
+        </div>
+        <div class="pr-date">Jan 2026 — Present</div>
+        <h3>Finance Sync API</h3>
+        <p>
+          A REST API built in Java with Spring Boot to automate cash flow processes. The system acts as an
+          <strong>integration middleware</strong>, receiving financial transaction data via HTTP requests and posting it
+          automatically and in real time to management control spreadsheets in Google Sheets.
+        </p>
+        <ul class="pr-features">
+          <li><i class="fa-solid fa-check"></i>Real-time HTTP ingestion of financial transactions</li>
+          <li><i class="fa-solid fa-check"></i>Automatic posting to Google Sheets control spreadsheets</li>
+          <li><i class="fa-solid fa-check"></i>Service-account authentication (Google Auth Library)</li>
+        </ul>
+        <div class="pr-tags">
+          <span class="tag">Java 17</span><span class="tag tp">Spring Boot</span><span class="tag tg">Lombok</span>
+          <span class="tag">Google Sheets API v4</span><span class="tag tp">Google Auth</span><span class="tag tg">Maven</span>
+        </div>
+      </article>
+
+      <article class="project reveal d2">
+        <div class="pr-top">
+          <i class="fa-solid fa-folder-open pr-folder" aria-hidden="true"></i>
+          <div class="pr-links">
+            <a href="https://github.com/Inwtn/bank-reconciliation" target="_blank" rel="noopener noreferrer" aria-label="Bank Reconciliation Engine on GitHub"><i class="fa-brands fa-github"></i></a>
+          </div>
+        </div>
+        <div class="pr-date">Open Source</div>
+        <h3>Bank Reconciliation Engine</h3>
+        <p>
+          An automatic bank reconciliation engine that cross-references bank statements
+          (<strong>OFX/CSV</strong>) with financial entries recorded in the system — identifying what has been paid,
+          what is pending, and where discrepancies exist.
+        </p>
+        <ul class="pr-features">
+          <li><i class="fa-solid fa-check"></i>Statement upload in OFX and CSV formats</li>
+          <li><i class="fa-solid fa-check"></i>Auto-matching by amount, type and date (configurable tolerance)</li>
+          <li><i class="fa-solid fa-check"></i>Classification: Reconciled · Divergent · Pending</li>
+          <li><i class="fa-solid fa-check"></i>Web dashboard, import history &amp; REST API with Swagger UI</li>
+        </ul>
+        <div class="pr-tags">
+          <span class="tag">Java</span><span class="tag tp">Spring Boot</span><span class="tag tg">Swagger UI</span>
+          <span class="tag">OFX / CSV</span><span class="tag tp">REST API</span><span class="tag tg">Dashboard</span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= CERTIFICATIONS ================= -->
+<section class="section" id="certifications">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">05.</span><h2>Certifications</h2><span class="sec-line"></span>
+    </div>
+    <div class="certs-grid">
+
+      <article class="cert reveal d1">
+        <div class="cert-top">
+          <span class="cert-org"><i class="fa-brands fa-google org-google"></i>Google</span>
+          <span class="cert-year">2026</span>
+        </div>
+        <h3>Google Cybersecurity</h3>
+        <p>Security fundamentals, threat identification, vulnerability management and risk mitigation. Network security, Linux, SQL &amp; Python for security, plus SIEM and IDS tools for monitoring and incident response.</p>
+      </article>
+
+      <article class="cert reveal d2">
+        <div class="cert-top">
+          <span class="cert-org"><i class="fa-brands fa-ibm org-ibm"></i>IBM</span>
+          <span class="cert-year">2026</span>
+        </div>
+        <h3>Started with Cybersecurity</h3>
+        <p>Essential cybersecurity concepts and the current threat landscape. Data protection, encryption, main attack types (malware, social engineering) and best defense practices for corporate and personal environments.</p>
+      </article>
+
+      <article class="cert reveal d3">
+        <div class="cert-top">
+          <span class="cert-org"><i class="fa-brands fa-ibm org-ibm"></i>IBM</span>
+          <span class="cert-year">Cert</span>
+        </div>
+        <h3>Web Development Fundamentals</h3>
+        <p>Fundamental skills for building web applications: semantic HTML structuring, responsive CSS styling, and interactivity, DOM manipulation and client-side logic with JavaScript.</p>
+      </article>
+
+      <article class="cert reveal d1">
+        <div class="cert-top">
+          <span class="cert-org"><i class="fa-solid fa-graduation-cap org-santander"></i>Santander</span>
+          <span class="cert-year">Cert</span>
+        </div>
+        <h3>Data with Python and AI</h3>
+        <p>Data analysis and Artificial Intelligence with Python: essential libraries for collection, processing, manipulation and visualization, plus basic Machine Learning concepts for data-driven decisions.</p>
+      </article>
+
+      <article class="cert reveal d2">
+        <div class="cert-top">
+          <span class="cert-org"><i class="fa-solid fa-graduation-cap org-santander"></i>Santander</span>
+          <span class="cert-year">Cert</span>
+        </div>
+        <h3>RAG with ChromaDB, LlamaIndex &amp; Python</h3>
+        <p>Advanced generative AI architectures with a focus on Retrieval-Augmented Generation. LlamaIndex for data orchestration and ChromaDB as a vector database for efficient context storage and retrieval.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= EDUCATION & LANGUAGES ================= -->
+<section class="section" id="education">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">06.</span><h2>Education &amp; Languages</h2><span class="sec-line"></span>
+    </div>
+    <div class="edu-grid">
+
+      <div class="panel reveal d1" id="education-panel">
+        <div class="panel-tag"><i class="fa-solid fa-graduation-cap"></i>// education</div>
+        <div class="edu-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h3>Systems Analysis &amp; Development</h3>
+        <div class="edu-school">Newton Paiva</div>
+        <div class="edu-meta">
+          <span><i class="fa-regular fa-calendar"></i>Jan 2025 — Present</span>
+          <span><i class="fa-solid fa-location-dot"></i>Brazil</span>
+        </div>
+        <p class="edu-field">Field of study: software and computer application development and analysis.</p>
+        <a class="edu-link" href="https://www.wyden.com.br" target="_blank" rel="noopener noreferrer">
+          newtonpaiva.br <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
+      </div>
+
+      <div class="panel reveal d2" id="languages">
+        <div class="panel-tag"><i class="fa-solid fa-language"></i>// languages</div>
+        <div class="lang">
+          <div class="lang-head"><span class="lang-name">Portuguese</span><span class="lang-level">NATIVE</span></div>
+          <div class="bar"><div class="bar-fill" style="--val:100%"></div></div>
+        </div>
+        <div class="lang-divider"></div>
+        <div class="lang-head" style="margin-bottom:.8rem"><span class="lang-name">English</span><span class="lang-level">B2 · INDEPENDENT</span></div>
+        <div class="lang-sub">
+          <div class="lang">
+            <div class="lang-head"><span class="lang-name" style="font-weight:400;font-size:.85rem">Listening</span><span class="lang-level">B2</span></div>
+            <div class="bar"><div class="bar-fill" style="--val:70%"></div></div>
+          </div>
+          <div class="lang">
+            <div class="lang-head"><span class="lang-name" style="font-weight:400;font-size:.85rem">Reading</span><span class="lang-level">B2</span></div>
+            <div class="bar"><div class="bar-fill" style="--val:70%"></div></div>
+          </div>
+          <div class="lang">
+            <div class="lang-head"><span class="lang-name" style="font-weight:400;font-size:.85rem">Spoken Production</span><span class="lang-level">B2</span></div>
+            <div class="bar"><div class="bar-fill" style="--val:70%"></div></div>
+          </div>
+          <div class="lang">
+            <div class="lang-head"><span class="lang-name" style="font-weight:400;font-size:.85rem">Spoken Interaction</span><span class="lang-level">B2</span></div>
+            <div class="bar"><div class="bar-fill" style="--val:70%"></div></div>
+          </div>
+          <div class="lang">
+            <div class="lang-head"><span class="lang-name" style="font-weight:400;font-size:.85rem">Writing</span><span class="lang-level">B1</span></div>
+            <div class="bar"><div class="bar-fill" style="--val:55%"></div></div>
+          </div>
+        </div>
+        <p class="lang-note">// A1–A2 basic · B1–B2 independent · C1–C2 proficient</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="section contact" id="contact">
+  <div class="container">
+    <p class="contact-kicker reveal">07. what's next?</p>
+    <h2 class="reveal d1">Let's build <span class="grad-text">something</span> great.</h2>
+    <p class="contact-desc reveal d2">
+      I'm always open to discussing new projects, automation ideas or opportunities in backend
+      and AI-driven development. Whether you have a question or just want to say hi —
+      my inbox is always open, and I'll do my best to get back to you.
+    </p>
+    <div class="reveal d3">
+      <a class="btn btn-primary" href="mailto:isaacreis.dev@gmail.com"><i class="fa-solid fa-paper-plane"></i>Say Hello</a>
+    </div>
+    <div class="contact-meta reveal d4">
+      <a href="mailto:isaacreis.dev@gmail.com"><i class="fa-solid fa-envelope"></i>isaacreis.dev@gmail.com</a>
+      <a href="https://github.com/Inwtn" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i>github.com/Inwtn</a>
+      <span><i class="fa-solid fa-location-dot"></i>Brazil</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="container foot-inner">
+    <p>© <span id="year"></span> <span class="foot-brand">Isaac Reis</span> — designed &amp; coded from scratch, no templates harmed.</p>
+    <p class="f-heart"><i class="fa-solid fa-code"></i> + <i class="fa-solid fa-heart"></i> + far too much coffee · Brazil</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+
+var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ============================================================
+   1) CANVAS DE PARTÍCULAS (leve, pausa quando a aba fica oculta)
+============================================================ */
+(function particles(){
+  var canvas = document.getElementById('bg-canvas');
+  if(!canvas || reduceMotion) return;
+  var ctx = canvas.getContext('2d');
+  var COLORS = ['0,240,255','168,85,247','57,255,136'];
+  var w, h, parts = [], raf = null, resizeT = null;
+  var LINK = 120;
+
+  function resize(){
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth; h = window.innerHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    init();
+  }
+  function init(){
+    var n = Math.min(80, Math.floor((w * h) / 22000));
+    parts = [];
+    for(var i = 0; i < n; i++){
+      parts.push({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
+        r: Math.random() * 1.6 + .6,
+        col: COLORS[Math.floor(Math.random() * COLORS.length)],
+        a: Math.random() * .5 + .25
+      });
+    }
+  }
+  function frame(){
+    ctx.clearRect(0, 0, w, h);
+    var i, j, p, q, dx, dy, d2;
+    for(i = 0; i < parts.length; i++){
+      p = parts[i];
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < -20) p.x = w + 20; else if(p.x > w + 20) p.x = -20;
+      if(p.y < -20) p.y = h + 20; else if(p.y > h + 20) p.y = -20;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+      ctx.fillStyle = 'rgba(' + p.col + ',' + p.a + ')';
+      ctx.fill();
+    }
+    for(i = 0; i < parts.length; i++){
+      for(j = i + 1; j < parts.length; j++){
+        p = parts[i]; q = parts[j];
+        dx = p.x - q.x; dy = p.y - q.y; d2 = dx * dx + dy * dy;
+        if(d2 < LINK * LINK){
+          var al = (1 - Math.sqrt(d2) / LINK) * .13;
+          ctx.strokeStyle = 'rgba(' + p.col + ',' + al + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.stroke();
+        }
+      }
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeT);
+    resizeT = setTimeout(resize, 200);
+  });
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){
+      if(raf){ cancelAnimationFrame(raf); raf = null; }
+    } else if(!raf){
+      raf = requestAnimationFrame(frame);
+    }
+  });
+  resize();
+  raf = requestAnimationFrame(frame);
+})();
+
+/* ============================================================
+   2) EFEITO DE DIGITAÇÃO (typing)
+============================================================ */
+(function typing(){
+  var el = document.getElementById('typed');
+  if(!el) return;
+  var phrases = ['Software Engineer', 'Java & Spring Boot', 'Building with AI', 'Learning Cybersecurity'];
+  if(reduceMotion){ el.textContent = phrases[0]; return; }
+  var pi = 0, ci = 0, deleting = false;
+
+  function tick(){
+    var cur = phrases[pi];
+    if(!deleting){
+      ci++;
+      el.textContent = cur.slice(0, ci);
+      if(ci === cur.length){ deleting = true; return setTimeout(tick, 1900); }
+      return setTimeout(tick, 55 + Math.random() * 55);
+    }
+    ci--;
+    el.textContent = cur.slice(0, ci);
+    if(ci === 0){
+      deleting = false;
+      pi = (pi + 1) % phrases.length;
+      return setTimeout(tick, 400);
+    }
+    return setTimeout(tick, 28);
+  }
+  setTimeout(tick, 700);
+})();
+
+/* ============================================================
+   3) NAVBAR: estado ao rolar + menu mobile
+============================================================ */
+var navbar = document.getElementById('navbar');
+function onScroll(){ navbar.classList.toggle('scrolled', window.scrollY > 24); }
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+var toggle = document.getElementById('navToggle');
+var linksEl = document.getElementById('navLinks');
+if(toggle && linksEl){
+  toggle.addEventListener('click', function(){
+    var open = document.body.classList.toggle('menu-open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  linksEl.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      document.body.classList.remove('menu-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && document.body.classList.contains('menu-open')){
+      document.body.classList.remove('menu-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.focus();
+    }
+  });
+}
+
+/* ============================================================
+   4) SCROLLSPY — destaque automático do link da seção ativa
+============================================================ */
+(function scrollspy(){
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-link'));
+  if(!('IntersectionObserver' in window) || !navLinks.length) return;
+  var spy = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        var id = en.target.getAttribute('id');
+        navLinks.forEach(function(l){
+          l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  document.querySelectorAll('section[id]').forEach(function(s){ spy.observe(s); });
+})();
+
+/* ============================================================
+   5) ANIMAÇÕES DE ENTRADA (reveal on scroll)
+============================================================ */
+(function reveals(){
+  var els = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    els.forEach(function(el){ el.classList.add('visible'); });
+    return;
+  }
+  var ro = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        en.target.classList.add('visible');
+        ro.unobserve(en.target);
+      }
+    });
+  }, { threshold: .15, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(function(el){ ro.observe(el); });
+})();
+
+/* ============================================================
+   6) SPOTLIGHT — brilho que segue o mouse nos cards de projeto
+============================================================ */
+(function spotlight(){
+  if(matchMedia('(hover: none)').matches) return;
+  document.querySelectorAll('.project').forEach(function(card){
+    card.addEventListener('mousemove', function(e){
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+})();
+
+/* ============================================================
+   7) ANO DINÂMICO NO RODAPÉ
+============================================================ */
+var yearEl = document.getElementById('year');
+if(yearEl) yearEl.textContent = new Date().getFullYear();
+
+})();
+</script>
+</body>
+</html>
