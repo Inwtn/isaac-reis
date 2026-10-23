@@ -84,7 +84,8 @@
     canvas.addEventListener('webglcontextrestored',function(){lost=!initialize();});
     return {render:function(state){
       if(lost || gl.isContextLost())return null;
-      var size=Math.round(Math.max(state.mobile ? 288 : 384,Math.min(state.mobile ? 448 : 768,state.radius*5))/32)*32;
+      // Stable buffers avoid GPU reallocations on every scroll/zoom frame.
+      var size=state.mobile ? 384 : 640;
       if(canvas.width!==size){canvas.width=canvas.height=size;gl.viewport(0,0,size,size);}
       gl.useProgram(program);gl.uniform1f(uniforms.clock,state.time);gl.uniform2f(uniforms.gaze,state.lookX,state.lookY);gl.uniform1f(uniforms.resolution,size);
       gl.clear(gl.COLOR_BUFFER_BIT);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);return canvas;
@@ -93,10 +94,13 @@
 
   function createFallback(){
     // Project orbiting 3D particles when WebGL is unavailable.
-    var canvas=document.createElement('canvas'),ctx=canvas.getContext('2d'),particles=[],seed=19;
+    var canvas=document.createElement('canvas'),ctx=canvas.getContext('2d'),particles=[],projected=[],seed=19;
     canvas.width=canvas.height=720;
     function random(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}
-    for(var i=0;i<1700;i++)particles.push({radius:1.45+random()*2.2,angle:random()*Math.PI*2,height:(random()-.5)*.07,light:.3+random()*.7});
+    for(var i=0;i<1200;i++){
+      particles.push({radius:1.45+random()*2.2,angle:random()*Math.PI*2,height:(random()-.5)*.07,light:.3+random()*.7});
+      projected.push({x:0,y:0,z:0,light:0,perspective:1});
+    }
     return {render:function(state){
       if(!ctx)return null;
       var pitch=.32+state.lookY*.13+Math.sin(state.time*.12)*.035,yaw=.2+state.lookX*.3+Math.sin(state.time*.09)*.12;
@@ -105,13 +109,13 @@
       var glow=ctx.createRadialGradient(0,0,scale*.9,0,0,scale*3.5);
       glow.addColorStop(0,'rgba(255,255,255,.14)');glow.addColorStop(.45,'rgba(220,220,220,.035)');glow.addColorStop(1,'rgba(255,255,255,0)');
       ctx.fillStyle=glow;ctx.fillRect(-360,-360,720,720);
-      var projected=particles.map(function(p){
+      particles.forEach(function(p,index){
         var angle=p.angle+state.time*1.1*Math.pow(1.5/p.radius,1.5);
         var x=Math.cos(angle)*p.radius,z=Math.sin(angle)*p.radius;
         var viewX=x*cy-z*sy,depth=x*sy+z*cy;
         var y=p.height*cp-depth*sp;depth=depth*cp+p.height*sp;
         var perspective=6.8/(6.8-depth);
-        return {x:viewX*perspective*scale,y:y*perspective*scale,z:depth,light:p.light,perspective:perspective};
+        var out=projected[index];out.x=viewX*perspective*scale;out.y=y*perspective*scale;out.z=depth;out.light=p.light;out.perspective=perspective;
       });
       function draw(front){
         projected.forEach(function(p){

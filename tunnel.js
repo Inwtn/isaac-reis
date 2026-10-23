@@ -16,7 +16,11 @@
   var pointer={x:0,y:0,targetX:0,targetY:0,strength:0,present:false};
   var refraction=window.createPortfolioRefraction ? window.createPortfolioRefraction() : null;
   var yawSin=0,yawCos=1,pitchSin=0,pitchCos=1,endDistance=DEPTH;
-  var singularity=null,sceneTime=0;
+  var singularity=null,sceneTime=0,holeCanvas=null,holeFrame=null,lastHoleTime=-Infinity;
+  var scroll={value:0,destination:0,speed:0,driven:false,lastWrite:0};
+  var maxScroll=0,userInteracted=false,portalProgress=0,introductionTop=0,holeTop=0;
+  var introduction=document.getElementById('introduction');
+  var forcePaint=true,lastCamera=NaN,lastLookX=NaN,lastLookY=NaN,lastMotion=NaN,renderTime=0;
   var stars=[],traces=[],sprites=[],paints=[];
   var pathX=new Float32Array(PATH_SAMPLES),pathY=new Float32Array(PATH_SAMPLES);
   var point={x:0,y:0,scale:0},other={x:0,y:0,scale:0};
@@ -33,7 +37,7 @@
     return randomSeed/4294967296;
   }
   function scrollTarget(){
-    return 8+Math.max(0,window.scrollY)/Math.max(1,height)*18;
+    return 8+Math.max(0,scroll.value)/Math.max(1,height)*18;
   }
   function panelGroups(){
     var groups=[];
@@ -73,6 +77,25 @@
     root.style.scrollBehavior='auto';
     window.scrollTo(0,Math.max(0,top));
     root.style.scrollBehavior=old;
+    scroll.value=scroll.destination=scroll.lastWrite=window.scrollY;
+    scroll.speed=0;
+    scroll.driven=false;forcePaint=true;
+  }
+  function smoothTo(top){
+    scroll.destination=clamp(top,0,maxScroll);
+    scroll.driven=true;
+    schedule();
+  }
+  function resetStart(){
+    if(location.hash)history.replaceState(null,'',location.href.split('#')[0]);
+    jumpTo(0);camera=target=8;
+    velocity=motion=0;lastTime=0;forcePaint=true;
+  }
+  function measureJourney(){
+    maxScroll=Math.max(0,document.documentElement.scrollHeight-height);
+    var last=panels[panels.length-1],end=document.getElementById('singularity');
+    holeTop=last ? last.top : end.getBoundingClientRect().top+window.scrollY;
+    introductionTop=introduction ? introduction.getBoundingClientRect().top+window.scrollY : holeTop+height*1.35;
   }
   function prepareFlight(){
     prepareWords();
@@ -108,7 +131,7 @@
   function restoreFlight(){
     for(var i=panels.length-1;i>=0;i--){
       var record=panels[i];
-      record.words.forEach(function(word){word.style.removeProperty('transform');});
+      record.words.forEach(function(word){word.style.removeProperty('transform');word.portfolioTransform=null;});
       for(var j=record.origins.length-1;j>=0;j--){
         var origin=record.origins[j];
         origin.parent.insertBefore(origin.node,origin.next && origin.next.parentNode===origin.parent ? origin.next : null);
@@ -124,6 +147,7 @@
     panels=[];
     flight=false;
     document.documentElement.classList.remove('journey-flight');
+    if(introduction)introduction.style.removeProperty('opacity');
   }
   function layoutFlight(){
     if(!flight)return;
@@ -143,6 +167,7 @@
   }
   function prepareWords(){
     document.querySelectorAll('main h1,main h2,main h3').forEach(function(heading){
+      if(heading.closest('[data-static]'))return;
       if(heading.dataset.motionReady)return;
       heading.dataset.motionReady='true';
       var walker=document.createTreeWalker(heading,NodeFilter.SHOW_TEXT),nodes=[],node;
@@ -168,21 +193,25 @@
       var panel=record.panel;
       record.progress=progress;
       if(progress>1.6 || progress<-.74){
+        if(record.hidden)return;
+        record.hidden=true;
         panel.style.opacity='0';
+        panel.style.visibility='hidden';
         panel.style.pointerEvents='none';
         panel.style.willChange='auto';
         panel.style.transform='translate(-50%,-50%) scale(.15)';
         record.slot.style.zIndex='0';
         return;
       }
+      if(record.hidden || record.hidden===undefined){panel.style.visibility='visible';record.hidden=false;}
       // A continuous depth curve avoids the old flat stop around each reading point.
       var z=progress>=0 ? -2500*progress*progress/(progress+.22) : 1450*progress*progress/(-progress+.2);
       var projection=1100/(1100-z);
       var lane=mobile ? 0 : record.lane*width;
       var curve=smoothstep(.08,1,progress);
       project(0,0,clamp(14+Math.max(0,progress)*40,NEAR,DEPTH),other);
-      var x=width*.5-record.centerX+lane*projection+(other.x-width*.5)*curve-look.x*14*(1-curve);
-      var y=height*.5+22-(record.top-window.scrollY+record.slotHeight*.5)+(other.y-height*.48)*curve-look.y*10*(1-curve);
+      var x=lane*projection+(other.x-width*.5)*curve-look.x*14*(1-curve);
+      var y=22+(other.y-height*.48)*curve-look.y*10*(1-curve);
       y+=height*(smoothstep(0,1.25,progress)*.16-smoothstep(0,.72,-progress)*.55);
       var opacity=progress>=0 ? 1-smoothstep(.45,1.25,progress) : 1-smoothstep(.15,.68,-progress);
       panel.style.transform='translate(-50%,-50%) translate3d('+x.toFixed(2)+'px,'+y.toFixed(2)+'px,0) perspective(1100px) translateZ('+z.toFixed(2)+'px) scale('+record.fit.toFixed(4)+') rotateY('+(-record.lane*14-look.x*1.1).toFixed(2)+'deg) rotateX('+(look.y*.6).toFixed(2)+'deg)';
@@ -193,13 +222,15 @@
         var stagger=(index%9)*.018;
         var enter=smoothstep(.12+stagger,1.25+stagger,progress);
         var leave=smoothstep(.06+stagger,.48+stagger,-progress);
-        word.style.transform='translate3d(0,'+((enter-leave)*115).toFixed(3)+'%,0) rotateX('+((enter+leave)*14).toFixed(2)+'deg)';
+        // Move the complete glyphs gently; individual clipping masks sliced the rising text.
+        var transform='translate3d(0,'+(enter*.38-leave*.42).toFixed(4)+'em,0)';
+        if(word.portfolioTransform!==transform){word.style.transform=transform;word.portfolioTransform=transform;}
       });
       record.slot.style.zIndex=String(Math.round(1000-progress*100));
     });
   }
   function makeField(){
-    var count=mobile ? 2100 : 5200;
+    var count=mobile ? 1400 : 2800;
     if(stars.length===count)return;
     randomSeed=42;
     stars=[];
@@ -292,7 +323,7 @@
       }
     }
     ctx.lineWidth=.65;
-    ctx.strokeStyle='rgba(210,210,210,.12)';
+    ctx.strokeStyle='rgba(225,231,240,.16)';
     ctx.stroke();
   }
   function drawGates(){
@@ -301,7 +332,7 @@
     for(var gate=first+6;gate>=first;gate--){
       var world=gate*18,z=world-camera;
       if(z<=NEAR || z>DEPTH || z>endDistance)continue;
-      var alpha=.09+Math.pow(1-z/DEPTH,2)*.2;
+      var alpha=.12+Math.pow(1-z/DEPTH,2)*.24;
       ctx.beginPath();
       for(var j=0;j<=segments;j++){
         var angle=j/segments*TAU;
@@ -355,7 +386,7 @@
       var depth=1-z/DEPTH;
       var size=clamp(point.scale*star.size,.55,3.2);
       var edgeFade=star.span<DEPTH-NEAR ? clamp((star.span+NEAR-z)/6,0,1) : 1;
-      var opacity=clamp((.22+depth*.68)*star.brightness*edgeFade,0,1);
+      var opacity=clamp((.26+depth*.74)*star.brightness*edgeFade,0,1);
       if(batches)batches[Math.round(opacity*tones[star.color]*19)].rect(point.x-size*.5,point.y-size*.5,size,size);
       else{
         ctx.fillStyle=paints[star.color][Math.round(opacity*19)];
@@ -403,51 +434,92 @@
     singularity=window.createBlackHoleScene ? window.createBlackHoleScene() : null;
   }
   function drawSingularity(){
-    if(!singularity || endDistance>=DEPTH)return;
+    var fade=clamp((DEPTH-endDistance)/35,0,1)*(1-smoothstep(.85,1.25,portalProgress));
+    if(!singularity || fade<.005 || scroll.value>=introductionTop){
+      if(holeCanvas)holeCanvas.style.visibility='hidden';
+      holeFrame=null;lastHoleTime=-Infinity;return;
+    }
     project(0,0,endDistance,other);
     var radius=Math.min(other.scale*3.5,Math.min(width*.23,height*.2));
-    var image=singularity.render({radius:radius,time:sceneTime,lookX:look.x,lookY:look.y,mobile:mobile});
-    if(!image)return;
-    var size=radius*8.6;
-    ctx.save();
-    ctx.globalAlpha=clamp((DEPTH-endDistance)/35,0,1);
-    ctx.drawImage(image,other.x-size*.5,other.y-size*.5,size,size);
-    ctx.restore();
+    var moving=Math.abs(scroll.destination-scroll.value)>1;
+    if(!holeCanvas || sceneTime-lastHoleTime>=(moving ? 1/30 : 1/60) || reduced){
+      var image=singularity.render({radius:radius,time:sceneTime,lookX:look.x,lookY:look.y,mobile:mobile});
+      if(image){
+        if(image!==holeCanvas){
+          if(holeCanvas)holeCanvas.remove();
+          holeCanvas=image;holeCanvas.className='black-hole-layer';
+          holeCanvas.style.width=holeCanvas.style.height='640px';
+          host.appendChild(holeCanvas);
+        }
+        lastHoleTime=sceneTime;
+      }
+    }
+    if(!holeCanvas)return;
+    var zoom=1+18*Math.pow(smoothstep(0,1.15,portalProgress),2);
+    var size=radius*8.6*zoom,center=smoothstep(0,.7,portalProgress);
+    var x=other.x+(width*.5-other.x)*center,y=other.y+(height*.5-other.y)*center;
+    holeCanvas.style.visibility='visible';holeCanvas.style.opacity=fade.toFixed(3);
+    holeCanvas.style.transform='translate3d('+(x-320).toFixed(2)+'px,'+(y-320).toFixed(2)+'px,0) scale('+(size/640).toFixed(5)+')';
+    holeFrame={canvas:holeCanvas,left:x-size*.5,top:y-size*.5,size:size,opacity:fade};
   }
   function draw(){
     if(!width || !height)return;
-    ctx.clearRect(0,0,width,height);
-    yawSin=Math.sin(look.x*.19);yawCos=Math.cos(look.x*.19);
-    pitchSin=Math.sin(look.y*.13);pitchCos=Math.cos(look.y*.13);
-    var last=panels[panels.length-1];
-    var endWorld=last ? 8+last.top/height*18+14 : 8+Math.max(0,document.documentElement.scrollHeight-height)/height*18+14;
-    endDistance=clamp(endWorld-camera,14,DEPTH+1);
-    if(reduced){
-      var remaining=Math.max(0,document.documentElement.scrollHeight-height-window.scrollY)/height;
-      endDistance=clamp(14+remaining*18,14,DEPTH+1);
+    portalProgress=flight ? Math.max(0,(scroll.value-holeTop)/height) : 0;
+    var sceneOpacity=flight ? 1-smoothstep(.9,1.3,portalProgress) : scroll.value<introductionTop ? 1 : 0;
+    var opacity=sceneOpacity.toFixed(3);
+    if(host.style.opacity!==opacity)host.style.opacity=opacity;
+    if(introduction && flight){
+      var reveal=smoothstep(.95,1.3,portalProgress).toFixed(3);
+      if(introduction.style.opacity!==reveal)introduction.style.opacity=reveal;
     }
-    samplePath();
-    drawRails();
-    drawGates();
-    drawTraces();
-    drawStars();
-    drawAperture();
+    endDistance=clamp(8+holeTop/height*18+14-camera,14,DEPTH+1);
+    if(reduced)endDistance=clamp(14+(holeTop-window.scrollY)/height*18,14,DEPTH+1);
+    var changed=forcePaint || camera!==lastCamera || look.x!==lastLookX || look.y!==lastLookY || Math.abs(motion-lastMotion)>.01;
+    if(changed){
+      yawSin=Math.sin(look.x*.19);yawCos=Math.cos(look.x*.19);
+      pitchSin=Math.sin(look.y*.13);pitchCos=Math.cos(look.y*.13);
+      samplePath();
+      if(sceneOpacity>.001){
+        ctx.clearRect(0,0,width,height);
+        drawRails();drawGates();drawTraces();drawStars();drawAperture();
+      }
+      drawPanels();
+      lastCamera=camera;lastLookX=look.x;lastLookY=look.y;lastMotion=motion;forcePaint=false;
+    }
     drawSingularity();
-    drawPanels();
-    if(refraction)refraction.render({canvas:canvas,width:width,height:height,scrollY:window.scrollY,panels:panels,pointer:pointer,disabled:reduced || mobile});
+    if(refraction)refraction.render({canvas:canvas,width:width,height:height,panels:panels,pointer:pointer,hole:holeFrame,time:renderTime,disabled:reduced || mobile || portalProgress>.2});
   }
   function update(time){
     frame=0;
     if(document.hidden)return;
-    var elapsed=lastTime ? clamp(time-lastTime,8,40) : 16;
+    var elapsed=lastTime ? clamp(time-lastTime,1,64) : 16;
     lastTime=time;
+    renderTime=time;
     if(!reduced)sceneTime+=elapsed*.001;
+    if(!scroll.driven)scroll.destination=window.scrollY;
+    // Exact critically damped motion keeps velocity continuous between wheel impulses.
+    // Integrating in seconds gives the same journey at 30, 60 and 120 Hz.
+    if(reduced){scroll.value=scroll.destination;scroll.speed=0;}
+    else{
+      var seconds=elapsed*.001,frequency=12;
+      var offset=scroll.value-scroll.destination;
+      var impulse=scroll.speed+frequency*offset;
+      var decay=Math.exp(-frequency*seconds);
+      scroll.value=scroll.destination+(offset+impulse*seconds)*decay;
+      scroll.speed=(scroll.speed-frequency*impulse*seconds)*decay;
+      if(scroll.value<0 || scroll.value>maxScroll){scroll.value=clamp(scroll.value,0,maxScroll);scroll.speed=0;}
+      if(Math.abs(scroll.destination-scroll.value)<.08 && Math.abs(scroll.speed)<.8){scroll.value=scroll.destination;scroll.speed=0;}
+    }
+    if(scroll.driven){
+      window.scrollTo({top:scroll.value,behavior:'instant'});
+      scroll.lastWrite=window.scrollY;
+      if(scroll.value===scroll.destination){scroll.value=scroll.destination=window.scrollY;scroll.driven=false;}
+    }
     target=reduced ? 8 : scrollTarget();
     var previous=camera;
-    camera+=((target-camera)*(1-Math.exp(-elapsed/125)));
-    if(Math.abs(target-camera)<.0002)camera=target;
-    velocity=camera-previous;
-    motion+=(Math.min(1,Math.abs(velocity)*1.7)-motion)*.32;
+    camera=target;
+    velocity=(camera-previous)*16.667/elapsed;
+    motion+=(Math.min(1,Math.abs(velocity)*1.7)-motion)*(1-Math.exp(-elapsed/43));
     var lookEase=1-Math.exp(-elapsed/125);
     look.x+=(look.targetX-look.x)*lookEase;
     look.y+=(look.targetY-look.y)*lookEase;
@@ -463,7 +535,7 @@
     if(pointer.strength>.999)pointer.strength=1;
     if(reduced){camera=8;velocity=0;motion=0;look.x=look.y=look.targetX=look.targetY=0;}
     draw();
-    if(!reduced && (Math.abs(target-camera)>.0002 || motion>.006 || look.x!==look.targetX || look.y!==look.targetY || pointer.x!==pointer.targetX || pointer.y!==pointer.targetY || pointer.strength!==(pointer.present ? 1 : 0) || (singularity && endDistance<DEPTH)))schedule();
+    if(!reduced && (Math.abs(scroll.destination-scroll.value)>.05 || Math.abs(scroll.speed)>.8 || scroll.driven || motion>.006 || look.x!==look.targetX || look.y!==look.targetY || pointer.x!==pointer.targetX || pointer.y!==pointer.targetY || pointer.strength!==(pointer.present ? 1 : 0) || (singularity && endDistance<DEPTH && portalProgress<1.25 && scroll.value<introductionTop)))schedule();
     else{velocity=0;motion=0;lastTime=0;}
   }
   function schedule(){
@@ -471,11 +543,13 @@
   }
   function resize(){
     var hadViewport=width>0,wasFlight=flight,oldWidth=width,oldHeight=height;
+    var introductionOffset=window.scrollY-introductionTop;
     var closest=flight ? nearestPanel() : null;
     var anchor=closest ? closest.origins[0].node : null;
     var bounds=host.getBoundingClientRect();
     width=Math.max(1,Math.round(bounds.width));
-    height=Math.max(1,Math.round(bounds.height));
+    var nextHeight=Math.max(1,Math.round(bounds.height));
+    height=hadViewport && width<=760 && oldWidth===width && Math.abs(nextHeight-oldHeight)<120 ? oldHeight : nextHeight;
     focal=Math.min(width,height)*.88;
     mobile=width<=760;
     if(mobile || reduced){look.x=look.y=look.targetX=look.targetY=0;pointer.present=false;pointer.strength=0;}
@@ -483,8 +557,11 @@
     if(shouldFly && !flight)anchor=prepareFlight();
     else if(!shouldFly && flight)restoreFlight();
     layoutFlight();
+    measureJourney();
     if(hadViewport && anchor && (wasFlight!==flight || oldWidth!==width || oldHeight!==height)){
-      if(flight){
+      if(introductionOffset>=0){
+        jumpTo(introductionTop+introductionOffset);
+      }else if(flight){
         var matching=panels.find(function(record){return record.origins.some(function(origin){return origin.node===anchor;});});
         if(matching)jumpTo(matching.top);
       }else if(wasFlight){
@@ -492,12 +569,14 @@
       }
     }
     makeField();
-    var dpr=Math.min(window.devicePixelRatio||1,mobile ? 1.5 : 1.75);
+    var dpr=Math.min(window.devicePixelRatio||1,mobile ? 1.25 : 1.35);
     canvas.width=Math.round(width*dpr);
     canvas.height=Math.round(height*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
+    if(!scroll.driven){scroll.value=scroll.destination=scroll.lastWrite=window.scrollY;scroll.speed=0;}
     camera=reduced ? 8 : scrollTarget();
     target=camera;velocity=0;motion=0;lastTime=0;
+    forcePaint=true;
     schedule();
   }
   function onMotionChange(event){
@@ -506,7 +585,26 @@
   }
   if(motionQuery.addEventListener)motionQuery.addEventListener('change',onMotionChange);
   else if(motionQuery.addListener)motionQuery.addListener(onMotionChange);
-  window.addEventListener('scroll',schedule,{passive:true});
+  window.addEventListener('scroll',function(){
+    if(!scroll.driven || Math.abs(window.scrollY-scroll.lastWrite)>2){scroll.driven=false;scroll.destination=window.scrollY;}
+    schedule();
+  },{passive:true});
+  window.addEventListener('wheel',function(event){
+    userInteracted=true;
+    if(reduced || !flight || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented || !event.deltaY)return;
+    if(event.target.closest && event.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+    if(!event.cancelable)return;
+    event.preventDefault();
+    var delta=event.deltaY*(event.deltaMode===1 ? 16 : event.deltaMode===2 ? height : 1);
+    if(!scroll.driven)scroll.destination=window.scrollY;
+    smoothTo(scroll.destination+delta*.9);
+  },{passive:false});
+  window.addEventListener('keydown',function(event){
+    userInteracted=true;
+    if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].indexOf(event.key)!==-1)scroll.driven=false;
+  });
+  window.addEventListener('pointerdown',function(){userInteracted=true;scroll.driven=false;},{passive:true});
+  window.addEventListener('touchstart',function(){userInteracted=true;scroll.driven=false;},{passive:true});
   function resetLook(){look.targetX=look.targetY=0;pointer.present=false;schedule();}
   window.addEventListener('pointermove',function(event){
     if(reduced || mobile || event.pointerType==='touch')return;
@@ -519,7 +617,7 @@
   document.addEventListener('pointerleave',resetLook);
   window.addEventListener('blur',resetLook);
   window.addEventListener('resize',resize);
-  window.addEventListener('pageshow',resize);
+  window.addEventListener('pageshow',function(event){if(!userInteracted || event.persisted)resetStart();resize();});
   document.addEventListener('visibilitychange',function(){
     if(frame){cancelAnimationFrame(frame);frame=0;}
     velocity=0;motion=0;lastTime=0;
@@ -528,7 +626,7 @@
     if(!document.hidden)resize();
   });
   document.addEventListener('focusin',function(event){
-    if(!flight)return;
+    if(!flight || !userInteracted)return;
     var record=panels.find(function(item){return item.panel.contains(event.target);});
     if(record){
       if(Math.abs(record.top-window.scrollY)>flightStep*.12)jumpTo(record.top);
@@ -546,18 +644,20 @@
   function followHash(instant){
     if(!flight || !location.hash)return;
     var record=anchorPanel(location.hash);
-    if(!record)return;
+    var top=record ? record.top : location.hash==='#introduction' ? introductionTop : null;
+    if(top===null)return;
     if(instant){
-      jumpTo(record.top);
+      jumpTo(top);
       camera=target=scrollTarget();
       velocity=0;motion=0;lastTime=0;
       schedule();
-    }else window.scrollTo({top:record.top,behavior:'smooth'});
+    }else smoothTo(top);
   }
   document.addEventListener('click',function(event){
     if(!flight || event.defaultPrevented || event.button!==0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)return;
     var link=event.target.closest('a[href^="#"]');
-    if(!link || !anchorPanel(link.hash))return;
+    if(!link || (!anchorPanel(link.hash) && link.hash!=='#introduction'))return;
+    userInteracted=true;
     event.preventDefault();
     if(location.hash!==link.hash)history.pushState(null,'',location.href.split('#')[0]+link.hash);
     followHash(false);
@@ -565,8 +665,14 @@
   window.addEventListener('hashchange',function(){followHash(false);});
   makePaints();
   makeSingularity();
+  resetStart();
   resize();
   if(document.fonts && document.fonts.ready){
-    document.fonts.ready.then(function(){layoutFlight();followHash(true);schedule();});
+    document.fonts.ready.then(function(){
+      layoutFlight();measureJourney();
+      if(!userInteracted)resetStart();
+      forcePaint=true;schedule();
+    });
   }
+  window.addEventListener('load',function(){if(!userInteracted)resetStart();schedule();});
 })();
