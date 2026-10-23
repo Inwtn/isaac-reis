@@ -1,0 +1,6 @@
+# Local research artifacts: keep original third-party sources and large evidence out of commits.
+/site/
+/shaders/
+/tools.json
+/session-check.json
+/site-evidence*.json

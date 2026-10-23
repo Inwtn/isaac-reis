@@ -1,0 +1,16 @@
+[
+  {
+    "file": "1stl4ykwpf_a2.js",
+    "shader": "particles-fragment.glsl",
+    "start": 26700,
+    "end": 27848,
+    "sourceSha256": "b31e7555cb9fa6aba273fceeab940b172e1dea0a9b697a7bfbc1249573d90a88"
+  },
+  {
+    "file": "1stl4ykwpf_a2.js",
+    "shader": "particles-vertex.glsl",
+    "start": 5726,
+    "end": 26697,
+    "sourceSha256": "b31e7555cb9fa6aba273fceeab940b172e1dea0a9b697a7bfbc1249573d90a88"
+  }
+]

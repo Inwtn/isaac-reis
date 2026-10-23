@@ -1,0 +1,27 @@
+[
+  {
+    "name": "analyze_javascript_application",
+    "arguments": {
+      "input_path": "C:\\Users\\isaac.almeida_3dlab\\Documents\\Codex\\2026-10-23\\eu-ten\\isaac-reis\\research\\rea\\site",
+      "format": "directory",
+      "source_paths": [
+        "1stl4ykwpf_a2.js",
+        "1tzay28hfjym9.js"
+      ],
+      "max_semantic_nodes": 60000,
+      "max_semantic_nodes_per_file": 30000,
+      "max_heap_mb": 512,
+      "analysis_timeout_ms": 60000,
+      "detail": "summary"
+    },
+    "output": "site-analysis-verified.json"
+  },
+  {
+    "name": "export_evidence_bundle",
+    "arguments": {
+      "path": "C:\\Users\\isaac.almeida_3dlab\\Documents\\Codex\\2026-10-23\\eu-ten\\isaac-reis\\research\\rea\\site-evidence-verified.json",
+      "overwrite": false
+    },
+    "output": "site-evidence-export-verified.json"
+  }
+]

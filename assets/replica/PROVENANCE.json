@@ -1,0 +1,174 @@
+{
+  "reference": "https://ingrassiadaniel.it/",
+  "purpose": "User-requested local visual replica. Reference projects and portrait remain reference material.",
+  "collected": "2026-10-23",
+  "modules": [
+    {
+      "source": "https://ingrassiadaniel.it/_next/static/chunks/3ibpsju79_13l.js",
+      "sha256": "509816e58e02428f090f57a653d5bedfb4176b38b23f86efda8fec7e8724bdea",
+      "module_ids": [
+        8560,
+        90072
+      ],
+      "character_range": [
+        123,
+        530333
+      ],
+      "adaptation": "None."
+    },
+    {
+      "source": "https://ingrassiadaniel.it/_next/static/chunks/1stl4ykwpf_a2.js",
+      "sha256": "b31e7555cb9fa6aba273fceeab940b172e1dea0a9b697a7bfbc1249573d90a88",
+      "module_ids": [
+        77310
+      ],
+      "character_range": [
+        118,
+        2718
+      ],
+      "adaptation": "None."
+    },
+    {
+      "source": "https://ingrassiadaniel.it/_next/static/chunks/1stl4ykwpf_a2.js",
+      "sha256": "b31e7555cb9fa6aba273fceeab940b172e1dea0a9b697a7bfbc1249573d90a88",
+      "module_ids": [
+        43796
+      ],
+      "character_range": [
+        2725,
+        2906
+      ],
+      "adaptation": "None."
+    },
+    {
+      "source": "https://ingrassiadaniel.it/_next/static/chunks/1stl4ykwpf_a2.js",
+      "sha256": "b31e7555cb9fa6aba273fceeab940b172e1dea0a9b697a7bfbc1249573d90a88",
+      "module_ids": [
+        91287
+      ],
+      "character_range": [
+        2913,
+        5641
+      ],
+      "adaptation": "None."
+    },
+    {
+      "source": "https://ingrassiadaniel.it/_next/static/chunks/1stl4ykwpf_a2.js",
+      "sha256": "b31e7555cb9fa6aba273fceeab940b172e1dea0a9b697a7bfbc1249573d90a88",
+      "module_ids": [
+        17543
+      ],
+      "character_range": [
+        5648,
+        38898
+      ],
+      "adaptation": "Home route detection supports file URLs."
+    },
+    {
+      "source": "https://ingrassiadaniel.it/_next/static/chunks/1stl4ykwpf_a2.js",
+      "sha256": "b31e7555cb9fa6aba273fceeab940b172e1dea0a9b697a7bfbc1249573d90a88",
+      "module_ids": [
+        35117
+      ],
+      "character_range": [
+        41973,
+        60763
+      ],
+      "adaptation": "None."
+    },
+    {
+      "source": "https://ingrassiadaniel.it/_next/static/chunks/1tzay28hfjym9.js",
+      "sha256": "8994f1ca5f7b799ff9dfb6befc5b9057b7df021426c56ca96395a8f9d82eb22e",
+      "module_ids": [
+        56810
+      ],
+      "character_range": [
+        1848,
+        2886
+      ],
+      "adaptation": "None."
+    },
+    {
+      "source": "https://ingrassiadaniel.it/_next/static/chunks/1tzay28hfjym9.js",
+      "sha256": "8994f1ca5f7b799ff9dfb6befc5b9057b7df021426c56ca96395a8f9d82eb22e",
+      "module_ids": [
+        68213
+      ],
+      "character_range": [
+        2893,
+        11165
+      ],
+      "adaptation": "Expose existing VideoSurface component."
+    },
+    {
+      "source": "https://ingrassiadaniel.it/_next/static/chunks/0w7o8fu3bnjrw.js",
+      "sha256": "354dce24b5b9f1cb9daff8ba7c6f351eefa215a416b03a532a9581c685161b5c",
+      "module_ids": [
+        38332
+      ],
+      "character_range": [
+        6931,
+        7206
+      ],
+      "adaptation": "None."
+    },
+    {
+      "source": "https://ingrassiadaniel.it/_next/static/chunks/0w7o8fu3bnjrw.js",
+      "sha256": "354dce24b5b9f1cb9daff8ba7c6f351eefa215a416b03a532a9581c685161b5c",
+      "module_ids": [
+        41169
+      ],
+      "character_range": [
+        7213,
+        10195
+      ],
+      "adaptation": "None."
+    }
+  ],
+  "assets": [
+    {
+      "url": "https://ingrassiadaniel.it/_next/static/media/ab57efd000576a30-s.p.3fofz6dws3mg0.woff2",
+      "path": "ab57efd000576a30-s.p.3fofz6dws3mg0.woff2"
+    },
+    {
+      "url": "https://ingrassiadaniel.it/_next/static/chunks/2ys3583y_e1d2.css",
+      "path": "2ys3583y_e1d2.css"
+    },
+    {
+      "url": "https://ingrassiadaniel.it/_next/static/chunks/0n7-j1hprxd9w.css",
+      "path": "0n7-j1hprxd9w.css"
+    },
+    {
+      "url": "https://ingrassiadaniel.it/_next/static/chunks/1iun641xkmkhc.css",
+      "path": "1iun641xkmkhc.css"
+    },
+    {
+      "url": "https://ingrassiadaniel.it/portrait.bin",
+      "path": "portrait.bin"
+    },
+    {
+      "url": "https://ingrassiadaniel.it/italy.bin",
+      "path": "italy.bin"
+    },
+    {
+      "url": "https://ingrassiadaniel.it/noise.jpg",
+      "path": "noise.jpg"
+    },
+    {
+      "url": "https://cdn.sanity.io/files/yat2koq0/production/9500bbea214e1ce19dbeb3ec33d4bfba7bc86cfe.mp4",
+      "path": "9500bbea214e1ce19dbeb3ec33d4bfba7bc86cfe.mp4"
+    },
+    {
+      "url": "https://cdn.sanity.io/files/yat2koq0/production/6d21ce620f8bafcecdf0c6d1bea513415f08c8f5.mp4",
+      "path": "6d21ce620f8bafcecdf0c6d1bea513415f08c8f5.mp4"
+    },
+    {
+      "url": "https://cdn.sanity.io/files/yat2koq0/production/6f0aeb4f51009f88320903b9ceeec6ebe081b2f4.mp4",
+      "path": "6f0aeb4f51009f88320903b9ceeec6ebe081b2f4.mp4"
+    },
+    {
+      "url": "https://cdn.sanity.io/files/yat2koq0/production/1de540b7a5c59587f44615cc2d56808c469a9651.mp4",
+      "path": "1de540b7a5c59587f44615cc2d56808c469a9651.mp4"
+    }
+  ]
+}

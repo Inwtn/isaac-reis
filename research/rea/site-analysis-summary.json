@@ -1,0 +1,15 @@
+{
+  "_meta": {
+    "provenance": {
+      "untrusted_content": true,
+      "source": "analysis_target"
+    }
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"error\":{\"code\":\"execution_failure\",\"category\":\"execution_failure\",\"message\":\"Analysis could not complete. Run `rea doctor` and review the reported details; repeating the unchanged request is not expected to succeed.\",\"retryable\":false,\"remediation\":{\"action\":\"Analysis could not complete. Run `rea doctor` and review the reported details; repeating the unchanged request is not expected to succeed.\"},\"details\":{\"provider_id\":\"javascript-static-analysis\",\"operation\":\"analyze_javascript_application\",\"diagnostics\":{\"source_path\":\"1stl4ykwpf_a2.js\",\"phase\":\"source-transfer\",\"message\":\"EPERM: operation not permitted, open 'C:\\\\Users\\\\isaac.almeida_3dlab\\\\AppData\\\\Local\\\\Packages\\\\sandbox.{f27c22d4-83af-4981-8607-6fff8f15f194}\\\\AC\\\\Temp\\\\rea-javascript-analysis-7cf3d28bf5718570a24d1df267ee502c\\\\7e540a40-b7cc-4567-bdeb-1e2fe7a108e7.source'\"},\"captured_output\":{\"stdout\":\"\",\"stderr\":\"\",\"truncated\":false,\"stderr_bytes\":0,\"exit_code\":null,\"signal\":null},\"partial_observation\":{\"kind\":\"retained-evidence\",\"evidence_id\":\"ev_277498c0180b24460080e0e23c10fd520de909520eba65aec1085e60fd44354b\"}}}}"
+    }
+  ],
+  "isError": true
+}

@@ -1,0 +1,9 @@
+* text=auto eol=lf
+*.bin -text
+*.glb -text
+*.mp4 -text
+*.jpg -text
+*.png -text
+*.pdf -text
+*.woff2 -text
+*.ttf -text

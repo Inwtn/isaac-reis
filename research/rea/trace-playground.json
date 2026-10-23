@@ -1,0 +1,90 @@
+{
+  "_meta": {
+    "provenance": {
+      "untrusted_content": true,
+      "source": "analysis_target"
+    }
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"evidence_id\":\"ev_72650bd5d62791d4c66e33681cf1a739caddb14a93a9c7c9a68dda16f1eb8544\",\"subject\":null,\"provider\":{\"id\":\"rea-javascript-application-workflows\",\"name\":\"REA JavaScript application workflows\",\"version\":\"1\"},\"analysis_profile\":null,\"predicate_type\":\"rea.application-feature-trace\",\"operation\":\"trace_application_feature\",\"parameters\":{\"application_evidence_id\":\"ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6\",\"native_evidence_ids\":[],\"seed\":{\"kind\":\"string\",\"value\":\"playground\",\"match\":\"contains\",\"case_sensitive\":false},\"direction\":\"incoming\"},\"raw_result\":null,\"normalized_result\":{\"trace_id\":\"jatr_5f7b827f8733166a2090942bde883fdd707f2d060da1bdaf53b3534452f32994\",\"source_evidence_id\":\"ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6\",\"source_graph_id\":\"jag_f1b8c9a0fefd4ee0aa8afbb85a03c0878b9dade59594ed6945322f3b10936e9d\",\"seed\":{\"kind\":\"string\",\"value\":\"playground\",\"match\":\"contains\",\"case_sensitive\":false},\"direction\":\"incoming\",\"seed_matches\":[],\"graph\":null,\"paths\":[],\"native_handoffs\":[],\"summary\":{\"matched_seeds\":0,\"traced_nodes\":0,\"traced_edges\":0,\"terminal_paths\":0,\"native_handoffs\":0,\"observed_facts\":0,\"inferred_facts\":0,\"unknown_facts\":0,\"unavailable_facts\":0},\"coverage\":{\"status\":\"no-match\",\"source_graph_status\":\"partial\",\"total_seed_matches\":0},\"evidence_links\":[\"ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6\"],\"limitations\":[\"No graph entity matched the literal seed; this is not evidence that the feature is absent.\",\"The source application graph is incomplete; unmatched seeds and frontiers remain unknown.\"]},\"confidence\":\"inferred\",\"authority\":\"analyst-inference\",\"environment\":null,\"limitations\":[\"Artifact identity is unavailable for this observation.\",\"No graph entity matched the literal seed; this is not evidence that the feature is absent.\",\"The source application graph is incomplete; unmatched seeds and frontiers remain unknown.\"],\"relationship_coverage\":null,\"locations\":[],\"evidence_links\":[\"ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6\"]}"
+    }
+  ],
+  "structuredContent": {
+    "evidence_id": "ev_72650bd5d62791d4c66e33681cf1a739caddb14a93a9c7c9a68dda16f1eb8544",
+    "subject": null,
+    "provider": {
+      "id": "rea-javascript-application-workflows",
+      "name": "REA JavaScript application workflows",
+      "version": "1"
+    },
+    "analysis_profile": null,
+    "predicate_type": "rea.application-feature-trace",
+    "operation": "trace_application_feature",
+    "parameters": {
+      "application_evidence_id": "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6",
+      "native_evidence_ids": [],
+      "seed": {
+        "kind": "string",
+        "value": "playground",
+        "match": "contains",
+        "case_sensitive": false
+      },
+      "direction": "incoming"
+    },
+    "raw_result": null,
+    "normalized_result": {
+      "trace_id": "jatr_5f7b827f8733166a2090942bde883fdd707f2d060da1bdaf53b3534452f32994",
+      "source_evidence_id": "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6",
+      "source_graph_id": "jag_f1b8c9a0fefd4ee0aa8afbb85a03c0878b9dade59594ed6945322f3b10936e9d",
+      "seed": {
+        "kind": "string",
+        "value": "playground",
+        "match": "contains",
+        "case_sensitive": false
+      },
+      "direction": "incoming",
+      "seed_matches": [],
+      "graph": null,
+      "paths": [],
+      "native_handoffs": [],
+      "summary": {
+        "matched_seeds": 0,
+        "traced_nodes": 0,
+        "traced_edges": 0,
+        "terminal_paths": 0,
+        "native_handoffs": 0,
+        "observed_facts": 0,
+        "inferred_facts": 0,
+        "unknown_facts": 0,
+        "unavailable_facts": 0
+      },
+      "coverage": {
+        "status": "no-match",
+        "source_graph_status": "partial",
+        "total_seed_matches": 0
+      },
+      "evidence_links": [
+        "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6"
+      ],
+      "limitations": [
+        "No graph entity matched the literal seed; this is not evidence that the feature is absent.",
+        "The source application graph is incomplete; unmatched seeds and frontiers remain unknown."
+      ]
+    },
+    "confidence": "inferred",
+    "authority": "analyst-inference",
+    "environment": null,
+    "limitations": [
+      "Artifact identity is unavailable for this observation.",
+      "No graph entity matched the literal seed; this is not evidence that the feature is absent.",
+      "The source application graph is incomplete; unmatched seeds and frontiers remain unknown."
+    ],
+    "relationship_coverage": null,
+    "locations": [],
+    "evidence_links": [
+      "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6"
+    ]
+  }
+}

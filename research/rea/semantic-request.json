@@ -1,0 +1,60 @@
+[
+  {
+    "name": "import_evidence_bundle",
+    "arguments": {
+      "path": "C:\\Users\\isaac.almeida_3dlab\\Documents\\Codex\\2026-10-23\\eu-ten\\isaac-reis\\research\\rea\\site-evidence-verified.json"
+    },
+    "output": "semantic-import.json"
+  },
+  {
+    "name": "trace_javascript_semantics",
+    "arguments": {
+      "application": {
+        "kind": "retained-evidence",
+        "evidence_id": "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6"
+      },
+      "query": {
+        "seed": {
+          "kind": "literal",
+          "value": "--portrait-morph"
+        },
+        "direction": "backward-provenance"
+      }
+    },
+    "output": "semantic-scroll.json"
+  },
+  {
+    "name": "trace_javascript_semantics",
+    "arguments": {
+      "application": {
+        "kind": "retained-evidence",
+        "evidence_id": "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6"
+      },
+      "query": {
+        "seed": {
+          "kind": "event",
+          "name": "pointerover"
+        },
+        "direction": "backward-provenance"
+      }
+    },
+    "output": "semantic-cursor.json"
+  },
+  {
+    "name": "trace_javascript_semantics",
+    "arguments": {
+      "application": {
+        "kind": "retained-evidence",
+        "evidence_id": "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6"
+      },
+      "query": {
+        "seed": {
+          "kind": "property",
+          "name": "__playgroundClosing"
+        },
+        "direction": "backward-provenance"
+      }
+    },
+    "output": "semantic-gallery.json"
+  }
+]

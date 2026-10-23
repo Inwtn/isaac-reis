@@ -1,0 +1,34 @@
+[
+  {
+    "name": "import_evidence_bundle",
+    "arguments": {"path": "C:/Users/isaac.almeida_3dlab/Documents/Codex/2026-10-23/eu-ten/isaac-reis/research/rea/site-evidence-verified.json"},
+    "output": "followup-import.json"
+  },
+  {
+    "name": "trace_application_feature",
+    "arguments": {
+      "application": {"kind": "retained-evidence", "evidence_id": "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6"},
+      "seed": {"kind": "string", "value": "--portrait-morph", "match": "exact"},
+      "direction": "incoming"
+    },
+    "output": "trace-portrait-scroll.json"
+  },
+  {
+    "name": "trace_application_feature",
+    "arguments": {
+      "application": {"kind": "retained-evidence", "evidence_id": "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6"},
+      "seed": {"kind": "string", "value": "pointerover", "match": "exact"},
+      "direction": "incoming"
+    },
+    "output": "trace-cursor-hover.json"
+  },
+  {
+    "name": "trace_application_feature",
+    "arguments": {
+      "application": {"kind": "retained-evidence", "evidence_id": "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6"},
+      "seed": {"kind": "string", "value": "playground", "match": "contains"},
+      "direction": "incoming"
+    },
+    "output": "trace-playground.json"
+  }
+]

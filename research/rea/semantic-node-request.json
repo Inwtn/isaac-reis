@@ -1,0 +1,60 @@
+[
+  {
+    "name": "import_evidence_bundle",
+    "arguments": {
+      "path": "C:\\Users\\isaac.almeida_3dlab\\Documents\\Codex\\2026-10-23\\eu-ten\\isaac-reis\\research\\rea\\site-evidence-verified.json"
+    },
+    "output": "semantic-import.json"
+  },
+  {
+    "name": "trace_javascript_semantics",
+    "arguments": {
+      "application": {
+        "kind": "retained-evidence",
+        "evidence_id": "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6"
+      },
+      "query": {
+        "seed": {
+          "kind": "semantic-node",
+          "node_id": "jsrg_node_e50801de54e64e8421840d3c37aeeca6dad38d7d3fdf40521e98b069d713aa7a"
+        },
+        "direction": "backward-provenance"
+      }
+    },
+    "output": "semantic-node-scroll.json"
+  },
+  {
+    "name": "trace_javascript_semantics",
+    "arguments": {
+      "application": {
+        "kind": "retained-evidence",
+        "evidence_id": "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6"
+      },
+      "query": {
+        "seed": {
+          "kind": "semantic-node",
+          "node_id": "jsrg_node_a4fb54f74ff1d2623008aeaac462a3380ddd09b47fbded1880cdb8e45f24caa7"
+        },
+        "direction": "backward-provenance"
+      }
+    },
+    "output": "semantic-node-light.json"
+  },
+  {
+    "name": "trace_javascript_semantics",
+    "arguments": {
+      "application": {
+        "kind": "retained-evidence",
+        "evidence_id": "ev_96a9e083b97e082f70f8b1ec11924221eb875fbaccf0b0389891f941f743c8e6"
+      },
+      "query": {
+        "seed": {
+          "kind": "semantic-node",
+          "node_id": "jsrg_node_0961610eb99a107c6cf2db2b2987f935de507d7dc3bfbe8ec3500b9cd9c7c3d9"
+        },
+        "direction": "backward-provenance"
+      }
+    },
+    "output": "semantic-node-gallery.json"
+  }
+]
