@@ -9,15 +9,15 @@
     'float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);}',
     'void main(){',
     ' float yaw=.2+gaze.x*.3+sin(clock*.09)*.12;',
-    ' float pitch=.32+gaze.y*.13+sin(clock*.12)*.035;',
+    ' float pitch=.30+gaze.y*.10+sin(clock*.12)*.025;',
     ' vec3 eye=6.8*vec3(sin(yaw)*cos(pitch),sin(pitch),cos(yaw)*cos(pitch));',
     ' vec3 forward=normalize(-eye),right=normalize(cross(forward,vec3(0.,1.,0.))),up=cross(right,forward);',
-    ' float roll=-.18+gaze.x*.045;vec2 screen=mat2(cos(roll),-sin(roll),sin(roll),cos(roll))*uv;',
+    ' float roll=.43+gaze.x*.045;vec2 screen=mat2(cos(roll),-sin(roll),sin(roll),cos(roll))*uv;',
     ' vec3 ray=normalize(forward+.63*(screen.x*right+screen.y*up));',
     ' float b=dot(eye,ray),disc=b*b-dot(eye,eye)+19.36;',
     ' if(disc<0.){gl_FragColor=vec4(0.);return;}',
     ' float start=max(0.,-b-sqrt(disc));vec3 p=eye+ray*(start+.01);',
-    ' float emission=0.,opacity=0.,nearest=20.,captured=0.;',
+    ' vec3 radiance=vec3(0.);float opacity=0.,nearest=20.,captured=0.;',
     ' for(int i=0;i<80;i++){',
     '  float distance=length(p);nearest=min(nearest,distance);',
     '  if(distance<1.){captured=1.;break;}',
@@ -29,8 +29,8 @@
     '   float orbit=angle-clock*1.1*pow(1.5/radius,1.5);',
     '   vec2 matter=vec2(cos(orbit),sin(orbit))*radius;',
     '   float turbulence=noise(matter*9.+vec2(radius*3.,0.))*.65+noise(matter*23.)*.35;',
-    '   float streak=.5+.5*sin(radius*86.+turbulence*8.+sin(orbit*5.+radius*4.)*1.6);',
-    '   float spiral=pow(.5+.5*sin(orbit*3.+radius*7.),8.);',
+    '   float streak=.5+.5*sin(radius*72.+turbulence*9.+sin(orbit*7.+radius*4.)*2.4);',
+    '   float spiral=pow(.5+.5*sin(orbit*5.+radius*9.+turbulence*3.),7.);',
     '   float edge=smoothstep(1.42,1.65,radius)*(1.-smoothstep(2.8,3.85,radius));',
     '   float thickness=exp(-abs(p.y)*27.);',
     '   float density=thickness*edge*(.2+streak*.9+turbulence*.4+spiral*.55);',
@@ -38,7 +38,9 @@
     '   float beaming=clamp(1.+dot(flow,-ray)*.7,.35,1.7);',
     '   float heat=pow(1.6/radius,1.55)*beaming;',
     '   float absorb=1.-exp(-density*stepSize*6.);',
-    '   emission+=(1.-opacity)*absorb*heat*1.7;',
+    '   vec3 plasma=mix(vec3(1.,.085,.003),vec3(1.,.62,.055),1.-smoothstep(1.6,3.65,radius));',
+    '   plasma=mix(plasma,vec3(1.,.96,.68),smoothstep(.85,1.6,heat));',
+    '   radiance+=(1.-opacity)*absorb*heat*plasma*4.2;',
     '   opacity+=(1.-opacity)*absorb*.62;',
     '  }',
     '  ray=normalize(ray-p*(.27*stepSize/(distance*distance*distance)));',
@@ -48,12 +50,13 @@
     ' captured=max(captured,1.-smoothstep(1.,1.+footprint,nearest));',
     ' float photon=exp(-abs(nearest-1.035)*44.)*.85*(1.-captured);',
     ' float impact=length(cross(eye,normalize(forward+.63*(screen.x*right+screen.y*up))));',
-    ' float halo=exp(-max(0.,impact-1.)*1.8)*.045*(1.-captured);',
-    ' float light=1.-exp(-(emission+photon+halo)*1.25);',
+    ' float halo=exp(-max(0.,impact-1.)*1.45)*.16*(1.-captured);',
+    ' radiance+=vec3(1.,.60,.075)*photon*2.8+vec3(1.,.12,.006)*halo;',
+    ' vec3 light=vec3(1.)-exp(-radiance*1.65);',
     ' float fade=1.-smoothstep(.86,1.,length(uv));',
-    ' float alpha=mix(light,1.,captured)*fade;',
+    ' float alpha=mix(max(light.r,max(light.g,light.b)),1.,captured)*fade;',
     // Premultiplied pixels also keep transparent texels black when CSS scales the canvas.
-    ' gl_FragColor=vec4(vec3(mix(1.,light,captured))*alpha,alpha);',
+    ' gl_FragColor=vec4(light*fade,alpha);',
     '}'
   ].join('\n');
 
@@ -99,16 +102,18 @@
     canvas.width=canvas.height=720;
     function random(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}
     for(var i=0;i<1200;i++){
-      particles.push({radius:1.45+random()*2.2,angle:random()*Math.PI*2,height:(random()-.5)*.07,light:.3+random()*.7});
+      var radius=1.45+random()*2.2,heat=1-(radius-1.45)/2.2;
+      particles.push({radius:radius,angle:random()*Math.PI*2,height:(random()-.5)*.07,light:.3+random()*.7,
+        color:'255,'+Math.round(90+heat*153)+','+Math.round(8+heat*147)});
       projected.push({x:0,y:0,z:0,light:0,perspective:1});
     }
     return {render:function(state){
       if(!ctx)return null;
-      var pitch=.32+state.lookY*.13+Math.sin(state.time*.12)*.035,yaw=.2+state.lookX*.3+Math.sin(state.time*.09)*.12;
+      var pitch=.30+state.lookY*.10+Math.sin(state.time*.12)*.025,yaw=.2+state.lookX*.3+Math.sin(state.time*.09)*.12;
       var cp=Math.cos(pitch),sp=Math.sin(pitch),cy=Math.cos(yaw),sy=Math.sin(yaw),scale=720/8.6;
-      ctx.clearRect(0,0,720,720);ctx.save();ctx.translate(360,360);ctx.rotate(-.18+state.lookX*.045);
+      ctx.clearRect(0,0,720,720);ctx.save();ctx.translate(360,360);ctx.rotate(-.43-state.lookX*.045);
       var glow=ctx.createRadialGradient(0,0,scale*.9,0,0,scale*3.5);
-      glow.addColorStop(0,'rgba(255,255,255,.14)');glow.addColorStop(.45,'rgba(220,220,220,.035)');glow.addColorStop(1,'rgba(255,255,255,0)');
+      glow.addColorStop(0,'rgba(255,173,48,.32)');glow.addColorStop(.45,'rgba(255,86,12,.09)');glow.addColorStop(1,'rgba(255,65,0,0)');
       ctx.fillStyle=glow;ctx.fillRect(-360,-360,720,720);
       particles.forEach(function(p,index){
         var angle=p.angle+state.time*1.1*Math.pow(1.5/p.radius,1.5);
@@ -116,7 +121,7 @@
         var viewX=x*cy-z*sy,depth=x*sy+z*cy;
         var y=p.height*cp-depth*sp;depth=depth*cp+p.height*sp;
         var perspective=6.8/(6.8-depth);
-        var out=projected[index];out.x=viewX*perspective*scale;out.y=y*perspective*scale;out.z=depth;out.light=p.light;out.perspective=perspective;
+        var out=projected[index];out.x=viewX*perspective*scale;out.y=y*perspective*scale;out.z=depth;out.light=p.light;out.color=p.color;out.perspective=perspective;
       });
       function draw(front){
         projected.forEach(function(p){
@@ -124,13 +129,13 @@
           // The foreground disk is also hidden wherever it is behind the sphere surface.
           var distance=(p.x*p.x+p.y*p.y)/(scale*scale);
           if(front && distance<1 && p.z<Math.sqrt(1-distance))return;
-          ctx.fillStyle='rgba(255,255,255,'+(p.light*(front ? .8 : .5))+')';
+          ctx.fillStyle='rgba('+p.color+','+(p.light*(front ? .95 : .65))+')';
           ctx.beginPath();ctx.ellipse(p.x,p.y,1.7*p.perspective,.6*p.perspective,-.1,0,Math.PI*2);ctx.fill();
         });
       }
       draw(false);
       ctx.beginPath();ctx.arc(0,0,scale,0,Math.PI*2);ctx.fillStyle='#010101';ctx.fill();
-      ctx.shadowColor='#fff';ctx.shadowBlur=12;ctx.lineWidth=1.1;ctx.strokeStyle='rgba(255,255,255,.8)';ctx.stroke();ctx.shadowBlur=0;
+      ctx.shadowColor='#ff8a19';ctx.shadowBlur=24;ctx.lineWidth=1.7;ctx.strokeStyle='rgba(255,225,130,.95)';ctx.stroke();ctx.shadowBlur=0;
       draw(true);ctx.restore();return canvas;
     }};
   }

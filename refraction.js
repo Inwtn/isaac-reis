@@ -40,7 +40,7 @@
       paint.clearRect(0,0,size,size);
       // Opaque backing replaces the original pixels inside the lens, avoiding a ghost copy.
       var glow=paint.createRadialGradient(state.width*.5-left,state.height*.48-top,0,state.width*.5-left,state.height*.48-top,Math.max(state.width,state.height)*.7);
-      glow.addColorStop(0,'#111319');glow.addColorStop(.42,'#07080b');glow.addColorStop(.78,'#020203');
+      glow.addColorStop(0,'#1b1009');glow.addColorStop(.42,'#0c0704');glow.addColorStop(.78,'#040302');
       paint.fillStyle=glow;paint.fillRect(0,0,size,size);
       var scaleX=state.canvas.width/state.width,scaleY=state.canvas.height/state.height;
       var sourceLeft=Math.max(0,left),sourceTop=Math.max(0,top);

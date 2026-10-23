@@ -25,8 +25,7 @@
   var stars=[],traces=[],sprites=[],paints=[];
   var pathX=new Float32Array(PATH_SAMPLES),pathY=new Float32Array(PATH_SAMPLES);
   var point={x:0,y:0,scale:0},other={x:0,y:0,scale:0};
-  var palette=['156,156,156','192,192,192','225,225,225','255,255,255'];
-  var tones=[156/255,192/255,225/255,1];
+  var palette=['181,112,57','239,153,66','255,201,113','255,241,207'];
   var randomSeed=42;
   var panels=[],flight=false,flightStep=0;
 
@@ -325,7 +324,7 @@
       }
     }
     ctx.lineWidth=.65;
-    ctx.strokeStyle='rgba(225,231,240,.16)';
+    ctx.strokeStyle='rgba(235,165,91,.16)';
     ctx.stroke();
   }
   function drawGates(){
@@ -344,10 +343,10 @@
         else ctx.lineTo(point.x,point.y);
       }
       ctx.lineWidth=5;
-      ctx.strokeStyle='rgba(230,230,230,'+(alpha*.15)+')';
+      ctx.strokeStyle='rgba(255,139,44,'+(alpha*.18)+')';
       ctx.stroke();
       ctx.lineWidth=.8;
-      ctx.strokeStyle='rgba(240,240,240,'+alpha+')';
+      ctx.strokeStyle='rgba(255,205,135,'+alpha+')';
       ctx.stroke();
     }
   }
@@ -380,9 +379,9 @@
     // Ambient travel is independent of the camera, so reading points stay still.
     var ambientTime=reduced ? 0 : sceneTime;
     var spin=ambientTime*.025,spinCos=Math.cos(spin),spinSin=Math.sin(spin);
-    // Batch monochrome dust into a few paints instead of thousands of fill calls.
+    // Eight opacity buckets per warm tone keep the moving dust batched.
     var batches=typeof Path2D==='function' ? [] : null;
-    if(batches)for(var bucket=0;bucket<20;bucket++)batches.push(new Path2D());
+    if(batches)for(var bucket=0;bucket<palette.length*8;bucket++)batches.push(new Path2D());
     for(var i=0;i<stars.length;i++){
       var star=stars[i],z=NEAR+wrap(star.z-camera-ambientTime*star.drift,star.span);
       if(z>endDistance)continue;
@@ -393,7 +392,7 @@
       // Fade at both ends before recycling a particle, avoiding visible pops.
       var edgeFade=clamp((star.span+NEAR-z)/(star.span<DEPTH-NEAR ? 6 : 12),0,1)*smoothstep(NEAR,NEAR+1.2,z);
       var opacity=clamp((.26+depth*.74)*star.brightness*edgeFade,0,1);
-      if(batches)batches[Math.round(opacity*tones[star.color]*19)].rect(point.x-size*.5,point.y-size*.5,size,size);
+      if(batches)batches[star.color*8+Math.round(opacity*7)].rect(point.x-size*.5,point.y-size*.5,size,size);
       else{
         ctx.fillStyle=paints[star.color][Math.round(opacity*19)];
         ctx.fillRect(point.x-size*.5,point.y-size*.5,size,size);
@@ -415,13 +414,14 @@
       }
     }
     if(batches){
-      for(var paint=1;paint<batches.length;paint++){
-        ctx.fillStyle=paints[3][paint];ctx.fill(batches[paint]);
+      for(var paint=0;paint<batches.length;paint++){
+        if(paint%8===0)continue;
+        ctx.fillStyle=paints[Math.floor(paint/8)][Math.round(paint%8/7*19)];ctx.fill(batches[paint]);
       }
     }
     if(motion>.018){
       ctx.lineWidth=.55+motion*.6;
-      ctx.strokeStyle='rgba(240,240,240,'+(.16+motion*.34)+')';
+      ctx.strokeStyle='rgba(255,209,143,'+(.16+motion*.34)+')';
       ctx.stroke();
     }
   }
@@ -431,7 +431,7 @@
     var fog=ctx.createRadialGradient(other.x,other.y,0,other.x,other.y,radius);
     fog.addColorStop(0,'rgba(0,0,0,.94)');
     fog.addColorStop(.56,'rgba(0,0,0,.8)');
-    fog.addColorStop(.84,'rgba(180,180,180,.06)');
+    fog.addColorStop(.84,'rgba(255,136,40,.10)');
     fog.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=fog;
     ctx.fillRect(other.x-radius,other.y-radius,radius*2,radius*2);
