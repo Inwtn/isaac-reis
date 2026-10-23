@@ -52,13 +52,14 @@
     ' float light=1.-exp(-(emission+photon+halo)*1.25);',
     ' float fade=1.-smoothstep(.86,1.,length(uv));',
     ' float alpha=mix(light,1.,captured)*fade;',
-    ' gl_FragColor=vec4(vec3(mix(1.,light,captured)),alpha);',
+    // Premultiplied pixels also keep transparent texels black when CSS scales the canvas.
+    ' gl_FragColor=vec4(vec3(mix(1.,light,captured))*alpha,alpha);',
     '}'
   ].join('\n');
 
   function createGPU(){
     var canvas=document.createElement('canvas'),gl;
-    try{gl=canvas.getContext('webgl',{alpha:true,antialias:false,premultipliedAlpha:false,powerPreference:'high-performance'});}catch(error){return null;}
+    try{gl=canvas.getContext('webgl',{alpha:true,antialias:false,premultipliedAlpha:true,powerPreference:'high-performance'});}catch(error){return null;}
     if(!gl)return null;
     var program=null,uniforms=null,lost=false;
     function initialize(){

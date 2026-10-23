@@ -195,7 +195,7 @@
     .motion-word{display:inline-block;transform-origin:50% 100%;backface-visibility:hidden}
     .effect-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
     .refraction-lens{position:fixed;z-index:40;left:0;top:0;width:340px;height:340px;visibility:hidden;pointer-events:none;contain:strict;mask-image:radial-gradient(circle,#000 0 30%,rgba(0,0,0,.9) 45%,transparent 71%);will-change:transform}
-    .refraction-surface{position:absolute;inset:0;overflow:hidden;contain:strict;isolation:isolate;filter:url(#liquid-refraction);transform:scale(1.015)}
+    .refraction-surface{position:absolute;inset:0;overflow:hidden;contain:strict;isolation:isolate;filter:url(#liquid-refraction)}
     .refraction-background{position:absolute;inset:0;width:340px;height:340px}
     .refraction-scene{position:absolute;left:0;top:0;pointer-events:none}
     .refraction-context{position:absolute!important;inset:0;min-height:0!important;padding:0!important;background:none!important;isolation:auto!important;pointer-events:none!important}
@@ -330,7 +330,7 @@
   </style>
 </head>
 <body>
-  <svg class="effect-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><filter id="liquid-refraction" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".004 .008" numOctaves="1" seed="11" result="ripple"/><feGaussianBlur in="ripple" stdDeviation="3" result="liquid"/><feDisplacementMap in="SourceGraphic" in2="liquid" scale="48" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
+  <svg class="effect-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><filter id="liquid-refraction" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".004 .008" numOctaves="1" seed="11" result="ripple"/><feGaussianBlur in="ripple" stdDeviation="6" result="liquid"/><feDisplacementMap in="SourceGraphic" in2="liquid" scale="10" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
   <div class="site-atmosphere" id="site-atmosphere" aria-hidden="true"><canvas id="atmosphere-canvas"></canvas></div>
   <div id="progress" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to content</a>
