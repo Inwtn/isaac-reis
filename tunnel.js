@@ -21,6 +21,7 @@
   var maxScroll=0,userInteracted=false,portalProgress=0,introductionTop=0,holeTop=0;
   var introduction=document.getElementById('introduction');
   var forcePaint=true,lastCamera=NaN,lastLookX=NaN,lastLookY=NaN,lastMotion=NaN,renderTime=0;
+  var lastParticlePaint=-Infinity,particlesActive=false;
   var stars=[],traces=[],sprites=[],paints=[];
   var pathX=new Float32Array(PATH_SAMPLES),pathY=new Float32Array(PATH_SAMPLES);
   var point={x:0,y:0,scale:0},other={x:0,y:0,scale:0};
@@ -248,7 +249,8 @@
         size:.014+random()*.025,
         brightness:(dust ? .42 : .65)+random()*.4,
         color:color,
-        glow:random()>.965
+        glow:random()>.965,
+        drift:.7+random()*1.1
       });
     }
     for(var t=0;t<(mobile ? 24 : 50);t++){
@@ -375,17 +377,21 @@
   }
   function drawStars(){
     ctx.beginPath();
+    // Ambient travel is independent of the camera, so reading points stay still.
+    var ambientTime=reduced ? 0 : sceneTime;
+    var spin=ambientTime*.025,spinCos=Math.cos(spin),spinSin=Math.sin(spin);
     // Batch monochrome dust into a few paints instead of thousands of fill calls.
     var batches=typeof Path2D==='function' ? [] : null;
     if(batches)for(var bucket=0;bucket<20;bucket++)batches.push(new Path2D());
     for(var i=0;i<stars.length;i++){
-      var star=stars[i],z=NEAR+wrap(star.z-camera,star.span);
+      var star=stars[i],z=NEAR+wrap(star.z-camera-ambientTime*star.drift,star.span);
       if(z>endDistance)continue;
-      project(star.x,star.y,z,point);
+      project(star.x*spinCos-star.y*spinSin,star.x*spinSin+star.y*spinCos,z,point);
       if(point.x<-10 || point.x>width+10 || point.y<-10 || point.y>height+10)continue;
       var depth=1-z/DEPTH;
       var size=clamp(point.scale*star.size,.55,3.2);
-      var edgeFade=star.span<DEPTH-NEAR ? clamp((star.span+NEAR-z)/6,0,1) : 1;
+      // Fade at both ends before recycling a particle, avoiding visible pops.
+      var edgeFade=clamp((star.span+NEAR-z)/(star.span<DEPTH-NEAR ? 6 : 12),0,1)*smoothstep(NEAR,NEAR+1.2,z);
       var opacity=clamp((.26+depth*.74)*star.brightness*edgeFade,0,1);
       if(batches)batches[Math.round(opacity*tones[star.color]*19)].rect(point.x-size*.5,point.y-size*.5,size,size);
       else{
@@ -475,16 +481,23 @@
     endDistance=clamp(8+holeTop/height*18+14-camera,14,DEPTH+1);
     if(reduced)endDistance=clamp(14+(holeTop-window.scrollY)/height*18,14,DEPTH+1);
     var changed=forcePaint || camera!==lastCamera || look.x!==lastLookX || look.y!==lastLookY || Math.abs(motion-lastMotion)>.01;
-    if(changed){
-      yawSin=Math.sin(look.x*.19);yawCos=Math.cos(look.x*.19);
-      pitchSin=Math.sin(look.y*.13);pitchCos=Math.cos(look.y*.13);
-      samplePath();
+    particlesActive=!reduced && sceneOpacity>.001;
+    var particleTick=particlesActive && renderTime-lastParticlePaint>=(mobile ? 1000/30 : 1000/60)-.5;
+    if(changed || particleTick){
+      if(changed){
+        yawSin=Math.sin(look.x*.19);yawCos=Math.cos(look.x*.19);
+        pitchSin=Math.sin(look.y*.13);pitchCos=Math.cos(look.y*.13);
+        samplePath();
+      }
       if(sceneOpacity>.001){
         ctx.clearRect(0,0,width,height);
         drawRails();drawGates();drawTraces();drawStars();drawAperture();
+        lastParticlePaint=renderTime;
       }
-      drawPanels();
-      lastCamera=camera;lastLookX=look.x;lastLookY=look.y;lastMotion=motion;forcePaint=false;
+      if(changed){
+        drawPanels();
+        lastCamera=camera;lastLookX=look.x;lastLookY=look.y;lastMotion=motion;forcePaint=false;
+      }
     }
     drawSingularity();
     if(refraction)refraction.render({canvas:canvas,width:width,height:height,panels:panels,pointer:pointer,hole:holeFrame,time:renderTime,disabled:reduced || mobile || portalProgress>.2});
@@ -535,7 +548,7 @@
     if(pointer.strength>.999)pointer.strength=1;
     if(reduced){camera=8;velocity=0;motion=0;look.x=look.y=look.targetX=look.targetY=0;}
     draw();
-    if(!reduced && (Math.abs(scroll.destination-scroll.value)>.05 || Math.abs(scroll.speed)>.8 || scroll.driven || motion>.006 || look.x!==look.targetX || look.y!==look.targetY || pointer.x!==pointer.targetX || pointer.y!==pointer.targetY || pointer.strength!==(pointer.present ? 1 : 0) || (singularity && endDistance<DEPTH && portalProgress<1.25 && scroll.value<introductionTop)))schedule();
+    if(!reduced && (particlesActive || Math.abs(scroll.destination-scroll.value)>.05 || Math.abs(scroll.speed)>.8 || scroll.driven || motion>.006 || look.x!==look.targetX || look.y!==look.targetY || pointer.x!==pointer.targetX || pointer.y!==pointer.targetY || pointer.strength!==(pointer.present ? 1 : 0) || (singularity && endDistance<DEPTH && portalProgress<1.25 && scroll.value<introductionTop)))schedule();
     else{velocity=0;motion=0;lastTime=0;}
   }
   function schedule(){
