@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createFarm,GROW_SECONDS} from '../src/farming.js';
+test('planting requires water, grows over time and pays exactly once per harvest',()=>{const farm=createFarm(),p=farm.plots[4];farm.action(p);assert.equal(p.stage,'seed');farm.update(100);assert.equal(p.stage,'seed');farm.action(p);assert.equal(p.stage,'watered');farm.update(GROW_SECONDS-1);assert.equal(p.stage,'watered');farm.update(1);assert.equal(p.stage,'ripe');farm.action(p);assert.equal(farm.coins,15);assert.equal(p.stage,'empty');farm.action(p);assert.equal(farm.coins,15);});
+test('farm saves and restores coins, planted crops and growth progress',()=>{const farm=createFarm();farm.action(farm.plots[0]);const p=farm.plots[4];farm.action(p);farm.action(p);farm.update(12);const restored=createFarm(JSON.parse(JSON.stringify(farm.save())));assert.equal(restored.coins,15);assert.equal(restored.plots[4].stage,'watered');assert.equal(restored.plots[4].growth,12);restored.update(GROW_SECONDS-12);assert.equal(restored.plots[4].stage,'ripe');});

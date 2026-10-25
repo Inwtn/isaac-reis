@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {canStand,move,houses,nearbyHouse,WORLD,lake,horse,farm} from '../src/map.js';
+import {direction} from '../src/input.js';
+import {roomFor,ROOM,canStandInside,nearRoomObject} from '../src/interiors.js';
+test('diagonal movement keeps the same speed',()=>{const d=direction(1,1);assert(Math.abs(Math.hypot(d.x,d.y)-1)<1e-9);assert.deepEqual(direction(0,0),{x:0,y:0});});
+test('cottage walls, world edges and the curved pond block walking',()=>{assert(!canStand(lake.x+lake.w/2,lake.y+lake.h/2));const h=houses[0];assert(!canStand(h.x+h.w/2,h.y+h.h-5));assert(!canStand(-1,280));const p={x:h.door.x,y:h.door.y};move(p,0,-20);assert.equal(p.y,h.door.y);assert(canStand(lake.x-15,lake.y-15));});
+function flood(start,valid,w,h){const seen=new Set(),queue=[start],step=4;seen.add(start.join(','));for(let i=0;i<queue.length;i++){const [x,y]=queue[i];for(const [dx,dy] of [[step,0],[-step,0],[0,step],[0,-step]]){const nx=x+dx,ny=y+dy,k=nx+','+ny;if(nx<0||nx>w||ny<0||ny>h||seen.has(k)||!valid(nx,ny))continue;seen.add(k);queue.push([nx,ny]);}}return queue;}
+test('all cottages, the horse and every crop plot are reachable',()=>{const queue=flood([464,356],canStand,WORLD.w,WORLD.h);for(const h of houses){assert(queue.some(([x,y])=>Math.hypot(x-h.door.x,y-h.door.y)<20),'Unreachable: '+h.id);assert.equal(nearbyHouse(h.door)?.id,h.id);}assert(queue.some(([x,y])=>Math.hypot(x-horse.x,y-horse.y)<30));for(let i=0;i<farm.rows*farm.cols;i++){const px=farm.x+i%farm.cols*farm.spacing,py=farm.y+Math.floor(i/farm.cols)*farm.spacing;assert(queue.some(([x,y])=>Math.hypot(x-px,y-py)<20));}});
+test('every interior exhibit and exit are reachable without walking through furniture',()=>{for(const h of houses){const room=roomFor(h.id),queue=flood([320,328],(x,y)=>canStandInside(room,x,y),ROOM.w,ROOM.h);assert(queue.some(([x,y])=>Math.hypot(x-ROOM.exit.x,y-ROOM.exit.y)<20));for(const o of room.objects){assert(!canStandInside(room,o.x,o.y));assert(queue.some(([x,y])=>nearRoomObject(room,{x,y})===o),'Exhibit unreachable: '+o.title);}}});
