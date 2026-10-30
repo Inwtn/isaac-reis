@@ -1,0 +1,68 @@
+{
+  "tool": "REA 6.7.0 / rea-dotnet-static",
+  "evidence_id": "ev_042d5970062e0d9e2beecd2899818e724a36e6c41023acacbb3b67a5e052e69e",
+  "artifact": {
+    "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SV\\Stardew Valley.dll",
+    "sha256": "7f1e5b8e58d2758b78570ba771bbeb03d33522f62188bf6c32edf0cf626deaee",
+    "byte_length": 6268416,
+    "format": "pe"
+  },
+  "types": [
+    {
+      "name": "StardewValley.Objects.Furniture",
+      "token": "0x020001ac"
+    },
+    {
+      "name": "StardewValley.Characters.Horse",
+      "token": "0x02000378"
+    }
+  ],
+  "methods": [
+    {
+      "type": "StardewValley.Objects.Furniture",
+      "name": "rotate",
+      "token": "0x06001e9c"
+    },
+    {
+      "type": "StardewValley.Objects.Furniture",
+      "name": "updateDrawPosition",
+      "token": "0x06001ea4"
+    },
+    {
+      "type": "StardewValley.Objects.Furniture",
+      "name": "GetBoundingBoxAt",
+      "token": "0x06001eac"
+    },
+    {
+      "type": "StardewValley.Objects.Furniture",
+      "name": "drawWhenHeld",
+      "token": "0x06001eb7"
+    },
+    {
+      "type": "StardewValley.Objects.Furniture",
+      "name": "drawInMenu",
+      "token": "0x06001eb8"
+    },
+    {
+      "type": "StardewValley.Objects.Furniture",
+      "name": "draw",
+      "token": "0x06001eb9"
+    },
+    {
+      "type": "StardewValley.Objects.Furniture",
+      "name": "drawAtNonTileSpot",
+      "token": "0x06001eba"
+    },
+    {
+      "type": "StardewValley.Characters.Horse",
+      "name": "GetBoundingBox",
+      "token": "0x06003646"
+    },
+    {
+      "type": "StardewValley.Characters.Horse",
+      "name": "draw",
+      "token": "0x06003653"
+    }
+  ],
+  "application": "Depth ordering for interior furniture; explicit horse facing state. Exact texture orientation was verified visually from decoded PNGs, not inferred from metadata."
+}

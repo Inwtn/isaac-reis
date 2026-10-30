@@ -1,0 +1,431 @@
+{
+  "tool": "rea-agents 6.7.0",
+  "evidence_id": "ev_26cd273516d5e7f8787774d2ee925cbcaa60352f1115259cf2bcc4e345ff5a51",
+  "provider": {
+    "id": "rea-dotnet-static",
+    "name": "REA managed static analysis provider",
+    "version": "1"
+  },
+  "subject": {
+    "name": "Stardew Valley.dll",
+    "digest": {
+      "sha256": "7f1e5b8e58d2758b78570ba771bbeb03d33522f62188bf6c32edf0cf626deaee"
+    },
+    "local_path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\SV\\Stardew Valley.dll",
+    "format": "pe",
+    "architecture": "x86_64"
+  },
+  "coverage": {
+    "state": "complete",
+    "issues": []
+  },
+  "types": [
+    "StardewValley.Character",
+    "StardewValley.FarmerSprite"
+  ],
+  "methods": [
+    {
+      "type": "StardewValley.Character",
+      "name": "get_FacingDirection",
+      "token": "0x06000514"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "set_FacingDirection",
+      "token": "0x06000515"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "setMovingInFacingDirection",
+      "token": "0x06000535"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "getFacingDirection",
+      "token": "0x06000536"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "tryToMoveInDirection",
+      "token": "0x0600053f"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "MovePosition",
+      "token": "0x06000543"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "getHorizontalMovement",
+      "token": "0x06000547"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "getVerticalMovement",
+      "token": "0x06000548"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "draw",
+      "token": "0x06000558"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "drawAboveAlwaysFrontLayer",
+      "token": "0x06000559"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "draw",
+      "token": "0x0600055a"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "draw",
+      "token": "0x0600055b"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "GetBoundingBox",
+      "token": "0x0600055d"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "OnLocationRemoved",
+      "token": "0x0600056c"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "animateInFacingDirection",
+      "token": "0x06000572"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "updateMovement",
+      "token": "0x06000573"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "convertEventMotionCommandToMovement",
+      "token": "0x06000576"
+    },
+    {
+      "type": "StardewValley.Character",
+      "name": "DrawShadow",
+      "token": "0x06000577"
+    },
+    {
+      "type": "StardewValley.FarmerSprite",
+      "name": "animate",
+      "token": "0x060009d3"
+    },
+    {
+      "type": "StardewValley.FarmerSprite",
+      "name": "animate",
+      "token": "0x060009d4"
+    },
+    {
+      "type": "StardewValley.FarmerSprite",
+      "name": "animateOnce",
+      "token": "0x060009d6"
+    },
+    {
+      "type": "StardewValley.FarmerSprite",
+      "name": "animateOnce",
+      "token": "0x060009d7"
+    },
+    {
+      "type": "StardewValley.FarmerSprite",
+      "name": "animateOnce",
+      "token": "0x060009d8"
+    },
+    {
+      "type": "StardewValley.FarmerSprite",
+      "name": "animateOnce",
+      "token": "0x060009d9"
+    },
+    {
+      "type": "StardewValley.FarmerSprite",
+      "name": "animateOnce",
+      "token": "0x060009db"
+    },
+    {
+      "type": "StardewValley.FarmerSprite",
+      "name": "animateBackwardsOnce",
+      "token": "0x060009dc"
+    },
+    {
+      "type": "StardewValley.FarmerSprite",
+      "name": "animateOnce",
+      "token": "0x060009e4"
+    },
+    {
+      "type": "StardewValley.FarmerSprite",
+      "name": "animateBackwardsOnce",
+      "token": "0x060009e6"
+    },
+    {
+      "type": "StardewValley.FarmerSprite",
+      "name": "animate",
+      "token": "0x060009e8"
+    }
+  ],
+  "limitations": [
+    "Metadata tokens are build-local coordinates and are only meaningful with the reported artifact SHA-256 and MVID.",
+    "CIL instruction anchors are decoded from file-backed method bodies only; no target assembly is loaded or executed.",
+    "Exported types are reported from ExportedType rows as declared; forwarded types are not resolved in their implementing assemblies.",
+    "User strings are the #US literals loaded by ldstr in the inspected method bodies, with their own coverage; instruction anchors and normalized CIL digests keep their build-local tokens.",
+    "Member signatures decode ECMA-335 primitive, class, valuetype, generic instantiation, generic variable, pointer, byref, single-dimension and general array, function pointer, custom modifier, and typed reference forms; class and valuetype operands keep their encoded TypeDefOrRefOrSpec values, and unsupported forms such as vararg sentinels retain raw signature hashes.",
+    "Types, fields, methods, call edges, field accesses, and user strings cover only the selected declaring types; coverage describes that selection. Edge targets outside it keep their names but are not described."
+  ],
+  "collision_calls": [
+    {
+      "caller": "StardewValley.Character.tryToMoveInDirection",
+      "target": "StardewValley.GameLocation.isCollidingPosition"
+    },
+    {
+      "caller": "StardewValley.Character.applyVelocity",
+      "target": "StardewValley.GameLocation.isCollidingPosition"
+    },
+    {
+      "caller": "StardewValley.Character.MovePosition",
+      "target": "StardewValley.GameLocation.isCollidingPosition"
+    },
+    {
+      "caller": "StardewValley.Character.MovePosition",
+      "target": "StardewValley.GameLocation.isCollidingPosition"
+    },
+    {
+      "caller": "StardewValley.Character.MovePosition",
+      "target": "StardewValley.GameLocation.isCollidingPosition"
+    },
+    {
+      "caller": "StardewValley.Character.MovePosition",
+      "target": "StardewValley.GameLocation.isCollidingPosition"
+    }
+  ],
+  "selected_cil": [
+    {
+      "name": "GetBoundingBox",
+      "token": "0x0600055d",
+      "body": {
+        "status": "present",
+        "header_format": "fat",
+        "rva": 116028,
+        "file_offset": 108348,
+        "max_stack": 4,
+        "init_locals": true,
+        "local_var_sig_token": "0x110000fe",
+        "il_size": 62,
+        "il_sha256": "0c57a79d6530c395108fc29c9f12542a15f70c82f83f37bdd239bb3b11958a0e",
+        "normalized_il_sha256": "d0643a9eab5100752d7ac7c3fc334857e984050bebfd62d6d6ea6099964fe516",
+        "instruction_count": 31,
+        "decoded_instruction_count": 31,
+        "truncated_instructions": 0,
+        "opcode_counts": {
+          "ldarg.0": 3,
+          "callvirt": 1,
+          "brtrue.s": 1,
+          "call": 3,
+          "ret": 2,
+          "stloc.0": 1,
+          "ldc.i4.4": 2,
+          "mul": 2,
+          "ldc.i4.3": 1,
+          "div": 1,
+          "stloc.1": 1,
+          "ldloc.0": 2,
+          "ldfld": 2,
+          "conv.i4": 2,
+          "ldc.i4.8": 1,
+          "add": 2,
+          "ldc.i4.s": 2,
+          "ldloc.1": 1,
+          "newobj": 1
+        },
+        "anchors": [
+          {
+            "il_offset": 1,
+            "opcode": "callvirt",
+            "operand_kind": "method",
+            "operand": "0x0600051a"
+          },
+          {
+            "il_offset": 6,
+            "opcode": "brtrue.s",
+            "operand_kind": "branch",
+            "operand": "14"
+          },
+          {
+            "il_offset": 8,
+            "opcode": "call",
+            "operand_kind": "method",
+            "operand": "0x0a0004f8"
+          },
+          {
+            "il_offset": 15,
+            "opcode": "call",
+            "operand_kind": "method",
+            "operand": "0x0600050d"
+          },
+          {
+            "il_offset": 22,
+            "opcode": "call",
+            "operand_kind": "method",
+            "operand": "0x0600055c"
+          },
+          {
+            "il_offset": 35,
+            "opcode": "ldfld",
+            "operand_kind": "field",
+            "operand": "0x0a000100"
+          },
+          {
+            "il_offset": 44,
+            "opcode": "ldfld",
+            "operand_kind": "field",
+            "operand": "0x0a000102"
+          },
+          {
+            "il_offset": 50,
+            "opcode": "ldc.i4.s",
+            "operand_kind": "constant",
+            "operand": "16"
+          },
+          {
+            "il_offset": 54,
+            "opcode": "ldc.i4.s",
+            "operand_kind": "constant",
+            "operand": "32"
+          },
+          {
+            "il_offset": 56,
+            "opcode": "newobj",
+            "operand_kind": "method",
+            "operand": "0x0a000108"
+          }
+        ],
+        "exception_regions": [],
+        "issue": null
+      }
+    },
+    {
+      "name": "animateInFacingDirection",
+      "token": "0x06000572",
+      "body": {
+        "status": "present",
+        "header_format": "fat",
+        "rva": 117720,
+        "file_offset": 110040,
+        "max_stack": 4,
+        "init_locals": true,
+        "local_var_sig_token": "0x11000008",
+        "il_size": 106,
+        "il_sha256": "5cceb0ec703c7578a1c77729c38f993a1b9dbf685a9113836da1346bd6ee7780",
+        "normalized_il_sha256": "93156b56e7a2dd0b9f36e4aa328cfb1a81064e90a1ae1a0e1a15d164c76e8c9c",
+        "instruction_count": 34,
+        "decoded_instruction_count": 34,
+        "truncated_instructions": 0,
+        "opcode_counts": {
+          "ldarg.0": 5,
+          "callvirt": 9,
+          "stloc.0": 1,
+          "ldloc.0": 1,
+          "switch": 1,
+          "ret": 5,
+          "ldarg.1": 4,
+          "ldc.i4.0": 4,
+          "ldstr": 4
+        },
+        "anchors": [
+          {
+            "il_offset": 1,
+            "opcode": "callvirt",
+            "operand_kind": "method",
+            "operand": "0x06000514"
+          },
+          {
+            "il_offset": 8,
+            "opcode": "switch",
+            "operand_kind": "switch",
+            "operand": "4"
+          },
+          {
+            "il_offset": 31,
+            "opcode": "callvirt",
+            "operand_kind": "method",
+            "operand": "0x0600051a"
+          },
+          {
+            "il_offset": 38,
+            "opcode": "ldstr",
+            "operand_kind": "string",
+            "operand": "0x7000033a"
+          },
+          {
+            "il_offset": 43,
+            "opcode": "callvirt",
+            "operand_kind": "method",
+            "operand": "0x060004ab"
+          },
+          {
+            "il_offset": 50,
+            "opcode": "callvirt",
+            "operand_kind": "method",
+            "operand": "0x0600051a"
+          },
+          {
+            "il_offset": 57,
+            "opcode": "ldstr",
+            "operand_kind": "string",
+            "operand": "0x7000033a"
+          },
+          {
+            "il_offset": 62,
+            "opcode": "callvirt",
+            "operand_kind": "method",
+            "operand": "0x060004aa"
+          },
+          {
+            "il_offset": 69,
+            "opcode": "callvirt",
+            "operand_kind": "method",
+            "operand": "0x0600051a"
+          },
+          {
+            "il_offset": 76,
+            "opcode": "ldstr",
+            "operand_kind": "string",
+            "operand": "0x7000033a"
+          },
+          {
+            "il_offset": 81,
+            "opcode": "callvirt",
+            "operand_kind": "method",
+            "operand": "0x060004ac"
+          },
+          {
+            "il_offset": 88,
+            "opcode": "callvirt",
+            "operand_kind": "method",
+            "operand": "0x0600051a"
+          },
+          {
+            "il_offset": 95,
+            "opcode": "ldstr",
+            "operand_kind": "string",
+            "operand": "0x7000033a"
+          },
+          {
+            "il_offset": 100,
+            "opcode": "callvirt",
+            "operand_kind": "method",
+            "operand": "0x060004ad"
+          }
+        ],
+        "exception_regions": [],
+        "issue": null
+      }
+    }
+  ]
+}

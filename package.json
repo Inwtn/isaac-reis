@@ -1,0 +1,15 @@
+{
+  "name": "vale-de-isaac",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "node scripts/prerender.mjs && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test tests/*.test.js"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0"
+  }
+}
