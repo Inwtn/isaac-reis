@@ -1,5 +1,5 @@
 import {aboutParagraphs,projects,experience} from './professional-details.js';
-export const profile={name:'Isaac Reis',role:'Software Engineer',email:'isaacreis.dev@gmail.com',github:'https://github.com/Inwtn',linkedin:'https://www.linkedin.com/in/isaacalmeida-dev',cv:'./curriculo.pdf'};
+export const profile={name:'Isaac Almeida',role:'Software Engineer',email:'isaacreis.dev@gmail.com',github:'https://github.com/Inwtn',linkedin:'https://www.linkedin.com/in/isaacalmeida-dev',cv:'./curriculo.pdf'};
 export const ui={title:"Isaac's Valley",subtitle:'An interactive portfolio',simple:'View simple version',loading:['Watering the plants…','Feeding the cat…','Polishing the certificates…','Opening the cottage doors…'],ready:'All set. Your little corner of the world is ready.',failed:'The valley could not be loaded. You can still explore the simple portfolio.',enter:'Enter',houses:'cottages',soundOff:'Sound: off',soundOn:'Sound: on',enableSound:'Enable sound',disableSound:'Disable sound',soundUnavailable:'Sound unavailable',github:'View on GitHub',journey:'Professional journey',rating:'out of 5',sections:'Portfolio sections',back:'Explore the valley',country:'Brazil'};
 export const chapters=[
 {id:'about',name:'About me',subtitle:'A story still growing',icon:'01',paragraphs:aboutParagraphs},

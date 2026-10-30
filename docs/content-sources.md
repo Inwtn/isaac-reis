@@ -10,7 +10,7 @@ The English project journals were expanded from Isaac's previous-portfolio scree
 - https://github.com/Inwtn/bank-reconciliation
 - https://github.com/Inwtn/bank-reconciliation/blob/main/backend/src/main/java/com/reconciliation/service/ConciliacaoService.java
 
-The Finance Sync journal describes synchronous transaction intake and Google Sheets appends, not a message queue or bank connector. The reconciliation journal explains the current ±1-day code constant and the separate reconciled/divergent/pending states. Examples are illustrative uses of the documented functionality, not claims of measured production results. Source review was static; the external Java services were not deployed or executed during this portfolio edit.
+The Finance Sync journal describes synchronous transaction intake and Google Sheets appends, not a message queue or bank connector. The reconciliation journal explains the current ±1-day code constant and the separate reconciled/divergent/pending states. The updated Bank Reconciliation Engine repository adds role-based access, PostgreSQL Testcontainers verification, CI, health and protected Prometheus metrics. Its `frontend/dashboard.html` is a standalone local simulation; the portfolio does not claim that it calls the authenticated API. Examples are illustrative uses of documented functionality, not claims of measured production results. The Java service was validated through its GitHub Actions pipeline; it was not deployed as a public service during this portfolio edit.
 
 ## Employment and background
 
