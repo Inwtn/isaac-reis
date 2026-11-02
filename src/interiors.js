@@ -7,7 +7,7 @@ export function roomFor(id){
  if(c.experience)c.experience.forEach(e=>entries.push({title:e.title.split(' · ')[1]||e.title,short:e.shortTitle||e.title.split(' · ')[1]||e.title,content:{name:e.title,subtitle:'Professional journey',experience:[e]},kind:'career'}));
  if(c.paragraphs)c.paragraphs.forEach((p,i)=>entries.push({title:id==='about'?['Meet Isaac','My journey','What I build'][i]:id==='contact'?'Get in touch':['Education','Languages'][i],content:{name:id==='about'?['Meet Isaac','My journey','What I build'][i]:c.name,subtitle:c.subtitle,paragraphs:[p],...(id==='contact'?{links:c.links}:{})},kind:i%2?'book':'desk'}));
  if(c.skills)entries.push({title:'Development toolkit',content:{name:'Development toolkit',subtitle:c.subtitle,skills:c.skills.slice(0,5),note:c.note},kind:'computer'},{title:'Data, AI & tools',content:{name:'Data, AI & tools',subtitle:c.subtitle,skills:c.skills.slice(5),note:c.note},kind:'desk'});
- const positions=id==='projects'?[[205,158],[435,158],[150,270],[320,270],[490,270]]:[[165,155],[320,155],[475,155],[205,270],[435,270],[320,260]];
+ const positions=id==='projects'?(entries.length>5?[[150,158],[320,158],[490,158],[150,270],[320,270],[490,270]]:[[205,158],[435,158],[150,270],[320,270],[490,270]]):[[165,155],[320,155],[475,155],[205,270],[435,270],[320,260]];
  // Decorations have physical bounds as well as visual depth.
  const decor=[{kind:'shelf',x:91,y:159,w:31,h:43},{kind:id==='contact'?'mail':'shelf',x:550,y:159,w:31,h:43},{kind:'plant',x:92,y:321,w:21,h:27},{kind:'plant',x:550,y:321,w:21,h:27}];
  if(id==='about')decor.push({kind:'fireplace',x:548,y:242,w:34,h:75});

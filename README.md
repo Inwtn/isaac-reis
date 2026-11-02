@@ -1,4 +1,24 @@
-# Vale de Isaac
+# Isaac Almeida · Event Horizon
+
+Portfólio imersivo em inglês: entrada por um buraco negro, galeria espacial de projetos, hélice metálica 3D e percurso contínuo que retorna ao horizonte. A página principal é `index.html`; a versão em jogo continua em `valley.html` e a versão de leitura em `simples.html`.
+
+## Nova experiência
+
+- `src/horizon/main.js`: conteúdo a partir dos dados profissionais existentes, navegação, cursor de refração, galeria horizontal, controle de movimento e loop. As descrições completas dos projetos e experiências abrem em diálogos acessíveis, com Escape e retorno de foco.
+- `src/horizon/scene.js`: partículas e hélice reais em Three.js/WebGL. Carregamento separado, resolução limitada para dispositivos móveis e alternativa visual quando WebGL não está disponível.
+- `src/horizon/screens.js`: interfaces ilustrativas dos projetos, explicitamente identificadas como conceito e dados de demonstração. Não são aplicações financeiras conectadas nem métricas reais.
+- `src/horizon/style.css`: visual preto/prata, composição editorial, monólitos em perspectiva CSS 3D, responsividade e modo com movimento reduzido.
+- `src/horizon/event-horizon.png`: arte original do portal gerada com imagegen. Prompt e procedência em `docs/visual-design.md`.
+
+### Interações
+
+O scroll nativo aproxima o portal e percorre os projetos; movimentos do mouse alteram discretamente a perspectiva. O controle circular do cabeçalho desliga a animação e apresenta os projetos verticalmente. A preferência do sistema por movimento reduzido é respeitada. O loop só ocorre ao chegar ao fim com intenção de continuar a rolagem, não ao abrir um painel; o botão Continuous journey permite desativá-lo. Links Work, About e Contact e a versão de texto oferecem navegação direta.
+
+Execute `pnpm dev`, `pnpm build` e `pnpm test` no checkout. O build inclui as três páginas. A prévia local usa http://127.0.0.1:5173/. Nenhum deploy é realizado por esses comandos.
+
+---
+
+## Valley · versão anterior
 
 Portfólio em forma de jogo 2D no navegador, com Canvas e JavaScript, empacotado por Vite. O cenário usa texturas PNG extraídas da instalação SV fornecida pelo usuário. Personagem e gato são desenhados por código em atlas offscreen separados. Nenhum executável de Stardew Valley é carregado pelo navegador. A interface e o conteúdo profissional estão em inglês.
 
@@ -73,3 +93,19 @@ O personagem usa oito poses de caminhada por direção e o gato mantém oito qua
 Antes de entrar no mapa, o visitante monta seu próprio personagem em pixel art, com modelo masculino ou feminino: cabelo (raspado, curto, cacheado, longo ou sem cabelo), tom de pele, cores do cabelo, camisa, calça e sapatos, óculos e barba. O nome é opcional. `src/avatar-options.js` valida e salva as escolhas localmente; `src/avatar-editor.js` apresenta uma prévia animada. O botão Character reabre o editor durante o jogo. Nenhum nome ou escolha é enviado a um servidor.
 
 As placas e os títulos dos interiores usam texto HTML em `src/interior-labels.js`, posicionado junto dos objetos do mapa. Isso mantém a fonte legível sem a pixelização do canvas. Os certificados continuam com os títulos completos nos painéis; nomes curtos nas placas evitam blocos excessivos de texto.
+
+## Portal vivo e percursos de leitura
+
+O portal agora usa um shader de WebGL em `src/horizon/portal.js`: rotação diferencial do anel, ondulações e variação de brilho em tempo real. O controle de movimento continua congelando os efeitos; a imagem original permanece como alternativa de carregamento e compatibilidade.
+
+O StreamHub entrou na galeria como terceiro projeto, com interface ilustrativa própria e uma descrição baseada no README público. A galeria e seu contador usam a quantidade real de projetos. A versão Valley também acomoda o terceiro computador.
+
+`src/horizon/case-explorer.js` apresenta projetos e experiências como percursos de capítulos em tela cheia, com sumário, progresso, navegação anterior/próximo, setas do teclado, Escape e retorno de foco. `case-model.js` conserva os textos e responsabilidades completos. O cursor é movido para dentro do dialog da camada superior enquanto os detalhes estão abertos, evitando que o navegador o esconda atrás do painel. Uma lente óptica em Shadow DOM replica localmente o texto sob o cursor, com ampliação moderada e deslocamento em faixas, sem depender do suporte do navegador a filtros SVG no backdrop.
+
+O DNA é projetado num espaço delimitado por `.dna-placement`, ao lado do texto no desktop e abaixo dele no mobile. Sua escala e posição seguem esse espaço, e ele desaparece antes da seção de experiências.
+
+## Átomos e refração nos capítulos
+
+`src/horizon/case-atmosphere.js` mantém partículas e nove pequenos átomos com elétrons orbitando atrás dos capítulos de projetos e experiências. O canvas acompanha a viewport, limita resolução e frequência, respeita movimento reduzido e é destruído ao fechar os detalhes.
+
+`src/horizon/refraction.js` fornece uma lente circular perceptível: cópias isoladas do texto sob o cursor recebem ampliação e uma curvatura discreta em três faixas. As cópias são inertes, não entram na acessibilidade nem alteram os IDs ou eventos da página original. O portal também tem refração localizada no shader. A aparência escura do cursor foi preservada.
