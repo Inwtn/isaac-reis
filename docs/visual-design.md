@@ -26,3 +26,7 @@ Os detalhes de projetos e experiências receberam um canvas próprio de partícu
 
 
 Case-study reading returns to the exact saved gallery position when a fresh downward scroll starts at the end. Trackpad momentum that reaches the last chapter does not exit it; the exit gesture is consumed before it can move the page behind the dialog. Touch swipes from the bottom also return. The footer explains the next scroll action. Optical text copies explicitly reset native button appearance and backgrounds to keep the dark cursor lens transparent.
+
+## Continuidade da leitura
+
+Os percursos de projetos e experiências têm progresso no cabeçalho, capítulos com entrada suave e uma conclusão orbital que conecta a leitura ao portfólio. Um novo gesto de scroll no fim inicia uma saída de 900 ms: o diálogo se afasta em perspectiva e perde opacidade, revelando a página anterior. O scroll e o foco só são liberados depois da animação, com restauração da posição exata. Escape e os controles de retorno usam a mesma transição; gestos repetidos durante a saída são consumidos. Movimento reduzido mantém o conteúdo visível e faz o retorno imediato. Os capítulos não são repetidos: a continuidade segue na navegação do portfólio.
