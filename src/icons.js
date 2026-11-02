@@ -1,0 +1,2 @@
+// Draw link arrows as vectors: iOS may display the Unicode arrow as a blue emoji.
+export const externalArrow='<svg class="external-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="vertical-align:-.12em;flex-shrink:0"><path d="M6 18 18 6M6 6h12v12"/></svg>';
