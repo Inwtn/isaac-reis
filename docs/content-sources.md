@@ -19,3 +19,8 @@ The detailed responsibilities, dates, location, remote-work availability and the
 ## Visual references
 
 The main avatar keeps the short black hair, glasses, short facial hair, black sweater, white collar and white sneakers from Isaac's earlier reference. Following Isaac’s next revision, it uses a native pixel-art atlas with eight walking poses and visitor-selectable hair, colors and accessories. Fofão's drawing, atlas dimensions and eight-frame walking cycle were preserved unchanged.
+
+
+## StreamHub · atualização do portfólio
+
+O README de https://github.com/Inwtn/streamhub/blob/main/README.md foi consultado pelo conector GitHub. A descrição registra o escopo real: compartilhamento de tela P2P para até cinco espectadores, React/TypeScript, serviço Node/Express, sinalização Socket.IO, WebRTC, diagnósticos e bot Discord opcional. A prévia da galeria é ilustrativa e não inicia captura. O link público foi obtido do próprio README; não foram criadas salas nem solicitadas permissões de mídia durante esta revisão.
