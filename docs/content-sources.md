@@ -24,3 +24,7 @@ The main avatar keeps the short black hair, glasses, short facial hair, black sw
 ## StreamHub · atualização do portfólio
 
 O README de https://github.com/Inwtn/streamhub/blob/main/README.md foi consultado pelo conector GitHub. A descrição registra o escopo real: compartilhamento de tela P2P para até cinco espectadores, React/TypeScript, serviço Node/Express, sinalização Socket.IO, WebRTC, diagnósticos e bot Discord opcional. A prévia da galeria é ilustrativa e não inicia captura. O link público foi obtido do próprio README; não foram criadas salas nem solicitadas permissões de mídia durante esta revisão.
+
+## Lupa.NET · 3 de novembro de 2026
+
+Fontes consultadas pelo conector GitHub no commit `bfe05d2c66d39517c1e6dc66a156c82b2379e519` de https://github.com/Inwtn/lupa-net: `README.md`, `docs/ARCHITECTURE.md`, `docs/VALIDATION.md`, `public/index.html` e `demo/Demo.cs`. O estudo de caso descreve a ferramenta de análise estática gerenciada, a motivação defensiva registrada no README, Node.js em loopback, worker PowerShell/C#, ILSpy, metadados, notas e exportações. Os sete testes citados são os resultados documentados pelo projeto, não testes executados nesta revisão do portfólio. Não foram baixadas nem executadas amostras ou assemblies. A miniatura é uma interface ilustrativa do método benigno `Calculator.Add`, com C# e as instruções IL `add` e `ret`; não é uma sessão de análise real. O projeto não possui demonstração pública hospedada declarada e aponta para seu repositório.

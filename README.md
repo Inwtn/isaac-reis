@@ -86,7 +86,7 @@ O personagem usa oito poses de caminhada por direção e o gato mantém oito qua
 
 ## Conteúdo detalhado
 
-`src/professional-details.js` contém os dois projetos e as três experiências profissionais completas. Os painéis incluem problema, fluxo, arquitetura, funcionalidades e exemplos; as experiências trazem responsabilidades e tecnologias. As fontes estão em `docs/content-sources.md`. Os interiores usam móveis e superfícies nativos documentados em `docs/sv-assets.json`, com colisões e profundidade próprias.
+`src/professional-details.js` contém os quatro projetos e as três experiências profissionais completas. Os painéis incluem problema, fluxo, arquitetura, funcionalidades e exemplos; as experiências trazem responsabilidades e tecnologias. As fontes estão em `docs/content-sources.md`. Os interiores usam móveis e superfícies nativos documentados em `docs/sv-assets.json`, com colisões e profundidade próprias.
 
 ## Personagem do visitante
 
@@ -109,3 +109,8 @@ O DNA é projetado num espaço delimitado por `.dna-placement`, ao lado do texto
 `src/horizon/case-atmosphere.js` mantém partículas e nove pequenos átomos com elétrons orbitando atrás dos capítulos de projetos e experiências. O canvas acompanha a viewport, limita resolução e frequência, respeita movimento reduzido e é destruído ao fechar os detalhes.
 
 `src/horizon/refraction.js` fornece uma lente circular perceptível: cópias isoladas do texto sob o cursor recebem ampliação e uma curvatura discreta em três faixas. As cópias são inertes, não entram na acessibilidade nem alteram os IDs ou eventos da página original. O portal também tem refração localizada no shader. A aparência escura do cursor foi preservada.
+
+
+## Lupa.NET
+
+O quarto projeto da galeria usa `src/lupanet-project.js` para os seis capítulos em inglês e `src/horizon/lupanet-screen.js` para uma interface ilustrativa de exploração de assemblies. O conteúdo foi baseado no repositório público documentado em `docs/content-sources.md`. Também aparece na página de texto e na oficina da versão em jogo, que agora acomoda quatro projetos e três experiências.

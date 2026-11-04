@@ -1,4 +1,5 @@
 import {streamHubProject} from './streamhub-project.js';
+import {lupaNetProject} from './lupanet-project.js';
 export const aboutParagraphs=[
  "I'm Isaac Almeida, a Software Engineer based in Brazil and open to remote work. I build full-stack features for internal ERP systems and backend services with Java and Spring Boot. My work connects APIs, databases and business workflows so information can move between systems with less manual effort.",
  "My background includes five years in financial operations, from January 2020 to January 2025: cash-flow management, bank reconciliation, accounts payable and receivable, management reporting and monthly closing. That experience shaped how I approach software: understand the business process, check the details, preserve the integrity of the data and build something useful for the people doing the work.",
@@ -58,6 +59,7 @@ export const projects=[
  },
 
  streamHubProject,
+ lupaNetProject,
 ];
 export const experience=[
  {
