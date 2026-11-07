@@ -90,3 +90,7 @@
 .mneme-review{display:flex;justify-content:space-between;gap:10px;font-size:5px;line-height:1.5;color:#8c7d9a}.mneme-review>b{font:4px 'Space Grotesk';font-weight:400;letter-spacing:.06em;color:#c2b0d3;white-space:nowrap}.mneme-screen>.screen-disclaimer{font-size:5px;margin:1px 14px 8px;color:#81728d}
 .mneme-desk{gap:8px}.mneme-desk-heading h4{margin:5px 0 0}.mneme-desk>:not(.mneme-chart){flex-shrink:0}.mneme-chart{min-height:40px}.mneme-chart svg{flex:1;min-height:0;height:0}.mneme-screen>.screen-disclaimer{flex-shrink:0}
 @media(max-width:600px){.mneme-desk{gap:8px;padding:10px 8px 6px}.mneme-desk-heading{gap:6px}.mneme-desk-heading small{font-size:4px}.mneme-desk-heading h4{font-size:10px}.mneme-desk-heading>span{font-size:4px;padding:4px}.mneme-summary>div{padding:6px}.mneme-summary small{font-size:4px}.mneme-summary b{font-size:10px;margin-top:4px}.mneme-chart{min-height:65px}.mneme-chart>div{font-size:5px}.mneme-chart small{font-size:3px}.mneme-chart svg{min-height:60px;max-height:145px}.mneme-pipeline{font-size:4px;gap:4px}.mneme-pipeline b{padding:4px}.mneme-review{font-size:4px;gap:6px}.mneme-review>b{font-size:3px}.mneme-screen>.screen-disclaimer{font-size:4px;margin:0 8px 6px}}
+
+/* Arrival out of the event horizon; driven by scroll in both directions. */
+.work-sticky{opacity:var(--arrival,1);filter:blur(calc((1 - var(--arrival,1))*5px));scale:calc(.94 + var(--arrival,1)*.06);transform-origin:65% 50%}.reduced-motion .work-sticky{opacity:1;filter:none;scale:1}
+#cursor{backdrop-filter:contrast(1.12) saturate(.85);border-color:#b8b2be66}

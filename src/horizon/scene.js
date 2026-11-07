@@ -3,7 +3,7 @@ import {createPortal} from './portal.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 export function createWorld(canvas){
  let renderer;try{renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:innerWidth>700,powerPreference:'high-performance'});}catch{return {render(){},resize(){},dispose(){},available:false};}
- renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.9;
+ renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth>760?2:1.5));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.9;
  renderer.autoClear=false;const portalScene=createPortal();
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);camera.position.z=12;
  const environment=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();const env=environment.fromScene(room,.04);scene.environment=env.texture;room.dispose();environment.dispose();
