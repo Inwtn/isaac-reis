@@ -86,7 +86,7 @@ O personagem usa oito poses de caminhada por direção e o gato mantém oito qua
 
 ## Conteúdo detalhado
 
-`src/professional-details.js` contém os quatro projetos e as três experiências profissionais completas. Os painéis incluem problema, fluxo, arquitetura, funcionalidades e exemplos; as experiências trazem responsabilidades e tecnologias. As fontes estão em `docs/content-sources.md`. Os interiores usam móveis e superfícies nativos documentados em `docs/sv-assets.json`, com colisões e profundidade próprias.
+`src/professional-details.js` contém os cinco projetos e as três experiências profissionais completas. Os painéis incluem problema, fluxo, arquitetura, funcionalidades e exemplos; as experiências trazem responsabilidades e tecnologias. As fontes estão em `docs/content-sources.md`. Os interiores usam móveis e superfícies nativos documentados em `docs/sv-assets.json`, com colisões e profundidade próprias.
 
 ## Personagem do visitante
 
@@ -113,4 +113,9 @@ O DNA é projetado num espaço delimitado por `.dna-placement`, ao lado do texto
 
 ## Lupa.NET
 
-O quarto projeto da galeria usa `src/lupanet-project.js` para os seis capítulos em inglês e `src/horizon/lupanet-screen.js` para uma interface ilustrativa de exploração de assemblies. O conteúdo foi baseado no repositório público documentado em `docs/content-sources.md`. Também aparece na página de texto e na oficina da versão em jogo, que agora acomoda quatro projetos e três experiências.
+O quarto projeto da galeria usa `src/lupanet-project.js` para os seis capítulos em inglês e `src/horizon/lupanet-screen.js` para uma interface ilustrativa de exploração de assemblies. O conteúdo foi baseado no repositório público documentado em `docs/content-sources.md`. Também aparece na página de texto e na oficina da versão em jogo.
+
+
+## MNEME
+
+O quinto projeto usa `src/mneme-project.js` para o conteúdo em inglês e `src/horizon/mneme-screen.js` para um painel ilustrativo de pesquisa financeira. O case destaca a contribuição de Isaac em dados, modelos, backend, interface e infraestrutura, distingue execução simulada de operações reais e descreve os recursos de IA conforme o estágio documentado. A galeria, a página de texto e a oficina usam o mesmo conteúdo; a oficina acomoda cinco projetos e três experiências.
