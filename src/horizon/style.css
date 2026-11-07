@@ -94,3 +94,8 @@
 /* Arrival out of the event horizon; driven by scroll in both directions. */
 .work-sticky{opacity:var(--arrival,1);filter:blur(calc((1 - var(--arrival,1))*5px));scale:calc(.94 + var(--arrival,1)*.06);transform-origin:65% 50%}.reduced-motion .work-sticky{opacity:1;filter:none;scale:1}
 #cursor{backdrop-filter:contrast(1.12) saturate(.85);border-color:#b8b2be66}
+
+/* The pointer bends the scene itself; only a tiny locator remains. */
+#cursor,#cursor.hovering{width:6px;height:6px;background:#ded8e9b3;border:0;box-shadow:0 0 7px #e0d5ee30}#cursor::before{display:none}
+
+#cursor>span{display:none}

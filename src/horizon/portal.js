@@ -7,7 +7,7 @@ export function createPortal(){
  precision highp float;
  uniform sampler2D uMap;uniform float uTime,uAspect,uImageAspect,uZoom,uOpacity,uMotion,uLens,uLensRadius,uEntry;uniform vec2 uPointer,uCursor;varying vec2 vUv;
  void main(){
-  vec2 lensCenter=uCursor*.5+.5;vec2 delta=vUv-lensCenter;float lensDistance=length(delta*vec2(uAspect,1.0));float lens=1.0-smoothstep(0.0,uLensRadius,lensDistance);vec2 uv=lensCenter+delta*(1.0-.22*lens*lens*uLens);
+  vec2 lensCenter=uCursor*.5+.5;vec2 delta=vUv-lensCenter;float lensDistance=length(delta*vec2(uAspect,1.0));float lens=1.0-smoothstep(0.0,uLensRadius,lensDistance);float ripple=sin(lensDistance/uLensRadius*12.0-uTime*4.0)*.035;vec2 uv=lensCenter+delta*(1.0-(.52*lens*lens+ripple*lens)*uLens);
   if(uAspect<uImageAspect)uv.x=(uv.x-.5)*(uAspect/uImageAspect)+.5;else uv.y=(uv.y-.5)*(uImageAspect/uAspect)+.5;
   vec2 center=vec2(.70,.50);uv=(uv-center)/uZoom+center;uv+=uPointer*vec2(.002,-.001)*uMotion;
   vec2 p=(uv-center)*vec2(uImageAspect,1.0);float radius=length(p);float angle=atan(p.y,p.x);
@@ -30,5 +30,5 @@ export function createPortal(){
  }`});
  const plane=new THREE.Mesh(new THREE.PlaneGeometry(2,2),material);scene.add(plane);let ready=false;
  const texture=new THREE.TextureLoader().load(horizon,t=>{t.colorSpace=THREE.SRGBColorSpace;uniforms.uMap.value=t;uniforms.uImageAspect.value=t.image.width/t.image.height;ready=true;document.body.classList.add('animated-horizon');});
- return {render(renderer,{time,motion,portal,pointer}){if(!ready||portal.opacity<.001)return;uniforms.uLens.value=motion&&document.body.classList.contains('custom-cursor')?1:0;uniforms.uLensRadius.value=30/innerHeight;uniforms.uEntry.value=portal.entry||0;uniforms.uCursor.value.set(portal.cursorX||0,portal.cursorY||0);uniforms.uTime.value=time;uniforms.uMotion.value=motion?1:0;uniforms.uAspect.value=innerWidth/innerHeight;uniforms.uZoom.value=motion?portal.zoom:1;uniforms.uOpacity.value=portal.opacity;uniforms.uPointer.value.set(pointer.x,pointer.y);renderer.render(scene,camera);},dispose(){texture.dispose();plane.geometry.dispose();material.dispose();}};
+ return {render(renderer,{time,motion,portal,pointer}){if(!ready||portal.opacity<.001)return;uniforms.uLens.value=motion&&document.body.classList.contains('custom-cursor')?1:0;uniforms.uLensRadius.value=85/innerHeight;uniforms.uEntry.value=portal.entry||0;uniforms.uCursor.value.set(portal.cursorX||0,portal.cursorY||0);uniforms.uTime.value=time;uniforms.uMotion.value=motion?1:0;uniforms.uAspect.value=innerWidth/innerHeight;uniforms.uZoom.value=motion?portal.zoom:1;uniforms.uOpacity.value=portal.opacity;uniforms.uPointer.value.set(pointer.x,pointer.y);renderer.render(scene,camera);},dispose(){texture.dispose();plane.geometry.dispose();material.dispose();}};
 }
