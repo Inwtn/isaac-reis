@@ -7,6 +7,7 @@ export const aboutParagraphs=[
  "Today I develop ERP features at 3D LAB with JavaScript, PHP, Laravel and Python, alongside databases and API integrations. I use Generative AI, LLMs, AI agents and prompt engineering to help create scripts, automate workflows and refine features. I also work with Java, Spring Boot, REST APIs, MySQL and PostgreSQL, and I am expanding my knowledge of cybersecurity to build more secure and resilient systems. I enjoy learning, automating repetitive work and turning practical problems into working tools."
 ];
 export const projects=[
+ mnemeProject,
  {
   title:'Bank Reconciliation Engine',shortTitle:'Bank Reconciliation',date:'Open-source project',
   text:'A Java and Spring Boot application that compares OFX and CSV bank statements with internal financial entries. It classifies reconciled, divergent and pending records, protects financial API operations by role, and exposes health and import metrics for monitoring.',
@@ -61,7 +62,6 @@ export const projects=[
 
  streamHubProject,
  lupaNetProject,
- mnemeProject,
 ];
 export const experience=[
  {

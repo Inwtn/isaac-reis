@@ -118,4 +118,4 @@ O quarto projeto da galeria usa `src/lupanet-project.js` para os seis capítulos
 
 ## MNEME
 
-O quinto projeto usa `src/mneme-project.js` para o conteúdo em inglês e `src/horizon/mneme-screen.js` para um painel ilustrativo de pesquisa financeira. O case destaca a contribuição de Isaac em dados, modelos, backend, interface e infraestrutura, distingue execução simulada de operações reais e descreve os recursos de IA conforme o estágio documentado. A galeria, a página de texto e a oficina usam o mesmo conteúdo; a oficina acomoda cinco projetos e três experiências.
+O MNEME aparece primeiro na lista e usa `src/mneme-project.js` para o conteúdo em inglês e `src/horizon/mneme-screen.js` para um painel ilustrativo de pesquisa financeira. O case destaca a contribuição de Isaac em dados, modelos, backend, interface e infraestrutura, distingue execução simulada de operações reais e descreve os recursos de IA conforme o estágio documentado. A galeria, a página de texto e a oficina usam o mesmo conteúdo; a oficina acomoda cinco projetos e três experiências.
