@@ -4,7 +4,29 @@
   var root = document.documentElement;
   var menuButton = document.querySelector(".menu-toggle");
   var navigation = document.querySelector(".primary-nav");
+  var scrollCounter = document.querySelector(".scroll-counter");
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function updateScrollProgress() {
+    var scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var progress = scrollableHeight > 0 ? Math.min(100, Math.max(0, (window.scrollY / scrollableHeight) * 100)) : 0;
+    root.style.setProperty("--scroll-progress", progress + "%");
+    if (scrollCounter) scrollCounter.textContent = String(Math.round(progress)).padStart(2, "0") + "%";
+  }
+
+  var progressFramePending = false;
+  function queueScrollProgress() {
+    if (progressFramePending) return;
+    progressFramePending = true;
+    window.requestAnimationFrame(function () {
+      updateScrollProgress();
+      progressFramePending = false;
+    });
+  }
+
+  window.addEventListener("scroll", queueScrollProgress, { passive: true });
+  window.addEventListener("resize", queueScrollProgress);
+  updateScrollProgress();
 
   root.classList.add("js-ready");
 
