@@ -3,14 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#080b12" />
+    <meta name="theme-color" content="#02020a" />
     <meta name="description" content="Isaac Almeida is a software engineer building full-stack systems, integrations, and automation for real business workflows." />
     <title>Isaac Almeida — Software Engineer</title>
     <link rel="icon" href="assets/profile/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="portfolio.css" />
-    <script src="portfolio.js" defer></script>
+    <script type="module" src="portfolio.js"></script>
   </head>
   <body>
+    <canvas id="space-canvas" aria-hidden="true"></canvas>
+    <div class="singularity-flash" aria-hidden="true"></div>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Isaac Almeida, home"><span class="brand-mark">IA</span><span>ISAAC ALMEIDA</span></a>
@@ -31,8 +36,27 @@
       <span class="scroll-counter">00%</span>
     </aside>
 
+    <aside class="pilot-hud" aria-label="Exploration status">
+      <div class="hud-topline"><span class="hud-live-dot"></span><span>DEEP SPACE LINK</span><span class="hud-live">LIVE</span></div>
+      <div class="hud-readout"><span>LEVEL</span><strong id="hud-level">01</strong><span class="hud-xp" id="hud-xp">0 XP</span></div>
+      <div class="xp-track" role="progressbar" aria-label="Experience to next level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="xp-fill"></i></div>
+      <div class="hud-sector"><span>SECTOR</span><strong id="hud-sector">ORBITAL ENTRY</strong></div>
+      <div class="hud-depth"><span>DEPTH TO SINGULARITY</span><strong id="hud-depth">10,000 km</strong></div>
+      <div class="hud-bottom"><span class="crystal-count"><b aria-hidden="true">✦</b> <span id="hud-crystals">0</span> / 5</span><span id="hud-loop">CYCLE 01</span><button id="sound-toggle" type="button" aria-label="Enable ambient sound" aria-pressed="false"><span aria-hidden="true">♫</span><span class="sound-label">SOUND OFF</span></button></div>
+    </aside>
+    <nav class="sector-map" aria-label="Jump to a sector">
+      <span class="map-label">SECTORS</span>
+      <a href="#top" class="map-point is-active" data-map="top" aria-label="Orbital entry"><i></i><span>ENTRY</span></a>
+      <a href="#work" class="map-point" data-map="work" aria-label="Project sector"><i></i><span>WORK</span></a>
+      <a href="#about" class="map-point" data-map="about" aria-label="Origin sector"><i></i><span>ORIGIN</span></a>
+      <a href="#experience" class="map-point" data-map="experience" aria-label="Flight log sector"><i></i><span>LOG</span></a>
+      <a href="#toolkit" class="map-point" data-map="toolkit" aria-label="Systems sector"><i></i><span>SYSTEMS</span></a>
+      <a href="#contact" class="map-point" data-map="contact" aria-label="Signal sector"><i></i><span>SIGNAL</span></a>
+    </nav>
+    <div class="achievement-toast" id="achievement-toast" role="status" aria-live="polite"><span class="toast-icon">✦</span><span><small>ACHIEVEMENT UNLOCKED</small><strong id="toast-title">First Contact</strong></span></div>
+
     <main id="main">
-      <section class="hero section-shell" id="top" aria-labelledby="hero-title">
+      <section class="hero section-shell" id="top" data-sector="ORBITAL ENTRY" aria-labelledby="hero-title">
         <div class="hero-space">
           <div class="hero-art" aria-hidden="true">
             <svg class="galaxy-map" viewBox="0 0 760 640" role="presentation">
@@ -72,14 +96,15 @@
           <div class="hero-content">
             <p class="eyebrow"><span class="status-light" aria-hidden="true"></span> ISAAC ALMEIDA <span class="caption-divider">/</span> SOFTWARE ENGINEER</p>
             <p class="hero-kicker">3D LAB <span>·</span> FULL-STACK <span>·</span> APPLIED AI</p>
-            <h1 class="hero-title" id="hero-title">Software for<br />the work <em>behind<br />business.</em></h1>
+            <h1 class="hero-title" id="hero-title">Software that<br /><em>moves work.</em></h1>
             <p class="hero-location">I build internal systems, integrations and automation for real business workflows.</p>
-            <a class="button button-primary hero-cta" href="#work">EXPLORE SELECTED WORK <span aria-hidden="true">↘</span></a>
+            <a class="button button-primary hero-cta" href="#work">ENTER THE PROJECT SECTOR <span aria-hidden="true">↘</span></a>
           </div>
         </div>
       </section>
 
-      <section class="intro section-shell" aria-labelledby="intro-title">
+      <section class="intro section-shell" data-sector="MISSION BRIEFING" aria-labelledby="intro-title">
+        <button class="collectible collectible-one" type="button" data-crystal="1" aria-label="Collect hidden star fragment">✦</button>
         <div class="section-index"><span>01</span><span class="index-line"></span><span>OVERVIEW</span></div>
         <div class="intro-content">
           <h1 id="intro-title">Built around the way <span>business really works.</span></h1>
@@ -98,7 +123,8 @@
         </div>
       </div>
 
-      <section class="work section-shell" id="work" aria-labelledby="work-title">
+      <section class="work section-shell" id="work" data-sector="PROJECT SECTOR" aria-labelledby="work-title">
+        <button class="collectible collectible-two" type="button" data-crystal="2" aria-label="Collect hidden star fragment">✧</button>
         <div class="section-heading">
           <div class="section-index"><span>02</span><span class="index-line"></span><span>SELECTED WORK</span></div>
           <h2 id="work-title">Projects built around real problems.</h2>
@@ -172,7 +198,8 @@
         </div>
       </section>
 
-      <section class="about section-shell" id="about" aria-labelledby="about-title">
+      <section class="about section-shell" id="about" data-sector="ORIGIN ARCHIVE" aria-labelledby="about-title">
+        <button class="collectible collectible-three" type="button" data-crystal="3" aria-label="Collect hidden star fragment">✦</button>
         <div class="section-index"><span>03</span><span class="index-line"></span><span>ABOUT</span></div>
         <div class="about-grid">
           <h2 id="about-title">Business context is part of the engineering.</h2>
@@ -184,7 +211,7 @@
         </div>
       </section>
 
-      <section class="experience section-shell" id="experience" aria-labelledby="experience-title">
+      <section class="experience section-shell" id="experience" data-sector="FLIGHT LOG" aria-labelledby="experience-title">
         <div class="section-heading">
           <div class="section-index"><span>04</span><span class="index-line"></span><span>EXPERIENCE</span></div>
           <h2 id="experience-title">From financial operations to software engineering.</h2>
@@ -205,7 +232,8 @@
         </div>
       </section>
 
-      <section class="toolkit section-shell" aria-labelledby="toolkit-title">
+      <section class="toolkit section-shell" id="toolkit" data-sector="SHIP SYSTEMS" aria-labelledby="toolkit-title">
+        <button class="collectible collectible-four" type="button" data-crystal="4" aria-label="Collect hidden star fragment">✧</button>
         <div class="section-index"><span>05</span><span class="index-line"></span><span>TOOLKIT</span></div>
         <div class="toolkit-content">
           <h2 id="toolkit-title">Tools for making systems work.</h2>
@@ -223,7 +251,8 @@
         </div>
       </section>
 
-      <section class="contact section-shell" id="contact" aria-labelledby="contact-title">
+      <section class="contact section-shell" id="contact" data-sector="SIGNAL BEACON" aria-labelledby="contact-title">
+        <button class="collectible collectible-five" type="button" data-crystal="5" aria-label="Collect hidden star fragment">✦</button>
         <div class="contact-grid">
           <div class="section-index"><span>06</span><span class="index-line"></span><span>CONTACT</span></div>
           <div class="contact-message">
