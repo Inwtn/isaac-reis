@@ -61,18 +61,32 @@ button { font: inherit; }
 .menu-toggle { display: none; }
 .section-shell { width: min(calc(100% - 56px), var(--content)); margin-inline: auto; }
 .hero { padding-top: 34px; }
-.hero-image-frame { position: relative; overflow: hidden; border: 1px solid #5b4d2a; background: #0a101b; box-shadow: 8px 8px 0 #111a27; }
-.hero-image { display: block; width: 100%; height: auto; aspect-ratio: 3 / 1; object-fit: cover; }
-.frame-corner { position: absolute; width: 26px; height: 26px; pointer-events: none; }
-.frame-corner-top { top: 0; left: 0; border-top: 3px solid var(--gold); border-left: 3px solid var(--gold); }
-.frame-corner-bottom { right: 0; bottom: 0; border-right: 3px solid var(--gold); border-bottom: 3px solid var(--gold); }
-.hero-caption { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; padding: 19px 3px 0; }
+.hero-space { position: relative; min-height: clamp(430px, 43vw, 550px); overflow: hidden; border: 1px solid #5b4d2a; background: linear-gradient(118deg, #0b101a 0%, #0a0d15 54%, #10111b 100%); box-shadow: 8px 8px 0 #111a27; }
+.hero-cosmos { position: absolute; inset: 0; overflow: hidden; }
+.hero-grid { position: absolute; inset: 0; opacity: .2; background-image: linear-gradient(#8da1c214 1px, transparent 1px), linear-gradient(90deg, #8da1c214 1px, transparent 1px); background-size: 38px 38px; mask-image: linear-gradient(90deg, transparent 0%, #000 45%, #000 100%); }
+.hero-galaxy { position: absolute; top: 50%; right: 7%; width: clamp(310px, 40vw, 520px); aspect-ratio: 1; border-radius: 50%; opacity: .82; transform: translateY(-50%); background: radial-gradient(circle at 50% 50%, #ffe98d 0 1.2%, #ffc928 1.5% 3%, #d78522 4% 7%, #5e416f 8% 10%, #172840 11% 24%, #26335a40 38%, transparent 69%); box-shadow: 0 0 90px #e79f2730, inset 0 0 60px #0b0e18; }
+.hero-galaxy::before { position: absolute; top: 50%; left: 50%; width: 12px; height: 12px; content: ""; background: #fff0ad; box-shadow: 12px 0 #ffda57, -12px 0 #ffda57, 0 12px #ffbd31, 0 -12px #ffe889, 24px 0 #a5642d, -24px 0 #a5642d, 0 24px #b77931, 0 -24px #e7b548; transform: translate(-50%, -50%); image-rendering: pixelated; }
+.hero-galaxy::after { position: absolute; top: 50%; left: 50%; width: 138%; height: 34%; border: 1px solid #ffcb5260; border-radius: 50%; content: ""; box-shadow: 0 0 16px #ffcb5225; transform: translate(-50%, -50%) rotate(-22deg); }
+.hero-orbit { position: absolute; top: 50%; right: -8%; display: block; width: 61%; height: 24%; border: 1px solid #b4a5e01c; border-radius: 50%; transform: translateY(-50%) rotate(27deg); }
+.hero-orbit-two { right: 0; width: 48%; height: 41%; border-color: #ffc92818; transform: translateY(-50%) rotate(-38deg); }
+.hero-pixel { position: absolute; display: block; width: 5px; height: 5px; background: var(--gold); box-shadow: 0 0 14px #ffc928ad; }
+.hero-pixel-one { top: 24%; right: 16%; }
+.hero-pixel-two { top: 68%; right: 42%; width: 3px; height: 3px; }
+.hero-pixel-three { top: 31%; right: 48%; width: 4px; height: 4px; }
+.hero-content { position: relative; z-index: 1; display: flex; min-height: inherit; align-items: flex-start; justify-content: center; flex-direction: column; padding: 56px clamp(30px, 7.2vw, 88px); }
+.hero-kicker { margin: 39px 0 14px; color: var(--gold); font: 700 clamp(10px, 1.1vw, 13px) var(--mono); letter-spacing: .14em; }
+.hero-title { display: grid; margin: 0; font: 700 clamp(66px, 9vw, 118px)/.9 "Consolas", "Lucida Console", monospace; letter-spacing: -.065em; text-transform: uppercase; }
+.hero-title span { color: var(--cream); text-shadow: 4px 4px 0 #273145; }
+.hero-title strong { color: var(--gold); font-weight: 700; text-shadow: 4px 4px 0 #715316; }
+.hero-foot { display: grid; max-width: 760px; grid-template-columns: 1fr auto; align-items: end; gap: 5px 24px; margin-top: 29px; }
+.hero-role { grid-column: 1 / -1; margin: 0 0 4px; color: var(--cream); font: 11px var(--mono); letter-spacing: .1em; }
+.hero-role i { padding-inline: 8px; color: var(--gold); font-style: normal; }
 .eyebrow, .section-index, .toolkit-label, .project-number, .timeline-date, .contact-links, .site-footer p, .back-top { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
 .eyebrow { display: inline-flex; align-items: center; gap: 9px; margin: 0; color: var(--gold); }
 .status-light { width: 7px; height: 7px; background: var(--gold); box-shadow: 0 0 12px #ffc92890; }
 .caption-divider { color: var(--dim); }
 .hero-location { margin: 0; color: var(--muted); font-size: 12px; }
-.text-link { margin-left: auto; color: var(--cream); font: 10px var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.hero-foot .text-link { margin-left: auto; color: var(--cream); font: 10px var(--mono); letter-spacing: .06em; text-transform: uppercase; }
 .text-link span { padding-left: 8px; color: var(--gold); }
 .scroll-constellation { position: fixed; z-index: 8; top: 50%; left: 18px; display: flex; align-items: center; gap: 12px; color: var(--dim); transform: translateY(-50%); pointer-events: none; }
 .scroll-label, .scroll-counter { font: 8px var(--mono); letter-spacing: .13em; }
@@ -226,11 +240,17 @@ button { font: inherit; }
   .primary-nav .nav-contact { justify-content: space-between; margin-top: 12px; padding: 11px; border: 1px solid var(--line-gold); }
   .section-shell, .site-footer { width: min(calc(100% - 32px), var(--content)); }
   .hero { padding-top: 17px; }
-  .hero-image-frame { box-shadow: 4px 4px 0 #111a27; }
-  .hero-image { min-height: 150px; aspect-ratio: 1.7 / 1; object-fit: cover; object-position: left center; }
-  .hero-caption { display: grid; grid-template-columns: 1fr; gap: 7px; padding-top: 15px; }
+  .hero-space { min-height: 500px; box-shadow: 4px 4px 0 #111a27; }
+  .hero-content { min-height: 500px; justify-content: center; padding: 34px 22px; }
+  .hero-galaxy { top: 30%; right: -34%; width: 96%; opacity: .56; }
+  .hero-orbit { top: 31%; right: -28%; width: 90%; }
+  .hero-orbit-two { top: 31%; right: -12%; width: 75%; }
+  .hero-kicker { max-width: 260px; margin: 31px 0 13px; font-size: 9px; line-height: 1.8; }
+  .hero-title { font-size: clamp(50px, 15vw, 68px); }
+  .hero-foot { grid-template-columns: 1fr; gap: 9px; margin-top: 25px; }
+  .hero-role { font-size: 9px; line-height: 1.8; }
+  .hero-foot .text-link { margin: 7px 0 0; }
   .hero-location { font-size: 11px; }
-  .text-link { margin: 6px 0 0; }
   .eyebrow { font-size: 9px; }
   .intro, .section-heading, .about, .experience, .toolkit { grid-template-columns: 1fr; gap: 19px; }
   .intro { padding-block: 80px 85px; }
