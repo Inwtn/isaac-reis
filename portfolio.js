@@ -8,6 +8,7 @@ const root = document.documentElement;
 const menuButton = document.querySelector(".menu-toggle");
 const navigation = document.querySelector(".primary-nav");
 const scrollCounter = document.querySelector(".scroll-counter");
+const scrollCue = document.querySelector(".scroll-cue");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const storageKey = "isaac-space-portfolio-v1";
 
@@ -96,6 +97,7 @@ import("./space-experience.js").then(({ createSpaceExperience }) => {
   space = createSpaceExperience({
     onProgress(progress) {
       updateHud(progress);
+      if (scrollCue) scrollCue.style.opacity = String(Math.max(0, 1 - progress * 9));
       if (progress > 0.012 && !hasMoved) {
         hasMoved = true;
         unlock("first-contact", "First Contact", 10);
@@ -184,10 +186,18 @@ const sectorObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll("[data-sector]").forEach((sector) => sectorObserver.observe(sector));
 
 if (!reducedMotion) {
-  gsap.utils.toArray(".project-card, .timeline-item, .toolkit-groups > div, .contact-grid").forEach((item) => {
-    gsap.fromTo(item, { autoAlpha: 0.28, y: 45, scale: 0.96, filter: "blur(8px)" }, {
-      autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", ease: "none",
-      scrollTrigger: { trigger: item, start: "top 92%", end: "top 48%", scrub: 0.7 },
+  gsap.timeline({ delay: 0.12, defaults: { ease: "power3.out" } })
+    .fromTo(".hero .eyebrow", { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.65 })
+    .fromTo(".hero-kicker", { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.65 }, "-=0.32")
+    .fromTo(".hero-title-line", { yPercent: 112, rotateX: -9 }, { yPercent: 0, rotateX: 0, duration: 1.05, stagger: 0.12 }, "-=0.2")
+    .fromTo(".hero-location", { autoAlpha: 0, y: 16, filter: "blur(6px)" }, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.7 }, "-=0.38")
+    .fromTo(".hero-cta", { autoAlpha: 0, y: 14, scale: 0.96 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.55 }, "-=0.28")
+    .fromTo(".scroll-cue", { autoAlpha: 0, x: -10 }, { autoAlpha: 1, x: 0, duration: 0.55 }, "-=0.18");
+
+  gsap.utils.toArray(".intro-content, .section-heading, .project-card, .about-grid, .timeline-item, .toolkit-groups > div, .education-line, .credentials-line, .contact-grid").forEach((item) => {
+    gsap.fromTo(item, { autoAlpha: 0.04, y: 112, scale: 0.82, filter: "blur(18px)", rotationX: 7, transformOrigin: "50% 100%" }, {
+      autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", rotationX: 0, ease: "none",
+      scrollTrigger: { trigger: item, start: "top 96%", end: "top 46%", scrub: 0.65 },
     });
   });
 }

@@ -5,6 +5,7 @@ const starVertex = `
   attribute vec3 aColor;
   uniform float uTime;
   uniform float uWarp;
+  uniform float uVelocity;
   varying vec3 vColor;
   varying float vAlpha;
   void main() {
@@ -13,7 +14,7 @@ const starVertex = `
     p.z = depth;
     p.x += sin(uTime * 0.18 + position.y * 0.02) * 8.0;
     vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
-    float stretch = 1.0 + uWarp * 12.0 * smoothstep(-9000.0, -300.0, depth);
+    float stretch = 1.0 + (uWarp * 16.0 + uVelocity * 5.0) * smoothstep(-9000.0, -300.0, depth);
     gl_PointSize = clamp(aSize * stretch * (1050.0 / max(80.0, -mvPosition.z)), 1.5, 36.0);
     gl_Position = projectionMatrix * mvPosition;
     vColor = aColor;
@@ -25,11 +26,12 @@ const starFragment = `
   varying vec3 vColor;
   varying float vAlpha;
   uniform float uWarp;
+  uniform float uVelocity;
   void main() {
     vec2 uv = gl_PointCoord - 0.5;
     float d = length(uv);
     float glow = exp(-d * 8.0) * (1.0 - smoothstep(0.12, 0.5, d));
-    float ray = exp(-abs(uv.x) * 36.0) * exp(-abs(uv.y) * 5.0) * uWarp * 0.62;
+    float ray = exp(-abs(uv.x) * 36.0) * exp(-abs(uv.y) * 5.0) * (uWarp * 0.9 + uVelocity * 0.42);
     float alpha = max(glow, ray) * vAlpha;
     gl_FragColor = vec4(vColor, alpha);
     #include <tonemapping_fragment>
@@ -94,7 +96,7 @@ export function createSpaceExperience({ onProgress = () => {}, onSector = () => 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.1, 14000);
   camera.position.set(0, 0, 0);
-  const starUniforms = { uTime: { value: 0 }, uWarp: { value: 0 } };
+  const starUniforms = { uTime: { value: 0 }, uWarp: { value: 0 }, uVelocity: { value: 0 } };
   const stars = new THREE.Points(makeStarField(mobile ? 520 : 1900), new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
@@ -165,15 +167,23 @@ export function createSpaceExperience({ onProgress = () => {}, onSector = () => 
 
   let progress = 0;
   let targetZ = 0;
-  let currentWarp = 0;
+  let pointerX = 0;
+  let pointerY = 0;
+  let previousCameraZ = 0;
   const clock = new THREE.Clock();
+
+  function trackPointer(event) {
+    pointerX = (event.clientX / Math.max(1, window.innerWidth) - 0.5) * 2;
+    pointerY = (event.clientY / Math.max(1, window.innerHeight) - 0.5) * 2;
+  }
+  window.addEventListener("pointermove", trackPointer, { passive: true });
 
   function setProgress(value) {
     progress = THREE.MathUtils.clamp(value, 0, 1);
     targetZ = -progress * 5000;
-    const warpStart = THREE.MathUtils.smoothstep(progress, 0.48, 0.92);
+    const warpStart = THREE.MathUtils.smoothstep(progress, 0.12, 0.84);
     starUniforms.uWarp.value = reducedMotion ? 0 : warpStart;
-    camera.fov = 62 + warpStart * 9;
+    camera.fov = 62 + warpStart * 18;
     camera.updateProjectionMatrix();
     onProgress(progress);
   }
@@ -188,19 +198,26 @@ export function createSpaceExperience({ onProgress = () => {}, onSector = () => 
   function render() {
     const elapsed = clock.getElapsedTime();
     starUniforms.uTime.value = reducedMotion ? 0 : elapsed;
-    currentWarp += (starUniforms.uWarp.value - currentWarp) * 0.055;
     camera.position.z += (targetZ - camera.position.z) * 0.055;
+    const scrollSpeed = Math.min(Math.abs(camera.position.z - previousCameraZ) / 20, 1.5);
+    starUniforms.uVelocity.value += (scrollSpeed - starUniforms.uVelocity.value) * 0.16;
+    previousCameraZ = camera.position.z;
     const depth = Math.abs(camera.position.z);
     const proximity = THREE.MathUtils.smoothstep(depth, 3300, 4900);
-    camera.position.x = 2200 * progress + Math.sin(elapsed * 0.13) * 13 * (1 - proximity * 0.4);
-    camera.position.y = Math.cos(elapsed * 0.16) * 7;
+    camera.position.x = 2200 * progress + pointerX * 38 * (1 - proximity * 0.5) + Math.sin(elapsed * 0.22) * 22 * (1 - proximity * 0.4);
+    camera.position.y = -pointerY * 26 + Math.cos(elapsed * 0.28) * 12;
     const lookX = camera.position.x + (hole.position.x - camera.position.x) * proximity;
     camera.lookAt(lookX, 0, camera.position.z - 1200 + proximity * 500);
     nebulas.forEach((nebula) => { nebula.userData.nebulaMaterial.uniforms.uTime.value = elapsed; });
     disk.material.uniforms.uTime.value = elapsed;
     hole.rotation.z = Math.sin(elapsed * 0.08) * 0.025;
-    lens.material.opacity = 0.16 + proximity * 0.28;
-    outerLens.material.opacity = 0.1 + proximity * 0.2;
+    disk.rotation.z = -0.13 + elapsed * 0.018;
+    lens.rotation.z = elapsed * 0.08;
+    outerLens.rotation.z = -elapsed * 0.045;
+    glow.intensity = 960 + Math.sin(elapsed * 1.05) * 220;
+    goldGlow.intensity = 610 + Math.sin(elapsed * 1.3 + 1) * 130;
+    lens.material.opacity = 0.18 + proximity * 0.32 + Math.sin(elapsed * 1.8) * 0.06;
+    outerLens.material.opacity = 0.11 + proximity * 0.24 + Math.sin(elapsed * 1.2 + 2) * 0.035;
     renderer.render(scene, camera);
     frame = window.requestAnimationFrame(render);
   }
@@ -221,6 +238,7 @@ export function createSpaceExperience({ onProgress = () => {}, onSector = () => 
     renderer.dispose();
     stars.geometry.dispose();
     farStars.geometry.dispose();
+    window.removeEventListener("pointermove", trackPointer);
   }, { once: true });
 
   return { setProgress, resize };
