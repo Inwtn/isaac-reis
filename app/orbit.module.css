@@ -102,16 +102,27 @@ a.scrollCue:hover span { transform: translateY(4px); }
 .arrival .name{font-size:clamp(35px,5.1vw,78px)}
 .arrival{padding-bottom:clamp(74px,12svh,128px)}
 .heroAvatar {
+  position: relative;
   display: block;
-  width: min(43vw, 480px);
-  height: min(56svh, 570px);
-  object-fit: contain;
+  width: min(43vw, 480px, 42svh);
+  aspect-ratio: 1086 / 1448;
   margin: 0 auto 4px;
   image-rendering: pixelated;
   filter: drop-shadow(0 8px 18px #0008);
 }
-@media (max-width: 760px) { .heroAvatar { width: min(80vw, 330px); height: min(47svh, 440px); } }
-@media (max-height: 650px) and (min-width: 761px) { .heroAvatar { height: 42svh; } }
+.heroAvatar > img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; max-width: none; image-rendering: pixelated; user-select: none; pointer-events: none; }
+.avatarHead { z-index: 5; clip-path: polygon(31% 3%,69% 3%,69% 37%,31% 37%); transform-origin: 50% 33%; }
+.avatarTorso { z-index: 4; clip-path: polygon(32% 33%,68% 33%,67% 66%,33% 66%); }
+.avatarArmLeft { z-index: 3; clip-path: polygon(32% 33%,43% 33%,40% 69%,27% 69%,27% 48%); transform-origin: 36% 38%; animation: avatar-arm-left 2.1s steps(5,end) infinite alternate; }
+.avatarArmRight { z-index: 3; clip-path: polygon(57% 33%,68% 33%,73% 48%,73% 69%,60% 69%); transform-origin: 64% 38%; animation: avatar-arm-right 2.1s steps(5,end) infinite alternate; }
+.avatarLegLeft { z-index: 2; clip-path: polygon(34% 59%,51% 59%,51% 99%,33% 99%); transform-origin: 45% 61%; animation: avatar-leg-left 2.1s steps(5,end) infinite alternate; }
+.avatarLegRight { z-index: 2; clip-path: polygon(49% 59%,66% 59%,67% 99%,49% 99%); transform-origin: 55% 61%; animation: avatar-leg-right 2.1s steps(5,end) infinite alternate; }
+@keyframes avatar-arm-left { from { transform: rotate(-2deg); } to { transform: rotate(4deg); } }
+@keyframes avatar-arm-right { from { transform: rotate(3deg); } to { transform: rotate(-3deg); } }
+@keyframes avatar-leg-left { from { transform: rotate(1deg) translateY(0); } to { transform: rotate(-2deg) translateY(-2px); } }
+@keyframes avatar-leg-right { from { transform: rotate(-1deg) translateY(-2px); } to { transform: rotate(2deg) translateY(0); } }
+@media (max-width: 760px) { .heroAvatar { width: min(80vw, 330px, 35.25svh); } }
+@media (max-height: 650px) and (min-width: 761px) { .heroAvatar { width: min(43vw, 480px, 31.5svh); } }
 .stack{list-style:none;padding:0;margin:24px 0 0;display:flex;max-width:640px;flex-wrap:wrap;gap:12px 22px;justify-content:center;color:var(--accent-light);font:13px var(--font-mono),monospace}
 .caseArrival{min-height:100svh;padding:70px var(--edge) 10svh;display:grid;align-content:end;justify-items:center;text-align:center;background:linear-gradient(transparent 42%,#080b12df 74%,#080b12f5)}
 .caseArrival h1{font:700 clamp(42px,8vw,106px)/.95 var(--font-display),sans-serif;letter-spacing:-.06em;margin:0;text-wrap:balance}
@@ -123,4 +134,4 @@ a.scrollCue:hover span { transform: translateY(4px); }
 .returnCue{color:var(--muted);font-size:14px}
 .caseSeam{height:18svh;background:linear-gradient(#080b12e9,#080b12)}
 .caseOrbit:not([data-orbit-ready]) :is(.caseSeam,.returnCue){display:none}
-@media(prefers-reduced-motion:reduce){.caseSeam,.returnCue{display:none}}
+@media(prefers-reduced-motion:reduce){.caseSeam,.returnCue{display:none}.heroAvatar > img{animation:none;transform:none!important}}

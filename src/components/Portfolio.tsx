@@ -8,13 +8,14 @@ import { Orbit } from "@/src/components/Orbit";
 import { Contact } from "@/src/components/Contact";
 import { Journey, Signal } from "@/src/components/Journey";
 import { PixelCursor } from "@/src/components/PixelCursor";
+import { AnimatedAvatar } from "@/src/components/AnimatedAvatar";
 import styles from "@/app/orbit.module.css";
 
 function Arrival({ locale, echo = false }: { locale: Locale; echo?: boolean }) {
   const t = dictionary[locale], a = anchors[locale];
   return <section className={styles.arrival} id={echo ? undefined : a.home} data-orbit-scene={!echo ? a.home : undefined} data-orbit-seam={echo ? "" : undefined} aria-hidden={echo || undefined}>
     <div className={styles.arrivalCopy}>
-      <img className={styles.heroAvatar} src="/isaac-avatar-full.png" width={1086} height={1448} alt={echo ? "" : locale === "pt" ? "Avatar de Isaac em pixel art, de corpo inteiro, com roupa futurista preta e detalhes amarelos" : "Full-body pixel art avatar of Isaac in a black futuristic outfit with yellow details"} />
+      <AnimatedAvatar alt={echo ? "" : locale === "pt" ? "Avatar de Isaac em pixel art, de corpo inteiro, com roupa futurista preta e detalhes amarelos" : "Full-body pixel art avatar of Isaac in a black futuristic outfit with yellow details"} />
       {echo ? <p className={styles.name}>Isaac Almeida<span>.</span></p> : <h1 className={styles.name}>Isaac Almeida<span>.</span></h1>}
       <p className={styles.kicker}>{t.role}</p>
     </div>
