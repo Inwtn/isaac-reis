@@ -117,10 +117,10 @@ a.scrollCue:hover span { transform: translateY(4px); }
 .avatarArmRight { z-index: 3; clip-path: polygon(57% 33%,68% 33%,73% 48%,73% 69%,60% 69%); transform-origin: 64% 38%; animation: avatar-arm-right 2.1s steps(5,end) infinite alternate; }
 .avatarLegLeft { z-index: 2; clip-path: polygon(34% 59%,51% 59%,51% 99%,33% 99%); transform-origin: 45% 61%; animation: avatar-leg-left 2.1s steps(5,end) infinite alternate; }
 .avatarLegRight { z-index: 2; clip-path: polygon(49% 59%,66% 59%,67% 99%,49% 99%); transform-origin: 55% 61%; animation: avatar-leg-right 2.1s steps(5,end) infinite alternate; }
-@keyframes avatar-arm-left { from { transform: rotate(-2deg); } to { transform: rotate(4deg); } }
-@keyframes avatar-arm-right { from { transform: rotate(3deg); } to { transform: rotate(-3deg); } }
-@keyframes avatar-leg-left { from { transform: rotate(1deg) translateY(0); } to { transform: rotate(-2deg) translateY(-2px); } }
-@keyframes avatar-leg-right { from { transform: rotate(-1deg) translateY(-2px); } to { transform: rotate(2deg) translateY(0); } }
+@keyframes avatar-arm-left { from { transform: rotate(-5deg); } to { transform: rotate(8deg); } }
+@keyframes avatar-arm-right { from { transform: rotate(7deg); } to { transform: rotate(-6deg); } }
+@keyframes avatar-leg-left { from { transform: rotate(2deg) translateY(0); } to { transform: rotate(-4deg) translateY(-4px); } }
+@keyframes avatar-leg-right { from { transform: rotate(-2deg) translateY(-4px); } to { transform: rotate(4deg) translateY(0); } }
 @media (max-width: 760px) { .heroAvatar { width: min(80vw, 330px, 35.25svh); } }
 @media (max-height: 650px) and (min-width: 761px) { .heroAvatar { width: min(43vw, 480px, 31.5svh); } }
 .stack{list-style:none;padding:0;margin:24px 0 0;display:flex;max-width:640px;flex-wrap:wrap;gap:12px 22px;justify-content:center;color:var(--accent-light);font:13px var(--font-mono),monospace}
