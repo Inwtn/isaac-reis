@@ -84,6 +84,7 @@ a.scrollCue:hover span { transform: translateY(4px); }
 @media(prefers-reduced-motion:reduce) { .progress, .arrival[data-orbit-seam] { display: none; } }
 
 .header{grid-template-columns:1fr auto}
+.headerControls{justify-self:end;display:flex;align-items:center;gap:clamp(10px,2vw,22px)}
 .pixelMenu{justify-self:end}
 .pixelMenu summary{position:relative;z-index:3;display:grid;place-content:center;gap:5px;width:44px;height:44px;list-style:none;background:#080b12;border:1px solid var(--rule)}
 .pixelMenu summary::-webkit-details-marker{display:none}
@@ -101,17 +102,16 @@ a.scrollCue:hover span { transform: translateY(4px); }
 .arrival .name{font-size:clamp(35px,5.1vw,78px)}
 .arrival{padding-bottom:clamp(74px,12svh,128px)}
 .heroAvatar {
-  --sprite-width: 120px;
   display: block;
-  width: var(--sprite-width);
-  aspect-ratio: 2 / 3;
-  margin: 0 auto 12px;
-  background: url("/isaac-character-sprite.png") 0 0 / auto 100% no-repeat;
+  width: min(43vw, 480px);
+  height: min(56svh, 570px);
+  object-fit: contain;
+  margin: 0 auto 4px;
   image-rendering: pixelated;
-  animation: avatar-idle 3.2s steps(16, end) infinite;
+  filter: drop-shadow(0 8px 18px #0008);
 }
-@keyframes avatar-idle { to { background-position-x: calc(-16 * var(--sprite-width)); } }
-@media (max-width: 760px), (max-height: 760px) { .heroAvatar { --sprite-width: 80px; } }
+@media (max-width: 760px) { .heroAvatar { width: min(80vw, 330px); height: min(47svh, 440px); } }
+@media (max-height: 650px) and (min-width: 761px) { .heroAvatar { height: 42svh; } }
 .stack{list-style:none;padding:0;margin:24px 0 0;display:flex;max-width:640px;flex-wrap:wrap;gap:12px 22px;justify-content:center;color:var(--accent-light);font:13px var(--font-mono),monospace}
 .caseArrival{min-height:100svh;padding:70px var(--edge) 10svh;display:grid;align-content:end;justify-items:center;text-align:center;background:linear-gradient(transparent 42%,#080b12df 74%,#080b12f5)}
 .caseArrival h1{font:700 clamp(42px,8vw,106px)/.95 var(--font-display),sans-serif;letter-spacing:-.06em;margin:0;text-wrap:balance}
@@ -123,4 +123,4 @@ a.scrollCue:hover span { transform: translateY(4px); }
 .returnCue{color:var(--muted);font-size:14px}
 .caseSeam{height:18svh;background:linear-gradient(#080b12e9,#080b12)}
 .caseOrbit:not([data-orbit-ready]) :is(.caseSeam,.returnCue){display:none}
-@media(prefers-reduced-motion:reduce){.caseSeam,.returnCue,.heroAvatar{animation:none}.caseSeam,.returnCue{display:none}}
+@media(prefers-reduced-motion:reduce){.caseSeam,.returnCue{display:none}}

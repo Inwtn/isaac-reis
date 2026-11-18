@@ -14,7 +14,7 @@ function Arrival({ locale, echo = false }: { locale: Locale; echo?: boolean }) {
   const t = dictionary[locale], a = anchors[locale];
   return <section className={styles.arrival} id={echo ? undefined : a.home} data-orbit-scene={!echo ? a.home : undefined} data-orbit-seam={echo ? "" : undefined} aria-hidden={echo || undefined}>
     <div className={styles.arrivalCopy}>
-      <span className={styles.heroAvatar} aria-hidden="true" />
+      <img className={styles.heroAvatar} src="/isaac-avatar-full.png" width={1086} height={1448} alt={echo ? "" : locale === "pt" ? "Avatar de Isaac em pixel art, de corpo inteiro, com roupa futurista preta e detalhes amarelos" : "Full-body pixel art avatar of Isaac in a black futuristic outfit with yellow details"} />
       {echo ? <p className={styles.name}>Isaac Almeida<span>.</span></p> : <h1 className={styles.name}>Isaac Almeida<span>.</span></h1>}
       <p className={styles.kicker}>{t.role}</p>
     </div>
@@ -31,10 +31,10 @@ export function Portfolio({locale}: {locale: Locale}) {
     <Journey locale={locale}>
     <header className={styles.header}>
       <a href={`#${a.home}`} className={styles.brand} aria-label={`Isaac Almeida, ${t.home}`}><span aria-hidden="true">✳</span> INWTN</a>
-      <PixelMenu label={t.navigation}><nav className={styles.nav} aria-label={t.navigation}>
+      <div className={styles.headerControls}><LanguageSwitch locale={locale} href={pathFor(otherLocale(locale))} preserveSection /><PixelMenu label={t.navigation}><nav className={styles.nav} aria-label={t.navigation}>
         {markers.map(([id, label]) => <a key={id} href={`#${id}`} data-orbit-link={id}>{label}</a>)}
       </nav>
-      <div className={styles.headerActions}><a className={styles.github} href={site.github}>GitHub <span aria-hidden="true">↗</span></a><LanguageSwitch locale={locale} href={pathFor(otherLocale(locale))} preserveSection /></div></PixelMenu>
+      <div className={styles.headerActions}><a className={styles.github} href={site.github}>GitHub <span aria-hidden="true">↗</span></a></div></PixelMenu></div>
     </header>
     <main id="conteudo" className={styles.main}>
       <Arrival locale={locale} />

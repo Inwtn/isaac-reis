@@ -9,10 +9,10 @@ pnpm dev
 
 Abra http://127.0.0.1:3000. Para validar a produção, execute `pnpm build`, inicie `pnpm start` e rode `pnpm verify` em outro terminal.
 
-O site abre em português em `/` e tem versão inglesa em `/en`. O seletor no cabeçalho troca de idioma e mantém a seção em que o visitante está.
+O site abre em inglês em `/` e tem versão portuguesa em `/pt`. O seletor PT/EN fica sempre visível ao lado do menu e mantém a seção em que o visitante está.
 
 - Edite perfil e contato em `content/site.ts`.
 - Edite a lista e os detalhes dos trabalhos em `content/projects.ts`.
-- A arte está em `src/components/pixel-world.ts`, a coleção em `src/components/Journey.tsx` e o layout em `app/orbit.module.css`.
+- A arte do cenário está em `src/components/pixel-world.ts`, o avatar completo em `public/isaac-avatar-full.png`, a coleção em `src/components/Journey.tsx` e o layout em `app/orbit.module.css`.
 
 Com movimento reduzido, o cenário fica estático e a página termina no contato. Links diretos como `/#contact` funcionam sem JavaScript.

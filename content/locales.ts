@@ -47,9 +47,9 @@ export const dictionary = {
 const englishSlugs: Record<string, string> = { "reconciliacao-bancaria": "bank-reconciliation" };
 export const projectSlug = (locale: Locale, slug: string) => locale === "en" ? englishSlugs[slug] ?? slug : slug;
 export const pathFor = (locale: Locale, page: Page = "home", slug = "") => {
-  if (page === "home") return locale === "en" ? "/en" : "/";
-  if (page === "privacy") return locale === "en" ? "/en/privacy" : "/privacidade";
-  return `${locale === "en" ? "/en/work" : "/trabalhos"}/${projectSlug(locale, slug)}`;
+  if (page === "home") return locale === "en" ? "/" : "/pt";
+  if (page === "privacy") return locale === "en" ? "/privacy" : "/pt/privacidade";
+  return `${locale === "en" ? "/work" : "/pt/trabalhos"}/${projectSlug(locale, slug)}`;
 };
 export const anchors = { pt: { home: "inicio", work: "trabalhos", about: "sobre", contact: "contact" }, en: { home: "home", work: "work", about: "about", contact: "contact" } } as const;
 
@@ -60,7 +60,7 @@ export function pageMetadata(locale: Locale, page: Page, slug = "", copy?: {titl
   return {
     metadataBase: new URL(baseUrl), title, description,
     icons: { icon: "/icon.svg" },
-    alternates: { canonical: pathFor(locale, page, slug), languages: { "pt-BR": pathFor("pt", page, slug), en: pathFor("en", page, slug), "x-default": pathFor("pt", page, slug) } },
+    alternates: { canonical: pathFor(locale, page, slug), languages: { "pt-BR": pathFor("pt", page, slug), en: pathFor("en", page, slug), "x-default": pathFor("en", page, slug) } },
     openGraph: { type: "website", locale: locale === "en" ? "en_US" : "pt_BR", alternateLocale: [locale === "en" ? "pt_BR" : "en_US"], title, description, url: pathFor(locale, page, slug) },
     twitter: { card: "summary", title, description },
   };

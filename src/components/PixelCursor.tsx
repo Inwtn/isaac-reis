@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import styles from "./orbit-world.module.css";
 
-type Chip = { x: number; y: number; vx: number; vy: number; u: number; v: number; born: number; life: number; size: number; spark: boolean };
+type Chip = { x: number; y: number; vx: number; vy: number; born: number; life: number; size: number };
 
 // Width in pixels for each row of the four-point star.
 const starRows = [1, 1, 3, 5, 9, 5, 3, 1, 1];
@@ -12,8 +12,10 @@ function drawStar(ctx: CanvasRenderingContext2D, x: number, y: number) {
   const pixel = 2;
   ctx.fillStyle = "#080b12";
   starRows.forEach((width, row) => ctx.fillRect(x - width - 2, y + row * pixel - 11, width * pixel + 4, 6));
+  ctx.shadowColor = "#ffd735"; ctx.shadowBlur = 5;
   ctx.fillStyle = "#ffe365";
   starRows.forEach((width, row) => ctx.fillRect(x - width, y + row * pixel - 9, width * pixel, pixel));
+  ctx.shadowBlur = 0;
   ctx.fillStyle = "#fff7cd";
   ctx.fillRect(x - 1, y - 1, 2, 2);
 }
@@ -23,8 +25,7 @@ export function PixelCursor() {
   useEffect(() => {
     const canvas = ref.current;
     const ctx = canvas?.getContext("2d");
-    const scene = canvas?.parentElement?.querySelector("canvas");
-    if (!canvas || !ctx || !scene || scene === canvas) return;
+    if (!canvas || !ctx) return;
     const enabled = matchMedia("(any-pointer: fine) and (prefers-reduced-motion: no-preference)");
     const root = canvas.parentElement!;
     const chips: Chip[] = [];
@@ -43,29 +44,24 @@ export function PixelCursor() {
     const draw = (now: number) => {
       frame = 0;
       ctx.clearRect(0, 0, width, height);
-      const sceneRatio = scene.getBoundingClientRect().width / scene.width || grid;
       if (now < halo) {
-        ctx.globalAlpha = .58 * ((halo - now) / 160);
-        ctx.fillStyle = "#080b12";
-        ctx.fillRect(px-4, py-4, 4, 4); ctx.fillRect(px+4, py, 4, 4);
+        ctx.globalAlpha = .28 * ((halo - now) / 160);
         ctx.fillStyle = "#ffe365";
-        ctx.fillRect(px+4, py-8, 4, 4); ctx.fillRect(px-8, py+4, 4, 4);
+        ctx.shadowColor = "#ffd735"; ctx.shadowBlur = 8;
+        ctx.fillRect(px, py, 4, 4);
+        ctx.shadowBlur = 0;
       }
       for(let i = chips.length - 1; i >= 0; i--) {
         const chip = chips[i];
         const elapsed = now - chip.born;
         if(elapsed >= chip.life) { chips.splice(i,1); continue; }
         const x = snap(chip.x + chip.vx * elapsed);
-        const y = snap(chip.y + chip.vy * elapsed + .00019 * elapsed * elapsed);
-        ctx.globalAlpha = Math.ceil((1 - elapsed / chip.life) * 4) / 4 * .85;
-        if (chip.spark) {
-          ctx.fillStyle = i % 3 === 0 ? "#f3f1eb" : "#ffd735";
-          ctx.fillRect(x, y, chip.size, chip.size);
-        } else {
-          const u = Math.min(scene.width-1, Math.max(0, Math.floor(chip.u / sceneRatio)));
-          const v = Math.min(scene.height-1, Math.max(0, Math.floor(chip.v / sceneRatio)));
-          ctx.drawImage(scene, u, v, 1, 1, x, y, chip.size, chip.size);
-        }
+        const y = snap(chip.y + chip.vy * elapsed);
+        ctx.globalAlpha = (1 - elapsed / chip.life) * .52;
+        ctx.fillStyle = "#ffd735";
+        ctx.shadowColor = "#ffd735"; ctx.shadowBlur = 7;
+        ctx.fillRect(x, y, chip.size, chip.size);
+        ctx.shadowBlur = 0;
       }
       ctx.globalAlpha = 1;
       if (root.dataset.customPointer) {
@@ -81,18 +77,16 @@ export function PixelCursor() {
       if (!frame) frame = requestAnimationFrame(draw);
       if (prevX < 0) { prevX = x; prevY = y; return; }
       const dx = x - prevX, dy = y - prevY;
-      if (now - lastEmit < 30 || Math.hypot(dx, dy) < 5) return;
+      if (now - lastEmit < 25 || Math.hypot(dx, dy) < 4) return;
       lastEmit = now; prevX = x; prevY = y;
       px = snap(x); py = snap(y); halo = now + 160;
-      for (let n = 0; n < 5; n++) {
-        if (chips.length >= 64) chips.shift();
-        const u = px + snap((Math.random() - .5) * 26);
-        const v = py + snap((Math.random() - .5) * 26);
+      for (let n = 0; n < 2; n++) {
+        if (chips.length >= 20) chips.shift();
         chips.push({
-          x: u, y: v, u, v,
-          vx: (Math.random() - .5)*.16 - Math.sign(dx)*.03,
-          vy: (Math.random() - .7)*.15 - Math.sign(dy)*.025,
-          born: now, life: 220 + Math.random()*270, size: n < 2 ? 4 : 8, spark: n < 2,
+          x: px - Math.sign(dx) * n * 4, y: py - Math.sign(dy) * n * 4,
+          vx: -dx / Math.max(8, Math.hypot(dx, dy)) * .055,
+          vy: -dy / Math.max(8, Math.hypot(dx, dy)) * .055,
+          born: now, life: 150 + Math.random() * 60, size: 4,
         });
       }
       if (!frame) frame = requestAnimationFrame(draw);
