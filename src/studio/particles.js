@@ -4,7 +4,7 @@ export function createParticles(canvas) {
   if (!ctx) return;
   const hero = canvas.parentElement;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const mobile = matchMedia('(max-width: 700px)').matches;
+  let mobile = matchMedia('(max-width: 700px)').matches;
   const portrait = new Image();
   let points = [], width = 0, height = 0, scroll = 0, mouseX = 0, mouseY = 0, frame = 0, seed = 31;
   const random = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
@@ -16,7 +16,8 @@ export function createParticles(canvas) {
     const sourceCtx = source.getContext('2d', { willReadFrequently: true });
     sourceCtx.drawImage(portrait, 0, 0, source.width, source.height);
     const { data } = sourceCtx.getImageData(0, 0, source.width, source.height);
-    const target = mobile ? 3200 : 8500;
+    points = [];
+    const target = mobile ? 3600 : 10500;
     let attempts = 0;
     while (points.length < target && attempts++ < target * 30) {
       const x = Math.floor(random() * source.width);
@@ -27,13 +28,15 @@ export function createParticles(canvas) {
       const light = (data[offset] * .24 + data[offset + 1] * .6 + data[offset + 2] * .16) / 255;
       if (random() > .28 + light * .72) continue;
       points.push({ x: x / source.width - .5, y: y / source.height - .5, light,
-        gold: random() < .065, size: .65 + random() * .75,
+        gold: random() < .055, size: 1 + random() * .75,
         phase: random() * Math.PI * 2, depth: random() * 2 - 1 });
     }
     draw();
   }
 
   function resize() {
+    const wasMobile = mobile;
+    mobile = matchMedia('(max-width: 700px)').matches;
     width = hero.clientWidth;
     height = hero.clientHeight;
     const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -42,6 +45,7 @@ export function createParticles(canvas) {
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (wasMobile !== mobile && portrait.complete && portrait.naturalWidth) samplePortrait();
     if (reduced) draw();
   }
 
@@ -56,7 +60,7 @@ export function createParticles(canvas) {
     const drift = reduced ? 0 : Math.sin(time * .00034) * 3;
     for (const point of points) {
       const shimmer = reduced ? 1 : .9 + .1 * Math.sin(time * .0014 + point.phase);
-      const alpha = (.22 + point.light * .68) * fade * shimmer;
+      const alpha = (.38 + point.light * .58) * fade * shimmer;
       const x = centerX + point.x * size + mouseX * point.depth * 4;
       const y = centerY + point.y * size * imageRatio + drift + mouseY * point.depth * 4;
       ctx.fillStyle = point.gold ? `rgba(244,203,46,${alpha})` : `rgba(239,239,234,${alpha})`;
