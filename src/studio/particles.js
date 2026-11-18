@@ -57,14 +57,16 @@ export function createParticles(canvas) {
     const centerX = width * (mobile ? .67 : .69);
     const centerY = height * (mobile ? .41 : .52);
     const fade = 1 - Math.min(1, scroll * 1.45);
+    const dispersal = reduced ? 0 : Math.min(1, scroll * 1.65);
     const drift = reduced ? 0 : Math.sin(time * .00034) * 3;
     for (const point of points) {
       const shimmer = reduced ? 1 : .9 + .1 * Math.sin(time * .0014 + point.phase);
       const alpha = (.38 + point.light * .58) * fade * shimmer;
-      const x = centerX + point.x * size + mouseX * point.depth * 4;
-      const y = centerY + point.y * size * imageRatio + drift + mouseY * point.depth * 4;
+      const radius = dispersal * (12 + point.depth * 32);
+      const x = centerX + point.x * size + mouseX * point.depth * 8 + Math.cos(point.phase) * radius;
+      const y = centerY + point.y * size * imageRatio + drift + mouseY * point.depth * 8 + Math.sin(point.phase) * radius;
       ctx.fillStyle = point.gold ? `rgba(244,203,46,${alpha})` : `rgba(239,239,234,${alpha})`;
-      ctx.fillRect(x, y, point.size, point.size);
+      ctx.fillRect(x, y, point.size * (1 + dispersal * .4), point.size * (1 + dispersal * .4));
     }
     if (!reduced) frame = requestAnimationFrame(draw);
   }

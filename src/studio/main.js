@@ -8,6 +8,7 @@ import {initLanguage} from './language.js';
 import {initGallery} from './gallery.js';
 import {initCursor} from './cursor.js';
 import {initLoop} from './loop.js';
+import {initScrollMotion} from './scroll-motion.js';
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const projectArt = ['ledger','nodes','signal','grid','orbit'];
@@ -61,3 +62,4 @@ initLanguage({projectSummaries,experienceLabels});
 initGallery();
 initCursor();
 initLoop();
+initScrollMotion();
