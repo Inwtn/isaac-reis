@@ -66,6 +66,7 @@ try {
   const english = await browser.newPage({viewport: {width:320,height:720}});
   await english.goto(`${url}/#trabalhos`);
   await english.waitForFunction(() => document.querySelector("[data-orbit-root]").dataset.orbitCurrent === "trabalhos");
+  await english.locator("summary").click();
   await english.getByRole("link", {name:"Read in English"}).click();
   await english.waitForURL("**/en#work");
   assert.equal(await english.locator("html").getAttribute("lang"), "en");
@@ -73,10 +74,14 @@ try {
   await english.getByRole("link", {name:/Bank Reconciliation/}).click();
   await english.waitForURL("**/en/work/bank-reconciliation");
   await english.getByRole("heading",{name:"How it works"}).waitFor();
+  await english.locator("summary").click();
   await english.getByRole("link",{name:"Ler em português"}).click();
   await english.waitForURL("**/trabalhos/reconciliacao-bancaria");
   await english.getByRole("heading",{name:"Fluxo do projeto"}).waitFor();
   assert.equal(await english.locator("html").getAttribute("lang"), "pt-BR");
+  await english.evaluate(() => scrollTo(0,document.documentElement.scrollHeight-innerHeight-80));
+  await english.mouse.wheel(0,180);
+  await english.waitForURL("**/#trabalhos");
   assert.ok((await english.goto(`${url}/en/privacy`)).ok());
   await english.getByRole("heading",{name:"Privacy",level:1}).waitFor();
   assert.equal((await english.goto(`${url}/en/missing-page`)).status(),404);

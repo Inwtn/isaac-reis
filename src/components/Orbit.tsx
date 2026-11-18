@@ -4,8 +4,9 @@ import { useEffect, useRef } from "react";
 import styles from "./orbit-world.module.css";
 
 import { drawWorld } from "./pixel-world";
+import { drawProject } from "./project-world";
 
-export function Orbit() {
+export function Orbit({project, returnTo}: {project?: string; returnTo?: string} = {}) {
   const layer = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = layer.current, root = canvas?.closest<HTMLElement>("[data-orbit-root]");
@@ -17,11 +18,15 @@ export function Orbit() {
     const seam = root.querySelector<HTMLElement>("[data-orbit-seam]");
     let width = 0, height = 0, start = 0, period = 1, raf = 0, active = "", lastY = window.scrollY;
     let positions: number[] = [];
-    let target = 0, displayed = 0, time = 0, lastFrame = 0;
+    let target = 0, displayed = 0, time = 0, lastFrame = 0, leaving = false;
     const scroll = () => {
       let y = window.scrollY;
       if (!reduced.matches && seam && y > lastY && y >= start + period - 1 && period > 1 &&
           !root.querySelector("main :focus-visible")) {
+        if (returnTo) {
+          if (!leaving) { leaving = true; location.replace(returnTo); }
+          return;
+        }
         const overshoot = Math.max(0, y - start - period);
         y = start + overshoot;
         if (location.hash) history.replaceState(history.state, "", location.pathname + location.search);
@@ -44,7 +49,9 @@ export function Orbit() {
     };
 
     function draw(g: CanvasRenderingContext2D, progress: number) {
-      if (width && height) drawWorld(g, canvas!.width, canvas!.height, progress, time, width <= 760);
+      if (!width || !height) return;
+      if (project) drawProject(g, canvas!.width, canvas!.height, project, progress, time);
+      else drawWorld(g, canvas!.width, canvas!.height, progress, time, width <= 760);
     }
     const tick = (now: number) => {
       raf = 0;
@@ -73,7 +80,8 @@ export function Orbit() {
       canvas.style.height = `${canvas.height * pixel}px`;
       ctx.imageSmoothingEnabled = false;
       start = root.getBoundingClientRect().top + window.scrollY;
-      period = seam?.offsetHeight ? seam.getBoundingClientRect().top + window.scrollY - start : Math.max(1, root.offsetHeight - height);
+      const end = returnTo ? root.offsetHeight - height : seam?.getBoundingClientRect().top ?? 0;
+      period = Math.max(1, returnTo || !seam?.offsetHeight ? root.offsetHeight - height : end + window.scrollY - start);
       positions = scenes.map(scene => scene.getBoundingClientRect().top + window.scrollY - start);
       scroll(); draw(ctx, reduced.matches ? 0 : target);
     };
@@ -92,6 +100,6 @@ export function Orbit() {
       document.removeEventListener("visibilitychange", resume);
       reduced.removeEventListener("change", change);
     };
-  }, []);
+  }, [project, returnTo]);
   return <div className={styles.world} aria-hidden="true"><canvas ref={layer} className={styles.canvas} /></div>;
 }
