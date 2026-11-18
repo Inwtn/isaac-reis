@@ -14,7 +14,7 @@ function Arrival({ locale, echo = false }: { locale: Locale; echo?: boolean }) {
   const t = dictionary[locale], a = anchors[locale];
   return <section className={styles.arrival} id={echo ? undefined : a.home} data-orbit-scene={!echo ? a.home : undefined} data-orbit-seam={echo ? "" : undefined} aria-hidden={echo || undefined}>
     <div className={styles.arrivalCopy}>
-      <img className={styles.heroAvatar} src="/isaac-pixel-avatar.png" width="256" height="256" alt="" />
+      <span className={styles.heroAvatar} aria-hidden="true" />
       {echo ? <p className={styles.name}>Isaac Almeida<span>.</span></p> : <h1 className={styles.name}>Isaac Almeida<span>.</span></h1>}
       <p className={styles.kicker}>{t.role}</p>
     </div>
