@@ -12,11 +12,11 @@ import {initLoop} from './loop.js';
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const projectArt = ['ledger','nodes','signal','grid','orbit'];
 const projectSummaries = [
-  'Plataforma de inteligência financeira que reúne engenharia de dados de mercado, pesquisa quantitativa, aprendizado de máquina e IA local. Contribuo com pipelines, modelos, backend, interface e infraestrutura. O motor atual opera em simulação, com verificações de risco e registro das decisões.',
-  'Aplicação em Java e Spring Boot que compara extratos OFX e CSV com lançamentos internos. Classifica registros conciliados, divergentes e pendentes, controla acesso por função e expõe métricas de importação.',
-  'Serviço de integração em Java e Spring Boot que recebe transações financeiras por API REST e registra os dados automaticamente no Google Sheets, reduzindo a digitação manual do fluxo de caixa.',
-  'Aplicação de compartilhamento de tela para pequenos grupos privados. Usa WebRTC para transmitir vídeo e áudio opcional, com um servidor Node.js para salas, permissões e sinalização.',
-  'Explorador local de assemblies .NET. Uma interface no navegador se conecta a um servidor restrito ao próprio computador e ao analisador baseado em ILSpy para inspecionar C# e IL.'
+  'Sistema de pesquisa e operação para mercados financeiros. Combina dados, modelos, sinais e IA local com regras de risco auditáveis. A execução simulada é separada do modo real, que exige configuração explícita.',
+  'Motor Java e Spring Boot que concilia extratos OFX e CSV com lançamentos internos por valor, tipo e data. Usa tolerância de um dia, persiste o histórico e oferece dashboard conectado à API.',
+  'API Java e Spring Boot que recebe transações em JSON e acrescenta data, tipo, categoria, descrição e valor a uma planilha Google Sheets por conta de serviço.',
+  'Compartilhamento privado de tela para até cinco espectadores, com WebRTC, convites por função e chamadas de voz opcionais. Inclui diagnósticos de conexão e qualidade.',
+  'Explorador local de assemblies .NET com ILSpy. Mostra tipos, métodos, C# reconstruído, IL e metadados por análise estática, sem executar o arquivo inspecionado.'
 ];
 const experienceLabels = [
   ['Engenheiro de Software · 3D LAB','Set 2026 — presente'],

@@ -13,6 +13,6 @@ Em 17/11/2026, observei as páginas públicas de Daniel Ingrassia, Carter Ogunso
 
 ## Adaptação para Isaac
 
-O resultado usa uma esfera de partículas desenhada em Canvas 2D, em vez da figura humana da referência. Mantém o contraste entre carvão e branco e acrescenta amarelo pontual, alinhado ao README do GitHub. Projetos e experiência vêm dos dados já existentes no repositório. A página é em português, indica o Brasil e preserva links para GitHub, LinkedIn, currículo e versão de leitura.
+O resultado usa uma silhueta procedural de partículas desenhada em Canvas 2D, que se transforma em esfera com a rolagem. Mantém o contraste entre carvão e branco e acrescenta amarelo pontual, alinhado ao README do GitHub. A galeria de projetos avança lateralmente durante a rolagem e pode ser arrastada com o mouse. O idioma pode ser alternado entre português e inglês. Projetos e experiência vêm dos dados já existentes no repositório.
 
 As ilustrações geométricas dos projetos são originais em CSS; nenhum código, texto, imagem ou modelo 3D dos sites de referência foi incorporado.

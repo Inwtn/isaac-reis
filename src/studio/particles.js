@@ -48,7 +48,7 @@ export function createParticles(canvas) {
       const globeZ=point.sx*sin+point.sz*cos;
       const px=cx+(faceX*(1-ease)+globeX*ease)*scale+mx*point.depth*8;
       const py=cy+(point.y*(1-ease)+point.sy*ease)*scale+my*point.depth*8;
-      const alpha=(.10+point.weight*.42)*(1-scroll*.38)*(1+globeZ*ease*.25);
+      const alpha=(.17+point.weight*.58)*(1-scroll*.38)*(1+globeZ*ease*.25);
       ctx.fillStyle=`rgba(${point.weight>.965?'255,209,55':'239,239,235'},${alpha})`;
       ctx.fillRect(px,py,point.weight>.96?1.4:.8,point.weight>.96?1.4:.8);
     }

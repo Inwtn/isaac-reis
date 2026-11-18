@@ -68,6 +68,13 @@ const copy={
     projectAria:'View project on GitHub'
   }
 };
+const projectSummariesEn=[
+  'A research and execution system for financial markets. It combines data, models, signals and local AI with auditable risk rules. Paper execution is separate from live mode, which requires explicit configuration.',
+  'A Java and Spring Boot engine that reconciles OFX and CSV statements with internal entries by amount, type and date. It uses a one-day tolerance, stores import history and serves a dashboard connected to the API.',
+  'A Java and Spring Boot API that receives transactions as JSON and appends date, type, category, description and amount to Google Sheets through a service account.',
+  'Private screen sharing for up to five viewers using WebRTC, role-based invites and optional voice calls. Includes connection and quality diagnostics.',
+  'A local .NET assembly explorer powered by ILSpy. It shows types, methods, reconstructed C#, IL and metadata through static analysis without executing the inspected file.'
+];
 
 export function initLanguage({projectSummaries,experienceLabels}){
   const buttons=[...document.querySelectorAll('[data-lang]')];
@@ -81,6 +88,9 @@ export function initLanguage({projectSummaries,experienceLabels}){
     localStorage.setItem('isaac-portfolio-language',lang);
     buttons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.lang===lang)));
     document.querySelectorAll('.site-header nav a').forEach((node,i)=>node.textContent=c.nav[i]);
+    document.querySelector('.site-header nav')?.setAttribute('aria-label',lang==='pt'?'Navegação principal':'Main navigation');
+    document.querySelector('.language-switch')?.setAttribute('aria-label',lang==='pt'?'Idioma':'Language');
+    document.querySelector('.brand')?.setAttribute('aria-label',lang==='pt'?'Isaac Almeida, voltar ao início':'Isaac Almeida, back to top');
     text('.hero-content .small-overline',c.heroEyebrow);
     html('#hero-title',c.heroTitle);
     text('.hero-content>p:not(.small-overline)',c.heroText);
@@ -96,7 +106,7 @@ export function initLanguage({projectSummaries,experienceLabels}){
     text('.work-header>p:last-child',c.workText);
     document.querySelectorAll('.project').forEach((card,i)=>{
       textIn(card,'.project-info .small-overline',String(i+1).padStart(2,'0')+' / '+c.projectLabel);
-      textIn(card,'.project-info>p',lang==='pt'?projectSummaries[i]:projects[i].text);
+      textIn(card,'.project-info>p',lang==='pt'?projectSummaries[i]:projectSummariesEn[i]);
       textIn(card,'.project-footer a',c.projectLink);
       card.querySelector('.project-footer a')?.setAttribute('aria-label',c.projectAria+': '+projects[i].title);
     });
@@ -111,6 +121,7 @@ export function initLanguage({projectSummaries,experienceLabels}){
     text('.contact .small-overline',c.contactEyebrow);
     html('#contact-title',c.contactTitle);
     document.querySelectorAll('.contact-bottom a').forEach((node,i)=>node.textContent=c.contactLinks[i]);
+    text('.contact-bottom>span',lang==='pt'?'ISAAC ALMEIDA · BRASIL':'ISAAC ALMEIDA · BRAZIL');
     text('.site-footer a',c.top);
     text('.skip-link',c.skip);
   }
