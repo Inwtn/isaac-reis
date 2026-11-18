@@ -1,5 +1,10 @@
 node_modules/
 dist/
-work/
+.next/
+out/
+coverage/
+/work/
 .npm-cache/
 .DS_Store
+_ref/
+next-env.d.ts
