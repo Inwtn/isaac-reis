@@ -1,4 +1,5 @@
 import './style.css';
+import './visuals.css';
 import {projects, experience} from '../professional-details.js';
 import {profile} from '../content.js';
 import {createParticles} from './particles.js';
