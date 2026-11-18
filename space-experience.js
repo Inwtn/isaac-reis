@@ -132,38 +132,40 @@ export function createSpaceExperience({ onProgress = () => {}, onSector = () => 
   );
   hole.add(core);
   const disk = new THREE.Mesh(
-    new THREE.RingGeometry(245, 510, mobile ? 72 : 128, 1),
+    new THREE.RingGeometry(237, 420, mobile ? 72 : 128, 1),
     new THREE.ShaderMaterial({
       transparent: true,
       side: THREE.DoubleSide,
       depthWrite: false,
       uniforms: { uTime: { value: 0 } },
       vertexShader: `varying vec2 vPos; void main(){vPos=position.xy;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-      fragmentShader: `uniform float uTime; varying vec2 vPos; void main(){float r=length(vPos);float a=atan(vPos.y,vPos.x);float band=sin(a*16.0-r*.045-uTime*1.8)*.5+.5;vec3 hot=vec3(1.0,.76,.25);vec3 cyan=vec3(0.0,.82,1.0);vec3 violet=vec3(.52,.22,1.0);vec3 col=mix(violet,hot,smoothstep(260.0,470.0,r));col=mix(col,cyan,smoothstep(.70,.98,band)*.36);float alpha=(.3+band*.58)*smoothstep(245.0,285.0,r)*(1.0-smoothstep(480.0,510.0,r));gl_FragColor=vec4(col,alpha);}`,
+      fragmentShader: `
+        uniform float uTime;
+        varying vec2 vPos;
+        void main() {
+          float r = length(vPos);
+          float angle = atan(vPos.y, vPos.x);
+          float highlight = pow(max(0.0, sin(angle + 0.45)), 4.0);
+          float photonRing = exp(-pow((r - 246.0) / 5.0, 2.0));
+          float accretion = exp(-pow((r - 282.0) / 38.0, 2.0));
+          float outerHaze = exp(-pow((r - 345.0) / 65.0, 2.0));
+          float shimmer = 0.94 + 0.06 * sin(angle * 3.0 - uTime * 0.16);
+          float alpha = (photonRing * 0.7 + accretion * (0.1 + highlight * 0.13)
+            + outerHaze * 0.035) * shimmer;
+          vec3 color = mix(vec3(0.25, 0.26, 0.30), vec3(0.86, 0.82, 0.76),
+            photonRing * 0.75 + highlight * 0.25);
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
     }),
   );
-  disk.rotation.z = -0.13;
   hole.add(disk);
   const lens = new THREE.Mesh(
-    new THREE.TorusGeometry(305, 8, 8, 128),
-    new THREE.MeshBasicMaterial({ color: 0x83dfff, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending }),
+    new THREE.TorusGeometry(241, 2, 6, 128),
+    new THREE.MeshBasicMaterial({ color: 0xc7c3c5, transparent: true, opacity: 0.34, blending: THREE.AdditiveBlending }),
   );
-  lens.scale.set(1, 0.47, 1);
   hole.add(lens);
-  const outerLens = new THREE.Mesh(
-    new THREE.TorusGeometry(570, 2, 5, 128),
-    new THREE.MeshBasicMaterial({ color: 0x9562ff, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending }),
-  );
-  outerLens.scale.set(1, 0.43, 1);
-  hole.add(outerLens);
   scene.add(hole);
-
-  const glow = new THREE.PointLight(0x8a44ff, 1200, 3400, 1.5);
-  glow.position.copy(hole.position);
-  scene.add(glow);
-  const goldGlow = new THREE.PointLight(0xffbf2b, 700, 2500, 1.7);
-  goldGlow.position.set(1920, 70, -5150);
-  scene.add(goldGlow);
 
   let progress = 0;
   let targetZ = 0;
@@ -206,18 +208,13 @@ export function createSpaceExperience({ onProgress = () => {}, onSector = () => 
     const proximity = THREE.MathUtils.smoothstep(depth, 3300, 4900);
     camera.position.x = 2200 * progress + pointerX * 38 * (1 - proximity * 0.5) + Math.sin(elapsed * 0.22) * 22 * (1 - proximity * 0.4);
     camera.position.y = -pointerY * 26 + Math.cos(elapsed * 0.28) * 12;
-    const lookX = camera.position.x + (hole.position.x - camera.position.x) * proximity;
+    const lookX = camera.position.x + (hole.position.x - camera.position.x) * proximity * 0.65;
     camera.lookAt(lookX, 0, camera.position.z - 1200 + proximity * 500);
     nebulas.forEach((nebula) => { nebula.userData.nebulaMaterial.uniforms.uTime.value = elapsed; });
     disk.material.uniforms.uTime.value = elapsed;
     hole.rotation.z = Math.sin(elapsed * 0.08) * 0.025;
-    disk.rotation.z = -0.13 + elapsed * 0.018;
-    lens.rotation.z = elapsed * 0.08;
-    outerLens.rotation.z = -elapsed * 0.045;
-    glow.intensity = 960 + Math.sin(elapsed * 1.05) * 220;
-    goldGlow.intensity = 610 + Math.sin(elapsed * 1.3 + 1) * 130;
-    lens.material.opacity = 0.18 + proximity * 0.32 + Math.sin(elapsed * 1.8) * 0.06;
-    outerLens.material.opacity = 0.11 + proximity * 0.24 + Math.sin(elapsed * 1.2 + 2) * 0.035;
+    disk.rotation.z = elapsed * 0.005;
+    lens.material.opacity = 0.25 + proximity * 0.18;
     renderer.render(scene, camera);
     frame = window.requestAnimationFrame(render);
   }
