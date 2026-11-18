@@ -5,7 +5,7 @@ export function createParticles(canvas) {
   const hero=canvas.parentElement;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const mobile=matchMedia('(max-width: 700px)').matches;
-  const count=mobile?1700:5200;
+  const count=mobile?1900:6500;
   let seed=17;
   const random=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
   const points=Array.from({length:count},(_,i)=>{
@@ -48,9 +48,9 @@ export function createParticles(canvas) {
       const globeZ=point.sx*sin+point.sz*cos;
       const px=cx+(faceX*(1-ease)+globeX*ease)*scale+mx*point.depth*8;
       const py=cy+(point.y*(1-ease)+point.sy*ease)*scale+my*point.depth*8;
-      const alpha=(.17+point.weight*.58)*(1-scroll*.38)*(1+globeZ*ease*.25);
+      const alpha=(.25+point.weight*.68)*(1-scroll*.38)*(1+globeZ*ease*.25);
       ctx.fillStyle=`rgba(${point.weight>.965?'255,209,55':'239,239,235'},${alpha})`;
-      ctx.fillRect(px,py,point.weight>.96?1.4:.8,point.weight>.96?1.4:.8);
+      ctx.fillRect(px,py,point.weight>.96?1.6:1.05,point.weight>.96?1.6:1.05);
     }
     if(!reduced)frame=requestAnimationFrame(draw);
   }
