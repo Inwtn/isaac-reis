@@ -64,7 +64,7 @@
     --portal-content-drop: -4svh;
   }
   .sceneTrack[data-scene-entry="work"] { --portal-content-drop: 15svh; }
-  .sceneTrack[data-scene-entry="about"] { --portal-tone: #46ecff; --portal-frame: #06446e; --portal-cut: 82px; --portal-content-scale: .67; --portal-content-drop: 0svh; }
+  .sceneTrack[data-scene-entry="about"] { --portal-tone: #46ecff; --portal-frame: #06446e; --portal-cut: 82px; --portal-content-scale: .12; --portal-content-drop: 0svh; }
   .sceneTrack[data-scene-entry="experience"] { --portal-tone: #f0a46a; --portal-frame: #43282b; --portal-cut: 28px; }
   .sceneTrack[data-scene-entry="education"] { --portal-tone: #a9cde8; --portal-frame: #293946; --portal-cut: 60px; }
   .sceneTrack[data-scene-entry="contact"] { --portal-tone: #ffe094; --portal-frame: #493927; --portal-cut: 52px; }
@@ -126,7 +126,9 @@
     opacity: 0;
   }
   .orbit[data-portal-motion] .sceneTrack[data-scene-entry="about"]:not(:target):not(:has(:focus-visible)) .panel > * {
-    opacity: clamp(0, calc(var(--portal-open) * 1.35), 1);
+    /* Hold the copy until the circular opening can contain it; then scale it
+       in step with the aperture so headings and stack labels are never sliced. */
+    opacity: clamp(0, calc((var(--portal-open) - .26) * 4), 1);
   }
   .orbit[data-portal-motion] .sceneTrack[data-scene-entry="about"]:not(:target) .scenePin { height: 100svh; }
   .orbit[data-portal-motion] .sceneTrack[data-scene-entry="about"]:not(:target) .panel {
@@ -211,13 +213,13 @@
 .certificates span { color: var(--muted); font-size: 14px; }
 .about { text-align: left; }
 .about { text-align: center; }
-.about .sceneContent { position: relative; isolation: isolate; width: min(72vmax, 720px, calc(100vw - 28px), calc(100svh - 108px)); aspect-ratio: 1; align-content: center; gap: 0; padding: clamp(20px, 3vmin, 38px); overflow: hidden; clip-path: circle(50%); }
+.about .sceneContent { position: relative; isolation: isolate; width: min(94vmin, 780px, calc(100vw - 28px), calc(100svh - 56px)); aspect-ratio: 1; align-content: center; gap: 0; padding: clamp(24px, 4vmin, 40px); overflow: hidden; clip-path: circle(50%); }
 .about .sceneContent::before { content: ""; position: absolute; z-index: -1; inset: 5%; border-radius: 50%; background: radial-gradient(circle, #080b12f2 0 68%, #080b12dc 100%); pointer-events: none; }
 .about .sectionSignal { min-height: 22px; margin: 0 0 4px; }
-.aboutLead { display: grid; width: 100%; align-items: center; justify-items: center; grid-template-columns: 1fr; gap: 6px; text-align: center; }
+.aboutLead { display: grid; width: min(100%, 500px); align-items: center; justify-items: center; grid-template-columns: 1fr; gap: 6px; text-align: center; }
 .about h2 { max-width: 100%; font-size: clamp(32px, 6vmin, 64px); }
 .aboutText { margin: 8px 0 0; max-width: 48ch; color: var(--paper); font-size: clamp(13px, 1.2vmax, 17px); line-height: 1.28; }
-.focusGrid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: clamp(8px, 1.5vmin, 16px); width: 100%; margin-top: 14px; text-align: left; }
+.focusGrid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: clamp(8px, 1.5vmin, 16px); width: min(100%, 500px); margin-top: 14px; text-align: left; }
 .focusItem { border-top: 1px solid var(--rule); padding-top: 9px; }
 .focusItem h3 { margin: 6px 0 4px; font: 600 clamp(14px, 1.15vmax, 18px)/1.08 var(--font-display),sans-serif; }
 .focusItem p { margin: 0; color: var(--muted); font-size: clamp(10px, .9vmax, 13px); line-height: 1.25; }
@@ -238,7 +240,7 @@
   .projectTile[data-featured] .projectWindow { height: clamp(190px, 57vw, 320px); }
   .projectCopy h3 { font-size: clamp(20px, 5.6vw, 28px); }
   .projectStack { font-size: 9px; gap: 3px 8px; }
-  .about .sceneContent { width: min(94vw, 720px, calc(100svh - 92px)); padding: 18px; }
+  .about .sceneContent { width: min(94vmin, 720px, calc(100vw - 20px), calc(100svh - 56px)); padding: clamp(16px, 4.5vmin, 28px); }
   .aboutLead { grid-template-columns: 1fr; gap: 4px; }
   .about h2 { font-size: clamp(28px, 8vw, 42px); }
   .aboutText { font-size: 12px; line-height: 1.22; }
