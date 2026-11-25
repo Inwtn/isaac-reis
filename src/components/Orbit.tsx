@@ -5,6 +5,7 @@ import styles from "./orbit-world.module.css";
 
 import { drawWorld } from "./pixel-world";
 import { drawProject } from "./project-world";
+import { drawSceneGate } from "./scene-gate";
 
 export function Orbit({project, returnTo}: {project?: string; returnTo?: string} = {}) {
   const layer = useRef<HTMLCanvasElement>(null);
@@ -18,6 +19,8 @@ export function Orbit({project, returnTo}: {project?: string; returnTo?: string}
     const seam = root.querySelector<HTMLElement>("[data-orbit-seam]");
     let width = 0, height = 0, start = 0, period = 1, raf = 0, active = "", lastY = window.scrollY;
     let positions: number[] = [];
+    let entering = -1;
+    let entry = 0;
     let target = 0, displayed = 0, time = 0, lastFrame = 0, leaving = false;
     const scroll = () => {
       let y = window.scrollY;
@@ -45,13 +48,32 @@ export function Orbit({project, returnTo}: {project?: string; returnTo?: string}
         root.dataset.orbitCurrent = name;
         links.forEach(link => link.dataset.orbitLink === name ? link.setAttribute("aria-current", "location") : link.removeAttribute("aria-current"));
       }
+      const entryStart = height * .92;
+      const entryEnd = height * .20;
+      const gate = reduced.matches ? -1 : positions.findIndex((top, index) =>
+        scenes[index].hasAttribute("data-scene-gate") && top - relative < entryStart && top - relative > entryEnd
+      );
+      if (gate !== entering && entering >= 0) {
+        delete scenes[entering].dataset.entering;
+        scenes[entering].style.removeProperty("--scene-enter");
+      }
+      entering = gate;
+      if (gate >= 0) {
+        entry = (entryStart - (positions[gate] - relative)) / (entryStart - entryEnd);
+        const settle = Math.min(1, Math.max(0, (entry - .12) / .72));
+        scenes[gate].dataset.entering = "";
+        scenes[gate].style.setProperty("--scene-enter", String(settle * settle * (3 - 2 * settle)));
+      }
       if (reduced.matches) draw(ctx, 0);
     };
 
     function draw(g: CanvasRenderingContext2D, progress: number) {
       if (!width || !height) return;
       if (project) drawProject(g, canvas!.width, canvas!.height, project, progress, time);
-      else drawWorld(g, canvas!.width, canvas!.height, progress, time, width <= 760);
+      else {
+        drawWorld(g, canvas!.width, canvas!.height, progress, time, width <= 760);
+        if (entering >= 0) drawSceneGate(g, canvas!.width, canvas!.height, entering - 1, entry);
+      }
     }
     const tick = (now: number) => {
       raf = 0;
@@ -95,6 +117,10 @@ export function Orbit({project, returnTo}: {project?: string; returnTo?: string}
     reduced.addEventListener("change", change);
     return () => {
       delete root.dataset.orbitReady;
+      if (entering >= 0) {
+        delete scenes[entering].dataset.entering;
+        scenes[entering].style.removeProperty("--scene-enter");
+      }
       observer.disconnect(); cancelAnimationFrame(raf);
       window.removeEventListener("scroll", scroll);
       document.removeEventListener("visibilitychange", resume);

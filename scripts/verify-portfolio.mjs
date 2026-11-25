@@ -79,7 +79,9 @@ try {
   await english.waitForURL("**/work/bank-reconciliation");
   await english.getByRole("heading",{name:"How it works"}).waitFor();
   assert.equal(await english.locator("html").getAttribute("lang"), "en");
+  await english.locator("[data-orbit-ready]").waitFor();
   await english.evaluate(() => scrollTo(0,document.documentElement.scrollHeight-innerHeight-80));
+  await english.mouse.move(160, 400);
   await english.mouse.wheel(0,180);
   await english.waitForURL("**/#work");
   assert.ok((await english.goto(`${url}/privacy`)).ok());

@@ -67,7 +67,7 @@ export const pathFor = (locale: Locale, page: Page = "home", slug = "") => {
   if (page === "privacy") return locale === "en" ? "/privacy" : "/pt/privacidade";
   return `${locale === "en" ? "/work" : "/pt/trabalhos"}/${projectSlug(locale, slug)}`;
 };
-export const anchors = { pt: { home: "inicio", work: "trabalhos", about: "sobre", contact: "contact" }, en: { home: "home", work: "work", about: "about", contact: "contact" } } as const;
+export const anchors = { pt: { home: "inicio", work: "trabalhos", about: "sobre", experience: "experiencia", education: "formacao", contact: "contact" }, en: { home: "home", work: "work", about: "about", experience: "experience", education: "education", contact: "contact" } } as const;
 
 export function pageMetadata(locale: Locale, page: Page, slug = "", copy?: {title: string; description: string}): Metadata {
   const words = dictionary[locale];

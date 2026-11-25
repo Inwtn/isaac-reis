@@ -1,3 +1,5 @@
+import { streetSurface } from "./street";
+
 const TAU = Math.PI * 2;
 const BAYER = [0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
 const SUN = ["#583219","#8e4917","#bf6915","#e6961b","#ffc12a","#ffd735","#ffe365","#fff2a6"];
@@ -105,5 +107,13 @@ export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, pro
   }
   if(mobile) for(let y=Math.floor(h*.46);y<h;y++) {
     g.fillStyle=`rgba(8,11,13,${Math.min(.56, (y/h-.46)*1.2)})`;g.fillRect(0,y,w,1);
+  }
+  // The avatar follows this lane through the foreground.
+  for (let x = 0; x < w; x++) {
+    const y = Math.round(streetSurface(x, w, h));
+    step(x, y, 1, 2, "#2b2923");
+    step(x, y + 2, 1, h - y, "#090d15");
+    if (x % 29 < 3) step(x, y, 1, 1, "#614b24");
+    if (Math.min(Math.abs(x - w * .38), Math.abs(x - w * .69)) < 1) step(x, y, 1, 3, "#ad7c35");
   }
 }
