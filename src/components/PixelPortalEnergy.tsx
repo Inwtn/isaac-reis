@@ -29,10 +29,9 @@ export function PixelPortalEnergy() {
       const frame = Math.min(FRAME_COUNT - 1, Math.floor(eased * FRAME_COUNT));
       const column = frame % 4;
       const row = Math.floor(frame / 4);
-      const box = Math.max(width, height);
-      // The sprite's clear center is ~60% of its tile. This scale makes that
-      // opening grow wide enough to contain the About copy before it is revealed.
-      const side = box * (.25 + eased * 1.3);
+      const box = Math.min(width, height);
+      // Keep the sprite inside the same viewport-sized circle as the content.
+      const side = box * eased * 1.3;
       const sourceFrame = sprite.naturalWidth / 4;
 
       context.clearRect(0, 0, canvas.width, canvas.height);
