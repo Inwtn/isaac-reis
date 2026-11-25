@@ -10,7 +10,7 @@ export const htmlLang = { pt: "pt-BR", en: "en" } as const;
 export const dictionary = {
   pt: {
     role: "Engenharia de software", job: site.role, description: site.description,
-    explore: "Explorar", home: "Início", projects: "Trabalhos", about: "Sobre", contact: "Contato", privacy: "Privacidade",
+    explore: "Explorar", home: "Início", projects: "Projetos", about: "Sobre", contact: "Contato", privacy: "Privacidade",
     aboutStart: "Das finanças", aboutEnd: "ao código", contactTitle: "Vamos conversar",
     aboutTitle: "Software para a vida real",
     aboutIntro: "Gosto de entender o que acontece antes e depois de cada clique. Passei mais de quatro anos em operações financeiras; hoje transformo processos complexos em ferramentas que as pessoas conseguem usar de verdade.",
@@ -24,7 +24,7 @@ export const dictionary = {
     navigation: "Navegação principal", skip: "Pular para o conteúdo", language: "Read in English",
     copy: "Copiar e-mail", copied: "Endereço copiado.", copyError: "Não foi possível copiar. Use o link de e-mail.",
     signal: "Sinal", collect: "Coletar sinal", collected: "Sinal coletado", signals: "Sinais", complete: "Sinais completos",
-    backWork: "Voltar aos trabalhos", backHome: "Voltar ao início",
+    backWork: "Voltar aos projetos", backHome: "Voltar ao início",
     kind: "Tipo", year: "Ano", roleLabel: "Participação", stack: "Tecnologias", unknownYear: "Não informado",
     workflow: "Fluxo do projeto", workflowNote: "Diagrama editorial baseado no fluxo descrito no repositório.",
     workflowLabel: "Etapas documentadas do projeto", details: "Detalhes de implementação", source: "Ver repositório", live: "Abrir projeto",
@@ -35,7 +35,7 @@ export const dictionary = {
   },
   en: {
     role: "Software engineering", job: "Software Engineer", description: "Isaac Almeida’s portfolio: internal software, integrations, and automation.",
-    explore: "Explore", home: "Home", projects: "Work", about: "About", contact: "Contact", privacy: "Privacy",
+    explore: "Explore", home: "Home", projects: "Projects", about: "About", contact: "Contact", privacy: "Privacy",
     aboutStart: "From finance", aboutEnd: "to software", contactTitle: "Let’s talk",
     aboutTitle: "Software for real life",
     aboutIntro: "I like to understand what happens before and after every click. I spent over four years in financial operations; now I turn complex processes into tools people can actually use.",
@@ -49,7 +49,7 @@ export const dictionary = {
     navigation: "Main navigation", skip: "Skip to content", language: "Ler em português",
     copy: "Copy email", copied: "Email address copied.", copyError: "Couldn’t copy the address. Use the email link instead.",
     signal: "Signal", collect: "Collect signal", collected: "Signal collected", signals: "Signals", complete: "All signals collected",
-    backWork: "Back to work", backHome: "Back to home",
+    backWork: "Back to projects", backHome: "Back to home",
     kind: "Type", year: "Year", roleLabel: "Role", stack: "Technologies", unknownYear: "Not listed",
     workflow: "How it works", workflowNote: "Illustration based on the workflow documented in the repository.",
     workflowLabel: "Documented project steps", details: "Implementation details", source: "View source", live: "Open project",

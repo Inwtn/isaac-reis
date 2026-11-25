@@ -39,13 +39,13 @@ export function Portfolio({locale}: {locale: Locale}) {
     </header>
     <main id="conteudo" className={styles.main}>
       <Arrival locale={locale} />
-      <section id={a.work} data-orbit-scene={a.work} className={styles.panel} aria-labelledby="work-title">
-        <div className={styles.sectionSignal}><Signal sector="trabalhos" /></div>
-        <h2 id="work-title">{t.projects}<span>.</span></h2>
+      <section id={a.work} data-orbit-scene={a.work} className={`${styles.panel} ${styles.work}`} aria-labelledby="work-title">
+        <div className={styles.workHeading}><div className={styles.workIndex}><Signal sector="trabalhos" /><span>01 / 05</span></div><h2 id="work-title">{t.projects}<span>.</span></h2></div>
         <div className={styles.projectList}>
-          {projects.map(project => localizeProject(project, locale)).map(project => <Link key={project.slug} className={styles.project} href={pathFor(locale,"project",project.slug)}>
-            <span className={styles.projectCopy}><strong className={styles.projectTitle}>{project.title}</strong><span className={styles.projectSummary}>{project.summary}</span></span>
-            <span className={styles.projectKind}>{project.kind}</span>
+          {projects.map(project => localizeProject(project, locale)).map((project, index) => <Link key={project.slug} className={styles.project} href={pathFor(locale,"project",project.slug)}>
+            <span className={styles.projectNumber} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <span className={styles.projectCopy}><strong className={styles.projectTitle}>{project.title}</strong><span className={styles.projectSummary}>{project.summary}</span><span className={styles.projectStack}>{project.stack.slice(0, 3).join(" / ")}</span></span>
+            <span className={styles.projectArrow} aria-hidden="true">↗</span>
           </Link>)}
         </div>
       </section>
