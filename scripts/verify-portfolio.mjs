@@ -88,6 +88,20 @@ try {
   await english.getByRole("heading",{name:"Privacy",level:1}).waitFor();
   assert.equal((await english.goto(`${url}/missing-page`)).status(),404);
   await english.getByRole("heading",{name:"This page doesn’t exist."}).waitFor();
+  for (const [home, section] of [["/", "education"], ["/pt", "formacao"]]) {
+    const page = await browser.newPage();
+    await page.goto(`${url}${home}?preview=1#${section}`);
+    await page.waitForFunction(() => scrollY > 0);
+    await page.reload();
+    assert.equal(new URL(page.url()).hash, "");
+    assert.equal(new URL(page.url()).search, "?preview=1");
+    await page.waitForFunction(() => scrollY === 0 && history.scrollRestoration === "auto", null, {timeout: 5000});
+    await page.locator("#" + section).scrollIntoViewIfNeeded();
+    assert.ok(await page.evaluate(() => scrollY > 0));
+    await page.reload();
+    await page.waitForFunction(() => scrollY === 0 && history.scrollRestoration === "auto", null, {timeout: 5000});
+    await page.close();
+  }
   const noJs = await browser.newPage({ javaScriptEnabled: false });
   await noJs.goto(url);
   assert.equal(await noJs.locator("[data-orbit-seam]").isVisible(), false);

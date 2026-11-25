@@ -12,6 +12,23 @@ import { PixelCursor } from "@/src/components/PixelCursor";
 import { AnimatedAvatar } from "./AnimatedAvatar";
 import styles from "@/app/orbit.module.css";
 
+// Run before the browser can restore the previous position or jump to its old fragment.
+const resetHomeOnReload = `
+  if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
+    const previousRestoration = history.scrollRestoration;
+    history.scrollRestoration = "manual";
+    if (location.hash) history.replaceState(history.state, "", location.pathname + location.search);
+    window.scrollTo(0, 0);
+    window.addEventListener("pageshow", () => {
+      // Keep manual mode through the browser's restoration after pageshow.
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+        history.scrollRestoration = previousRestoration;
+      });
+    }, { once: true });
+  }
+`;
+
 const projectCaptions: Record<string, Record<Locale, string>> = {
   mneme: { pt: "Dados de mercado e backtesting", en: "Market data and backtesting" },
   "reconciliacao-bancaria": { pt: "Concilia extratos OFX e CSV", en: "Matches OFX and CSV bank statements" },
@@ -53,6 +70,7 @@ export function Portfolio({locale}: {locale: Locale}) {
   const [currentRole, ...pastRoles] = cv.roles;
   const markers = [[a.work,t.projects],[a.about,t.about],[a.experience,cv.experience],[a.education,cv.education],[a.contact,t.contact]];
   return <div className={styles.orbit} data-orbit-root>
+    <script dangerouslySetInnerHTML={{ __html: resetHomeOnReload }} />
     <Orbit />
     <PixelCursor />
     <Journey locale={locale}>
