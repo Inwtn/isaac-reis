@@ -31,12 +31,9 @@ export function DetailPage({locale, slug}: {locale: Locale; slug: string}) {
     <PixelCursor />
     <header className={styles.header}>
       <Link className={styles.brand} href={work}><span aria-hidden="true">✳</span> INWTN</Link>
-      <PixelMenu label={t.navigation}>
+      <div className={styles.headerControls}><LanguageSwitch locale={locale} href={pathFor(otherLocale(locale), "project", p.slug)} /><PixelMenu label={t.navigation}>
         <nav className={styles.nav} aria-label={t.navigation}><Link href={work}>{t.backWork}</Link><Link href={`${home}#contact`}>{t.contact}</Link></nav>
-        <div className={styles.headerActions}>
-        <LanguageSwitch locale={locale} href={pathFor(otherLocale(locale), "project", p.slug)} />
-        </div>
-      </PixelMenu>
+      </PixelMenu></div>
     </header>
     <main id="conteudo" className={styles.main}>
       <section className={styles.caseArrival} data-orbit-scene="project"><h1>{p.title}</h1><p>{p.summary}</p><a href="#workflow">{t.explore} ↓</a></section>

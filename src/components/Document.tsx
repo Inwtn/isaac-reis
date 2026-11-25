@@ -1,11 +1,11 @@
-import { Chakra_Petch, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Hanken_Grotesk, Pixelify_Sans, Silkscreen } from "next/font/google";
 import { site } from "@/content/site";
 import { baseUrl, dictionary, htmlLang, pathFor, type Locale } from "@/content/locales";
 import "@/app/globals.css";
 
 const bodyFont = Hanken_Grotesk({ subsets: ["latin"], display: "swap", variable: "--font-body" });
-const monoFont = JetBrains_Mono({ subsets: ["latin"], display: "swap", variable: "--font-mono" });
-const displayFont = Chakra_Petch({ subsets: ["latin"], weight: ["600","700"], display: "swap", variable: "--font-display" });
+const monoFont = Silkscreen({ subsets: ["latin"], weight: ["400", "700"], display: "swap", variable: "--font-mono" });
+const displayFont = Pixelify_Sans({ subsets: ["latin"], weight: "variable", display: "swap", variable: "--font-display" });
 export const portfolioViewport = { themeColor: "#080b0d", colorScheme: "dark" } as const;
 
 export function Document({ children, locale }: Readonly<{ children: React.ReactNode; locale: Locale }>) {

@@ -31,7 +31,7 @@
 .arrival:not([data-orbit-seam]) .arrivalCopy { animation: arrival-in .6s ease-out both; }
 @keyframes arrival-in { from { transform: translateY(10px); opacity: .75; } to { transform: none; opacity: 1; } }
 .orbit:not([data-orbit-ready]) .arrival[data-orbit-seam] { display: none; }
-.name, .panel h2 { font-family: var(--font-display), sans-serif; font-weight: 700; letter-spacing: -.06em; line-height: .91; margin: 0; text-wrap: balance; }
+.name, .panel h2 { font-family: var(--font-display), sans-serif; font-weight: 700; letter-spacing: -.035em; line-height: .95; margin: 0; text-wrap: balance; }
 .name { font-size: clamp(48px, 8.3vw, 131px); text-transform: uppercase; overflow-wrap: anywhere; }
 .kicker, .scrollCue { font: 11px var(--font-mono), monospace; letter-spacing: .14em; }
 .kicker { margin: 16px 0 0; text-transform: uppercase; color: var(--accent-light); }
@@ -58,13 +58,23 @@ a.scrollCue:hover span { transform: translateY(4px); }
 .collect i { width: 10px; height: 10px; background: #a58728; clip-path: polygon(30% 0,70% 0,70% 30%,100% 30%,100% 70%,70% 70%,70% 100%,30% 100%,30% 70%,0 70%,0 30%,30% 30%); transition: transform .18s; }
 .collect:hover i, .collect[aria-pressed="true"] i { background: var(--accent-light); transform: scale(1.2); }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.projectList { width: min(100%, 780px); margin: 30px auto 0; }
-.project { display: grid; grid-template-columns: minmax(0,1fr) minmax(120px,30%); text-align: left; align-items: center; gap: 12px; min-height: 59px; padding: 9px 0; border-bottom: 1px solid var(--rule); text-decoration: none; }
+.projectList { width: min(100%, 850px); margin: 30px auto 0; }
+.project { display: grid; grid-template-columns: minmax(0,1fr) minmax(120px,25%); text-align: left; align-items: start; gap: 12px; min-height: 85px; padding: 13px 0; border-bottom: 1px solid var(--rule); text-decoration: none; }
 .project:first-child { border-top: 1px solid var(--rule); }
 .project:hover .projectTitle, .project:focus-visible .projectTitle { color: var(--accent-light); }
-.projectTitle { font-weight: 650; font-size: clamp(20px, 3vw, 31px); letter-spacing: -.03em; line-height: 1.15; }
+.projectCopy { display: grid; gap: 3px; }
+.projectTitle { font: 600 clamp(24px, 3vw, 34px)/1.05 var(--font-display), sans-serif; letter-spacing: -.025em; }
+.projectSummary { max-width: 65ch; color: var(--muted); font-size: 15px; line-height: 1.4; }
 .projectKind, .footer { color: var(--muted); font-size: 14px; }
-.aboutText { margin: 22px 0 0; max-width: 42ch; color: var(--paper); font-size: clamp(17px,2vw,23px); }
+.projectKind { padding-top: 7px; text-align: right; }
+.about h2 { max-width: 15ch; font-size: clamp(49px, 7vw, 94px); }
+.aboutText { margin: 22px 0 0; max-width: 56ch; color: var(--paper); font-size: clamp(18px,2vw,23px); line-height: 1.42; }
+.aboutDetail { max-width: 67ch; margin: 14px 0 0; color: var(--muted); font-size: 16px; }
+.focusGrid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 22px; width: min(100%, 850px); margin-top: 36px; text-align: left; counter-reset: focus; }
+.focusItem { border-top: 1px solid var(--rule); padding-top: 12px; counter-increment: focus; }
+.focusItem::before { content: "0" counter(focus); color: var(--accent); font: 12px var(--font-mono),monospace; }
+.focusItem h3 { margin: 10px 0 5px; font: 600 clamp(21px,2.4vw,27px)/1 var(--font-display),sans-serif; }
+.focusItem p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.4; }
 .contact h2 { margin-bottom: 22px; }
 .contact :global(.contact__actions) { justify-content: center; }
 .footer { margin-top: 20px; padding: 0; justify-content: center; }
@@ -79,6 +89,9 @@ a.scrollCue:hover span { transform: translateY(4px); }
   .panel { scroll-margin-top: 54px; }
   .project { grid-template-columns: minmax(0,1fr); }
   .projectKind { display: none; }
+  .focusGrid { grid-template-columns: 1fr; gap: 16px; margin-top: 26px; }
+  .focusItem h3 { margin: 6px 0 2px; }
+  .focusItem p { max-width: 55ch; }
 }
 @media(max-height:530px) and (min-width:761px) { .name { font-size: 11vh; } .arrival { padding-bottom: 72px; } }
 @media(prefers-reduced-motion:reduce) { .progress, .arrival[data-orbit-seam] { display: none; } }

@@ -44,15 +44,17 @@ export function Portfolio({locale}: {locale: Locale}) {
         <h2 id="work-title">{t.projects}<span>.</span></h2>
         <div className={styles.projectList}>
           {projects.map(project => localizeProject(project, locale)).map(project => <Link key={project.slug} className={styles.project} href={pathFor(locale,"project",project.slug)}>
-            <strong className={styles.projectTitle}>{project.title}</strong>
+            <span className={styles.projectCopy}><strong className={styles.projectTitle}>{project.title}</strong><span className={styles.projectSummary}>{project.summary}</span></span>
             <span className={styles.projectKind}>{project.kind}</span>
           </Link>)}
         </div>
       </section>
       <section id={a.about} data-orbit-scene={a.about} className={`${styles.panel} ${styles.about}`} aria-labelledby="about-title">
         <div className={styles.sectionSignal}><Signal sector="sobre" /></div>
-        <h2 id="about-title">{locale === "pt" ? "O que eu construo" : "What I build"}<span>.</span></h2>
-        <p className={styles.aboutText}>{locale === "pt" ? "Sistemas internos, APIs, integrações e automações com IA aplicada." : "Internal software, APIs, integrations, and automation with applied AI."}</p>
+        <h2 id="about-title">{t.aboutTitle}<span>.</span></h2>
+        <p className={styles.aboutText}>{t.aboutIntro}</p>
+        <p className={styles.aboutDetail}>{t.aboutDetail}</p>
+        <div className={styles.focusGrid}>{t.focus.map(item => <div className={styles.focusItem} key={item.title}><h3>{item.title}</h3><p>{item.text}</p></div>)}</div>
         <ul className={styles.stack}><li>Java · Spring Boot</li><li>PHP · Laravel</li><li>Python</li><li>JavaScript · React</li><li>PostgreSQL · MySQL</li><li>LLMs · RAG</li></ul>
       </section>
       <section className={`${styles.panel} ${styles.contact}`} id="contact" data-orbit-scene="contact" aria-labelledby="contact-title">

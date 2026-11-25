@@ -72,7 +72,7 @@ try {
   await english.waitForURL("**/pt#trabalhos");
   assert.equal(await english.locator("html").getAttribute("lang"), "pt-BR");
   assert.ok(await english.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-  await english.getByRole("link", {name:/Reconciliação/}).click();
+  await english.getByRole("link", {name:/Conciliação bancária/}).click();
   await english.waitForURL("**/pt/trabalhos/reconciliacao-bancaria");
   await english.getByRole("heading",{name:"Fluxo do projeto"}).waitFor();
   await english.getByRole("link",{name:"Read in English"}).click();
