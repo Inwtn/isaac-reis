@@ -36,6 +36,7 @@ img{max-width:100%;height:auto}
 .case__facts dt{color:var(--accent);font-size:14px}.case__facts dd{margin:4px 0 0;overflow-wrap:anywhere}
 .case__section{padding:20px 0;border-bottom:1px solid var(--rule)}
 .case__section h2{letter-spacing:-.035em;font-size:clamp(25px,4vw,39px)}
+.case__section h2,.case__facts dt,.caseEnd>a{font-family:var(--font-display),sans-serif;letter-spacing:0}
 .copy{color:var(--muted);max-width:65ch}
 .case__diagram{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));list-style:none;padding:0;counter-reset:flow}
 .case__diagram li{padding:14px 12px 14px 0;border-top:1px solid var(--rule);counter-increment:flow;color:var(--muted)}

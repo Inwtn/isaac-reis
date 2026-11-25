@@ -8,6 +8,7 @@ import { CaseDiagram } from "./CaseDiagram";
 import { Orbit } from "./Orbit";
 import { PixelCursor } from "./PixelCursor";
 import { PixelMenu } from "./PixelMenu";
+import { ProjectArrivalMotion } from "./ProjectArrivalMotion";
 import styles from "@/app/orbit.module.css";
 
 export const detailParams = (locale: Locale) => projects.map(p => ({slug: projectSlug(locale, p.slug)}));
@@ -27,6 +28,7 @@ export function DetailPage({locale, slug}: {locale: Locale; slug: string}) {
   const p = getProject(locale, slug), t = dictionary[locale], home = pathFor(locale);
   const work = `${home}#${anchors[locale].work}`;
   return <div className={`${styles.orbit} ${styles.caseOrbit}`} data-orbit-root>
+    <ProjectArrivalMotion />
     <Orbit project={p.slug} returnTo={work} />
     <PixelCursor />
     <header className={styles.header}>
@@ -36,7 +38,7 @@ export function DetailPage({locale, slug}: {locale: Locale; slug: string}) {
       </PixelMenu></div>
     </header>
     <main id="conteudo" className={styles.main}>
-      <section className={styles.caseArrival} data-orbit-scene="project"><h1>{p.title}</h1><p>{p.summary}</p><a href="#workflow">{t.explore} ↓</a></section>
+      <section className={styles.caseArrival} data-orbit-scene="project" data-project-intro><h1>{p.title}</h1><p>{p.summary}</p><a href="#workflow">{t.explore} ↓</a></section>
       <div className={styles.caseBody}>
       <dl className="case__facts">
         <div><dt>{t.kind}</dt><dd>{p.kind}</dd></div>

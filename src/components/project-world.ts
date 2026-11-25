@@ -6,18 +6,29 @@ const palettes: Record<string, [string,string,string]> = {
   "lupa-net": ["#170d1c","#3b2148","#eaa0f9"],
 };
 
-export function drawProject(g: CanvasRenderingContext2D, w: number, h: number, slug: string, progress: number, time: number) {
+export function drawProject(g: CanvasRenderingContext2D, w: number, h: number, slug: string, progress: number, time: number, framing?: "artwork") {
   const [sky, surface, light] = palettes[slug] ?? palettes.mneme;
   const box = (x: number,y: number,bw: number,bh: number,c: string) => {
     g.fillStyle=c;
     g.fillRect(Math.round(x),Math.round(y),Math.max(1,Math.round(bw)),Math.max(1,Math.round(bh)));
   };
   box(0,0,w,h,sky);
-  const unit = Math.max(1, Math.floor(w/130));
+  const unit = framing === "artwork" ? Math.max(.35, Math.min(w / 118, h / 52)) : Math.max(1, Math.floor(w / 130));
   const grid = 12*unit;
   for(let x=0;x<w;x+=grid) box(x,0,1,h,surface);
   for(let y=Math.floor(progress*110)%grid;y<h;y+=grid) box(0,y,w,1,surface);
-  const cx=w*.5, cy=h*.38, phase=Math.floor(time/160), u=unit;
+  const cx=w*.5, cy=h*(framing === "artwork" ? .49 : .38), phase=Math.floor(time/160), u=unit;
+  if (framing === "artwork") {
+    for (let index = 0; index < 4; index++) {
+      const level = h * (.72 + index * .08);
+      box(0, level, w, 1, surface);
+      box(w * (.12 + .1 * index), level, w * (.05 + .02 * index), 1, light);
+    }
+    const markers = [[.06, .12, 1], [.94, .12, -1], [.06, .89, 1], [.94, .89, -1]];
+    for (const [x, y, side] of markers) {
+      box(w * x + (side < 0 ? -5*u : 0), h * y, 5*u, 1, light);
+    }
+  }
   const panel = (x: number,y: number,pw: number,ph: number) => {
     box(x+3*u,y+3*u,pw,ph,surface);
     box(x,y,pw,ph,light); box(x+u,y+u,pw-2*u,ph-2*u,sky);
@@ -66,5 +77,13 @@ export function drawProject(g: CanvasRenderingContext2D, w: number, h: number, s
       box(cx+(-38+i%3*3)*u,cy+(-13+i*4)*u,(12-i%3)*u,u,light);
       box(cx+(-9+i%3*4)*u,cy+(-13+i*4)*u,(17+i%4*5)*u,u,i===phase%8?light:surface);
     }
+  }
+  if (framing === "artwork" && time > 0) {
+    const scan = Math.round((time % 2400) / 2400 * w);
+    g.save();
+    g.globalAlpha = .2;
+    box(scan, h * .09, 1, h * .80, light);
+    box(scan + 1, h * .40, 2, h * .16, light);
+    g.restore();
   }
 }

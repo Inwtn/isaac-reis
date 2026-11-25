@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { site } from "@/content/site";
 import { projects, localizeProject } from "@/content/projects";
@@ -8,12 +9,15 @@ import { PixelMenu } from "./PixelMenu";
 import { Orbit } from "@/src/components/Orbit";
 import { Contact } from "@/src/components/Contact";
 import { Journey, Signal } from "@/src/components/Journey";
+import { ProjectArtwork } from "./ProjectArtwork";
 import { PixelCursor } from "@/src/components/PixelCursor";
 import { AnimatedAvatar } from "./AnimatedAvatar";
+import { ProjectLink } from "./ProjectLink";
+import { PixelPortalEnergy } from "./PixelPortalEnergy";
 import styles from "@/app/orbit.module.css";
 
 // Run before the browser can restore the previous position or jump to its old fragment.
-const resetHomeOnReload = `
+const preparePortfolio = `
   if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
     const previousRestoration = history.scrollRestoration;
     history.scrollRestoration = "manual";
@@ -27,6 +31,10 @@ const resetHomeOnReload = `
       });
     }, { once: true });
   }
+  if (!location.hash && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.setAttribute("data-portfolio-opening", "");
+    window.setTimeout(() => document.documentElement.removeAttribute("data-portfolio-opening"), 2400);
+  }
 `;
 
 const projectCaptions: Record<string, Record<Locale, string>> = {
@@ -37,30 +45,39 @@ const projectCaptions: Record<string, Record<Locale, string>> = {
   "lupa-net": { pt: "Inspeciona assemblies .NET localmente", en: "Inspects .NET assemblies locally" },
 };
 
-const projectIcons: Record<string, string[]> = {
-  mneme: [".......",".....##","....##.","#...#..",".###...","..#....","......."],
-  "reconciliacao-bancaria": ["..#.#..",".#####.","..#.#..",".......","..#.#..",".#####.","..#.#.."],
-  "finance-sync-api": ["######.","#.#..#.","######.","#.#..#.","######.","#.#..#.","######."],
-  streamhub: ["#######","#.....#","#..#..#","#..##.#","#..#..#","#.....#","#######"],
-  "lupa-net": [".###...","#...#..","#...#..","#...#..",".###...","....##.",".....##"],
-};
-
-function ProjectIcon({slug}: {slug: string}) {
-  const pixels = projectIcons[slug]?.flatMap((row, y) =>
-    [...row].flatMap((cell, x) => cell === "#" ? [`${x * 3}px ${y * 3}px currentColor`] : [])
-  );
-  return <span className={styles.projectIcon} aria-hidden="true"><i style={{boxShadow: pixels?.join(", ")}} /></span>;
-}
-
 function Arrival({ locale, echo = false }: { locale: Locale; echo?: boolean }) {
   const t = dictionary[locale], a = anchors[locale];
   return <section className={styles.arrival} id={echo ? undefined : a.home} data-orbit-scene={!echo ? a.home : undefined} data-orbit-seam={echo ? "" : undefined} aria-hidden={echo || undefined}>
-    <div className={styles.arrivalCopy}>
-      <AnimatedAvatar alt={echo ? "" : locale === "pt" ? "Avatar de Isaac em pixel art, de corpo inteiro, com roupa futurista preta e detalhes amarelos" : "Full-body pixel art avatar of Isaac in a black futuristic outfit with yellow details"} />
+    <div className={styles.arrivalCopy} data-arrival-copy={!echo || undefined}>
+      <div className={styles.arrivalStage}>
+        <AnimatedAvatar alt={echo ? "" : locale === "pt" ? "Avatar de Isaac em pixel art, de corpo inteiro, com roupa futurista preta e detalhes amarelos" : "Full-body pixel art avatar of Isaac in a black futuristic outfit with yellow details"} />
+      </div>
       {echo ? <p className={styles.name}>Isaac Almeida<span>.</span></p> : <h1 className={styles.name}>Isaac Almeida<span>.</span></h1>}
-      <p className={styles.kicker}>{t.role}</p>
+      <p className={styles.arrivalLine}>{locale === "pt" ? "Desenvolvo sistemas, integro APIs e automatizo processos." : "I build software, connect APIs, and automate workflows."}</p>
+      {!echo && <div className={styles.arrivalActions}>
+        <a className={styles.primaryEntry} href={`#${a.work}`}>{t.projects}</a>
+        <a href={`#${a.about}`}>{t.about}</a>
+      </div>}
+      {echo && <div className={styles.arrivalActions}><span className={styles.primaryEntry}>{t.projects}</span><span>{t.about}</span></div>}
     </div>
-    {echo ? <span className={styles.scrollCue}>{t.explore} <span>↓</span></span> : <a className={styles.scrollCue} href={`#${a.work}`}>{t.explore} <span aria-hidden="true">↓</span></a>}
+  </section>;
+}
+
+function PortalSection({ id, heading, theme, variant, panelClass, children }: {
+  id: string;
+  heading: string;
+  theme: "work" | "about" | "experience" | "education" | "contact";
+  variant: "gallery" | "full" | "compact";
+  panelClass?: string;
+  children: ReactNode;
+}) {
+  return <section id={id} className={styles.sceneTrack} data-orbit-scene={id} data-scene-entry={theme} aria-labelledby={heading}>
+    <div className={styles.scenePin}>
+      <div className={styles.portalRim} aria-hidden="true">{theme === "about" && <PixelPortalEnergy />}</div>
+      <div className={[styles.panel, panelClass].filter(Boolean).join(" ")} data-portal-panel={variant}>
+        {children}
+      </div>
+    </div>
   </section>;
 }
 
@@ -70,7 +87,16 @@ export function Portfolio({locale}: {locale: Locale}) {
   const [currentRole, ...pastRoles] = cv.roles;
   const markers = [[a.work,t.projects],[a.about,t.about],[a.experience,cv.experience],[a.education,cv.education],[a.contact,t.contact]];
   return <div className={styles.orbit} data-orbit-root>
-    <script dangerouslySetInnerHTML={{ __html: resetHomeOnReload }} />
+    <script dangerouslySetInnerHTML={{ __html: preparePortfolio }} />
+    <div className={styles.startup} data-startup role="status">
+      <div className={styles.startupContent}>
+        <div className={styles.startupTiles} aria-hidden="true">
+          {Array.from({ length: 9 }, (_, index) => <i key={index} data-startup-tile />)}
+        </div>
+        <p>{locale === "pt" ? "Carregando portfólio" : "Loading portfolio"}</p>
+        <div className={styles.startupTrack} aria-hidden="true"><i data-startup-progress /></div>
+      </div>
+    </div>
     <Orbit />
     <PixelCursor />
     <Journey locale={locale}>
@@ -83,37 +109,44 @@ export function Portfolio({locale}: {locale: Locale}) {
     </header>
     <main id="conteudo" className={styles.main}>
       <Arrival locale={locale} />
-      <section id={a.work} data-orbit-scene={a.work} data-scene-gate className={styles.panel} aria-labelledby="work-title">
-        <div className={styles.sceneContent}>
-          <div className={styles.sectionSignal}><Signal sector="trabalhos" /></div>
-          <h2 id="work-title" className={styles.projectHeading}>{t.projects}</h2>
-          <div className={styles.projectList}>
-            {projects.map(source => {
+      <PortalSection id={a.work} heading="work-title" theme="work" variant="gallery">
+        <div className={styles.projectGallery}>
+          <header className={styles.galleryHeader}>
+            <h2 id="work-title">{t.projects}</h2>
+            <Signal sector="trabalhos" />
+          </header>
+          <div className={styles.projectGrid}>
+            {projects.map((source, index) => {
               const project = localizeProject(source, locale);
-              return <Link key={project.slug} className={styles.project} href={pathFor(locale, "project", project.slug)}>
-                <ProjectIcon slug={source.slug} />
-                <span className={styles.projectCopy}>
-                  <strong className={styles.projectTitle}>{project.title}</strong>
-                  <span className={styles.projectCaption}>{projectCaptions[source.slug]?.[locale] ?? project.kind}</span>
-                </span>
-              </Link>;
+              return <ProjectLink key={source.slug} slug={source.slug} href={pathFor(locale, "project", source.slug)} title={project.title} featured={index === 0}>
+                <div className={styles.projectWindow}><ProjectArtwork slug={source.slug} /></div>
+                <div className={styles.projectCopy}>
+                  <h3>{project.title}</h3>
+                  <p>{projectCaptions[source.slug]?.[locale] ?? project.kind}</p>
+                  <ul aria-label={t.stack} className={styles.projectStack}>
+                    {project.stack.slice(0, 3).map(tech => <li key={tech}>{tech}</li>)}
+                  </ul>
+                </div>
+              </ProjectLink>;
             })}
           </div>
         </div>
-      </section>
-      <section id={a.about} data-orbit-scene={a.about} data-scene-gate className={`${styles.panel} ${styles.about}`} aria-labelledby="about-title">
+      </PortalSection>
+      <PortalSection id={a.about} heading="about-title" theme="about" variant="full" panelClass={styles.about}>
         <div className={styles.sceneContent}>
           <div className={styles.sectionSignal}><Signal sector="sobre" /></div>
-          <h2 id="about-title">{t.aboutTitle}<span>.</span></h2>
-          <p className={styles.aboutText}>{t.aboutIntro}</p>
-          <p className={styles.aboutDetail}>{t.aboutDetail}</p>
+          <div className={styles.aboutLead}>
+            <h2 id="about-title">{t.aboutTitle}<span>.</span></h2>
+            <p className={styles.aboutText}>{t.aboutDetail}</p>
+          </div>
           <div className={styles.focusGrid}>
             {t.focus.map(item => <div className={styles.focusItem} key={item.title}><h3>{item.title}</h3><p>{item.text}</p></div>)}
           </div>
           <ul className={styles.stack}><li>Java · Spring Boot</li><li>PHP · Laravel</li><li>Python</li><li>JavaScript · React</li><li>PostgreSQL · MySQL</li><li>LLMs · RAG</li></ul>
+          <a className={styles.aboutEnter} href={`#${a.work}`}>{locale === "pt" ? "ENTRAR NOS PROJETOS" : "ENTER PROJECTS"}<span aria-hidden="true"> ↗</span></a>
         </div>
-      </section>
-      <section id={a.experience} data-orbit-scene={a.experience} data-scene-gate className={styles.panel} aria-labelledby="experience-title">
+      </PortalSection>
+      <PortalSection id={a.experience} heading="experience-title" theme="experience" variant="compact">
         <div className={styles.sceneContent}>
           <div className={styles.careerInner}>
             <h2 id="experience-title">{cv.experience}</h2>
@@ -135,8 +168,8 @@ export function Portfolio({locale}: {locale: Locale}) {
             </details>
           </div>
         </div>
-      </section>
-      <section id={a.education} data-orbit-scene={a.education} data-scene-gate className={styles.panel} aria-labelledby="education-title">
+      </PortalSection>
+      <PortalSection id={a.education} heading="education-title" theme="education" variant="compact">
         <div className={styles.sceneContent}>
           <div className={styles.careerInner}>
             <h2 id="education-title">{cv.education}</h2>
@@ -153,8 +186,8 @@ export function Portfolio({locale}: {locale: Locale}) {
             </details>
           </div>
         </div>
-      </section>
-      <section className={`${styles.panel} ${styles.contact}`} id="contact" data-orbit-scene="contact" data-scene-gate aria-labelledby="contact-title">
+      </PortalSection>
+      <PortalSection id={a.contact} heading="contact-title" theme="contact" variant="compact" panelClass={styles.contact}>
         <div className={styles.sceneContent}>
           <div className={styles.sectionSignal}><Signal sector="contato" /></div>
           <h2 id="contact-title">{t.contactTitle}<span>{locale === "pt" ? "?" : "."}</span></h2>
@@ -162,7 +195,7 @@ export function Portfolio({locale}: {locale: Locale}) {
           <footer className={styles.footer}><span>© {new Date().getFullYear()} {site.name}</span><Link href={pathFor(locale,"privacy")}>{t.privacy}</Link></footer>
           <a className={styles.return} href={`#${a.home}`}>{t.home} <span aria-hidden="true">↻</span></a>
         </div>
-      </section>
+      </PortalSection>
       <Arrival locale={locale} echo />
     </main>
     <div className={styles.progress} aria-hidden="true" />

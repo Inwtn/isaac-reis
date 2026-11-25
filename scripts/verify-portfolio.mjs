@@ -14,13 +14,14 @@ try {
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     assert.ok((await page.goto(url)).ok());
-    await page.locator("[data-orbit-ready]").waitFor();
+    await page.locator("[data-portal-motion]").waitFor();
+    await page.locator("[data-startup]").waitFor({state:"hidden"});
     await page.evaluate(() => document.fonts.ready);
     assert.equal(await page.getByRole("heading",{level:1}).count(), 1);
     assert.ok(await page.locator('img[src*="isaac-avatar-full"]').count() >= 1);
     assert.equal(await page.locator("html").getAttribute("lang"), "en");
     assert.ok(await page.locator(".language-track").first().evaluate(node => !node.closest("details")));
-    const canvas = page.locator("canvas:not([data-pixel-cursor])");
+    const canvas = page.locator("canvas:not([data-pixel-cursor]):not([data-project-art])");
     const cell = viewport.width <= 760 ? 3 : 4;
     assert.ok(await canvas.evaluate((el, size) => el.getBoundingClientRect().width === el.width * size && getComputedStyle(el).imageRendering === "pixelated", cell));
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
@@ -37,9 +38,23 @@ try {
       const ending = await page.locator("[data-orbit-seam]").evaluate(e => e.getBoundingClientRect().top + scrollY);
       await page.evaluate(y => window.scrollTo(0, y - 120), ending);
       await page.waitForFunction(y => scrollY >= y - 121, ending);
+      await page.mouse.move(viewport.width / 2, viewport.height / 2);
       await page.mouse.wheel(0, 200);
       await page.waitForFunction(() => scrollY < 110);
     }
+    const projects = page.locator("#work");
+    const panel = projects.locator("[data-portal-panel]");
+    await projects.evaluate(el => scrollBy(0, el.getBoundingClientRect().top - innerHeight * .24));
+    await page.waitForFunction(() => {
+      const scene = document.getElementById("work");
+      const open = Number(scene.style.getPropertyValue("--portal-open"));
+      return open > .15 && open < .5;
+    });
+    assert.match(await panel.evaluate(el => getComputedStyle(el).clipPath), /^polygon/);
+    assert.equal(await panel.locator("a[data-project]").count(), 5);
+    await projects.evaluate(el => scrollBy(0, el.getBoundingClientRect().top + innerHeight * .45));
+    await projects.and(page.locator("[data-portal-passed]")).waitFor();
+    assert.equal(await panel.evaluate(el => getComputedStyle(el).clipPath), "none");
     await page.goto(`${url}/#contact`);
     await page.waitForFunction(() => Math.abs(document.getElementById("contact").getBoundingClientRect().top) <= 80);
     await page.waitForFunction(() => document.querySelector("[data-orbit-link=contact][aria-current=location]"));
@@ -63,6 +78,7 @@ try {
   await reduced.goto(url);
   assert.equal(await reduced.locator("[data-pixel-cursor]").isVisible(), false);
   assert.equal(await reduced.locator("[data-orbit-seam]").isVisible(), false);
+  assert.equal(await reduced.locator("[data-portal-motion]").count(), 0);
   await reduced.locator("#contact").scrollIntoViewIfNeeded();
   assert.ok(await reduced.evaluate(() => scrollY > 0));
   const english = await browser.newPage({viewport: {width:320,height:720}});

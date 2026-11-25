@@ -1,3 +1,4 @@
+import { drawDistricts } from "./pixel-districts";
 import { streetSurface } from "./street";
 
 const TAU = Math.PI * 2;
@@ -9,7 +10,7 @@ const mod = (n: number, m: number) => ((n % m) + m) % m;
 const noise = (n: number) => mod(Math.imul(n ^ (n >>> 11), 1597334677) >>> 0, 65536) / 65536;
 const clamp = (n: number, max: number) => Math.max(0, Math.min(max, n));
 
-export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, progress: number, t: number, mobile: boolean) {
+export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, progress: number, t: number, mobile: boolean, district: number) {
   const phase = mod(progress, 1) * TAU;
   const px = Math.round(w * .5 + w * .19 * Math.sin(phase));
   const py = Math.round(h * (mobile ? .32 : .31) + h * .06 * Math.sin(phase));
@@ -91,6 +92,8 @@ export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, pro
     step(x+bw-1,top+1,1,bh-1,ROCK[layer+1]);
   }
 
+  drawDistricts(g, step, w, h, district, mobile);
+
   // A pair of foreground cliffs puts a clean silhouette below the interface.
   for(let side=0;side<2;side++) {
     const count=9, span=w*(side ? .45 : .28);
@@ -108,7 +111,7 @@ export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, pro
   if(mobile) for(let y=Math.floor(h*.46);y<h;y++) {
     g.fillStyle=`rgba(8,11,13,${Math.min(.56, (y/h-.46)*1.2)})`;g.fillRect(0,y,w,1);
   }
-  // The avatar follows this lane through the foreground.
+  // Keep a continuous foreground path across districts.
   for (let x = 0; x < w; x++) {
     const y = Math.round(streetSurface(x, w, h));
     step(x, y, 1, 2, "#2b2923");
