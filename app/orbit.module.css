@@ -105,14 +105,17 @@
     transform-origin: top center;
   }
   .orbit[data-portal-motion] .sceneTrack[data-scene-entry="about"]:not(:target):not(:has(:focus-visible)) .panel {
-    /* Keep every line inside the growing circular aperture, even at 100%. */
-    --portal-radius: calc(7vmax + var(--portal-open) * 39vmax);
+    /* Reveal the page only through the portal's growing inner opening. */
+    --portal-radius: calc(var(--portal-open) * 40vmax);
     z-index: 2;
     clip-path: circle(var(--portal-radius) at 50% 50%);
     background: transparent;
   }
   .orbit[data-portal-motion] .sceneTrack[data-scene-entry="about"]:not(:target):not(:has(:focus-visible)) .portalRim {
-    --portal-radius: calc(7vmax + var(--portal-open) * 39vmax);
+    --portal-radius: calc(var(--portal-open) * 40vmax);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
     display: block;
     z-index: 1;
     clip-path: none;
@@ -207,16 +210,17 @@
 .certificates li { display: flex; justify-content: space-between; flex-wrap: wrap; column-gap: 16px; padding: 9px 0; border-top: 1px solid var(--rule); }
 .certificates span { color: var(--muted); font-size: 14px; }
 .about { text-align: left; }
-.about .sectionSignal { margin-bottom: 4px; }
-.aboutLead { display: grid; width: min(100%, 1000px); align-items: end; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(18px, 6vw, 80px); }
-.aboutLead { gap: clamp(12px, 3vw, 42px); }
-.about h2 { max-width: 12ch; font-size: clamp(49px, 7.5vw, 106px); }
-.aboutText { margin: 14px 0 0; max-width: 56ch; color: var(--paper); font-size: clamp(16px,1.7vw,20px); line-height: 1.38; }
-.focusGrid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 22px; width: min(100%, 1000px); margin-top: 36px; text-align: left; }
-.focusGrid { gap: 16px; margin-top: 22px; }
+.about { text-align: center; }
+.about .sceneContent { position: relative; isolation: isolate; width: min(72vmax, 720px, calc(100vw - 28px), calc(100svh - 108px)); aspect-ratio: 1; align-content: center; gap: 0; padding: clamp(20px, 3vmin, 38px); overflow: hidden; clip-path: circle(50%); }
+.about .sceneContent::before { content: ""; position: absolute; z-index: -1; inset: 5%; border-radius: 50%; background: radial-gradient(circle, #080b12f2 0 68%, #080b12dc 100%); pointer-events: none; }
+.about .sectionSignal { min-height: 22px; margin: 0 0 4px; }
+.aboutLead { display: grid; width: 100%; align-items: center; justify-items: center; grid-template-columns: 1fr; gap: 6px; text-align: center; }
+.about h2 { max-width: 100%; font-size: clamp(32px, 6vmin, 64px); }
+.aboutText { margin: 8px 0 0; max-width: 48ch; color: var(--paper); font-size: clamp(13px, 1.2vmax, 17px); line-height: 1.28; }
+.focusGrid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: clamp(8px, 1.5vmin, 16px); width: 100%; margin-top: 14px; text-align: left; }
 .focusItem { border-top: 1px solid var(--rule); padding-top: 9px; }
-.focusItem h3 { margin: 7px 0 4px; font: 600 clamp(18px,2.1vw,24px)/1 var(--font-display),sans-serif; }
-.focusItem p { margin: 0; color: var(--muted); font-size: clamp(12px,1.15vw,14px); line-height: 1.35; }
+.focusItem h3 { margin: 6px 0 4px; font: 600 clamp(14px, 1.15vmax, 18px)/1.08 var(--font-display),sans-serif; }
+.focusItem p { margin: 0; color: var(--muted); font-size: clamp(10px, .9vmax, 13px); line-height: 1.25; }
 .contact h2 { margin-bottom: 22px; }
 .contact :global(.contact__actions) { justify-content: center; }
 .footer { margin-top: 20px; padding: 0; justify-content: center; }
@@ -234,10 +238,16 @@
   .projectTile[data-featured] .projectWindow { height: clamp(190px, 57vw, 320px); }
   .projectCopy h3 { font-size: clamp(20px, 5.6vw, 28px); }
   .projectStack { font-size: 9px; gap: 3px 8px; }
-  .aboutLead { grid-template-columns: 1fr; gap: 0; }
-  .focusGrid { grid-template-columns: 1fr; gap: 16px; margin-top: 26px; }
-  .focusItem h3 { margin: 6px 0 2px; }
-  .focusItem p { max-width: 55ch; }
+  .about .sceneContent { width: min(94vw, 720px, calc(100svh - 92px)); padding: 18px; }
+  .aboutLead { grid-template-columns: 1fr; gap: 4px; }
+  .about h2 { font-size: clamp(28px, 8vw, 42px); }
+  .aboutText { font-size: 12px; line-height: 1.22; }
+  .about .focusGrid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; margin-top: 10px; }
+  .about .focusItem { padding-top: 6px; }
+  .about .focusItem h3 { margin: 5px 0 3px; font-size: 13px; }
+  .about .focusItem p { font-size: 9px; line-height: 1.2; }
+  .about .stack { gap: 4px 7px; margin-top: 9px; font-size: 9px; }
+  .aboutEnter { margin-top: 10px; padding: 8px 10px; font-size: 10px; }
 }
 @media(max-height:530px) and (min-width:761px) { .name { font-size: 11vh; } .arrival { padding-bottom: 72px; } }
 @media(prefers-reduced-motion:reduce) { .progress, .arrival[data-orbit-seam] { display: none; } }
