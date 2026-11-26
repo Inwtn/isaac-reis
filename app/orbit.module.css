@@ -324,6 +324,7 @@
 .startupName span { color: var(--accent); }
 .startupTrack { position: relative; height: 8px; margin-top: 20px; padding: 2px 0; background: linear-gradient(90deg, transparent, #ffd73520 8%, #ffe3653d 50%, #ffd73520 92%, transparent); box-shadow: 0 0 18px #ffd73520; }
 .startupTrack i { position: relative; display: block; width: 100%; height: 4px; background: repeating-linear-gradient(90deg, var(--accent) 0 9px, var(--accent-light) 9px 11px, transparent 11px 15px); filter: drop-shadow(0 0 5px #ffd735); transform: scaleX(0); transform-origin: left; }
-.startupTrack i::after { content: ""; position: absolute; top: 50%; right: -2px; width: 5px; height: 5px; background: #fff7cd; box-shadow: 0 -4px 0 -1px var(--accent), 0 4px 0 -1px var(--accent), -4px 0 0 -1px var(--accent), 4px 0 0 -1px var(--accent), 0 0 10px 2px #ffd735b3; transform: translate(50%, -50%); }
+.startupProgressStar { position: absolute; z-index: 2; top: 50%; left: 0; width: 5px; height: 5px; background: #fff7cd; box-shadow: 0 -6px 0 -1px var(--accent), 0 6px 0 -1px var(--accent), -6px 0 0 -1px var(--accent), 6px 0 0 -1px var(--accent), 0 -3px 0 var(--accent-light), 0 3px 0 var(--accent-light), -3px 0 0 var(--accent-light), 3px 0 0 var(--accent-light); filter: drop-shadow(0 0 5px #ffd735) drop-shadow(0 0 10px #ffd735b3); transform: translateY(-50%); }
+.startupPercent { margin: 9px 0 0; color: var(--accent-light); font: 700 10px/1 var(--font-mono), monospace; letter-spacing: .14em; text-align: center; text-shadow: 0 0 10px #ffd73570; }
 @media(max-width:520px) { .startupContent { width: min(420px, 84vw); } }
 @media(prefers-reduced-motion:reduce) { .startup, :global(html[data-portfolio-opening]) .startup { transition: none; } }

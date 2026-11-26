@@ -7,9 +7,12 @@ function openPortfolio(root: HTMLElement) {
   const html = document.documentElement;
   const loader = root.querySelector<HTMLElement>("[data-startup]");
   const progress = loader?.querySelector<HTMLElement>("[data-startup-progress]");
+  const progressStar = loader?.querySelector<HTMLElement>("[data-startup-star]");
+  const progressTrack = loader?.querySelector<HTMLElement>("[data-startup-track]");
+  const progressPercent = loader?.querySelector<HTMLElement>("[data-startup-percent]");
   const hero = root.querySelector<HTMLElement>("[data-arrival-copy]");
   const avatar = hero?.querySelector<HTMLImageElement>('img[src="/isaac-avatar-full.png"]');
-  if (!html.hasAttribute("data-portfolio-opening") || !loader || !progress || !hero) return;
+  if (!html.hasAttribute("data-portfolio-opening") || !loader || !progress || !progressStar || !progressTrack || !progressPercent || !hero) return;
   const canvas = loader.querySelector<HTMLCanvasElement>("[data-startup-canvas]");
   const context = canvas?.getContext("2d") ?? null;
 
@@ -34,9 +37,16 @@ function openPortfolio(root: HTMLElement) {
   drawStartup();
   window.addEventListener("resize", drawStartup, { passive: true });
   const dayClock = { position: 0 };
+  const loadCount = { value: 0 };
+  const loadDuration = 3.65;
   const entrance = gsap.timeline({ paused: true, onComplete: finish });
-  entrance.fromTo(progress, { scaleX: 0 }, { scaleX: 1, duration: 3.65, ease: "none" }, 0)
-    .to(dayClock, { position: 1, duration: 3.65, ease: "none", onUpdate: () => { dayPosition = dayClock.position; drawStartup(); } }, 0)
+  entrance.fromTo(progress, { scaleX: 0 }, { scaleX: 1, duration: loadDuration, ease: "none" }, 0)
+    .to(loadCount, { value: 100, duration: loadDuration, ease: "none", onUpdate: () => {
+      const percentage = Math.floor(loadCount.value);
+      if (progressPercent.textContent !== String(percentage)) progressPercent.textContent = String(percentage);
+      progressStar.style.left = `${Math.max(0, progressTrack.clientWidth - progressStar.offsetWidth) * loadCount.value / 100}px`;
+    } }, 0)
+    .to(dayClock, { position: 1, duration: loadDuration, ease: "none", onUpdate: () => { dayPosition = dayClock.position; drawStartup(); } }, 0)
     .fromTo(loader.querySelector("[data-startup-copy]"), { clipPath: "inset(0 100% 0 0)", opacity: 0 }, { clipPath: "inset(0 0% 0 0)", opacity: 1, duration: .95, ease: "steps(14)", clearProps: "clipPath,opacity" }, .18)
     .to(loader, { opacity: 0, duration: .38, ease: "power1.out" }, 4.05)
     .fromTo(hero, { y: 10, opacity: .9 }, { y: 0, opacity: 1, duration: .42, ease: "power2.out", clearProps: "transform,opacity", immediateRender: false }, 4.02);

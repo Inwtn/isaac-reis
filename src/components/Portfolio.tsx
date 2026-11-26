@@ -93,7 +93,8 @@ export function Portfolio({locale}: {locale: Locale}) {
       </div>
       <div className={styles.startupContent}>
         <p className={styles.startupName} data-startup-copy>ISAAC ALMEIDA<span>.</span></p>
-        <div className={styles.startupTrack} aria-hidden="true"><i data-startup-progress /></div>
+        <div className={styles.startupTrack} data-startup-track aria-hidden="true"><i data-startup-progress /><span className={styles.startupProgressStar} data-startup-star /></div>
+        <p className={styles.startupPercent}><span data-startup-percent>0</span>%</p>
       </div>
     </div>
     <Orbit />
