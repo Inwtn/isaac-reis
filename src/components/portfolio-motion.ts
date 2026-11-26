@@ -13,11 +13,32 @@ function openPortfolio(root: HTMLElement) {
   let finished = false;
   let cancelled = false;
   const inputs = ["pointerdown", "keydown", "wheel", "touchstart", "hashchange"] as const;
+  const dawn = loader.querySelector<HTMLElement>("[data-startup-dawn]")!;
+  const day = loader.querySelector<HTMLElement>("[data-startup-day]")!;
+  const dusk = loader.querySelector<HTMLElement>("[data-startup-dusk]")!;
+  const night = loader.querySelector<HTMLElement>("[data-startup-night]")!;
+  const stars = loader.querySelector<HTMLElement>("[data-startup-stars]")!;
+  const sun = loader.querySelector<HTMLElement>("[data-startup-sun]")!;
+  const moon = loader.querySelector<HTMLElement>("[data-startup-moon]")!;
+  const windows = loader.querySelectorAll<HTMLElement>("[data-startup-windows]");
   const entrance = gsap.timeline({ paused: true, onComplete: finish });
-  entrance.to(progress, { scaleX: 1, duration: .16, ease: "steps(6)" }, 0)
-    .to(loader.querySelectorAll("[data-startup-tile]"), { yPercent: -110, opacity: 0, stagger: .035, duration: .26, ease: "steps(5)" }, .12)
-    .to(loader, { opacity: 0, duration: .22, ease: "power2.inOut" }, .25)
-    .fromTo(hero, { y: 24, opacity: .72 }, { y: 0, opacity: 1, duration: .43, ease: "power3.out", clearProps: "transform,opacity", immediateRender: false }, .25);
+  entrance.to(progress, { scaleX: 1, duration: 3.65, ease: "none" }, 0)
+    .to(dawn, { opacity: 0, duration: 1.05, ease: "none" }, .45)
+    .to(day, { opacity: .76, duration: .65, ease: "none" }, .6)
+    .to(day, { opacity: 0, duration: .8, ease: "none" }, 1.65)
+    .to(dusk, { opacity: .88, duration: .6, ease: "none" }, 1.8)
+    .to(dusk, { opacity: 0, duration: .75, ease: "none" }, 2.55)
+    .to(night, { opacity: .86, duration: .85, ease: "none" }, 2.7)
+    .to(stars, { opacity: .78, duration: .8, ease: "none" }, 2.65)
+    .to(windows, { opacity: .92, duration: .8, stagger: .025, ease: "steps(5)" }, 2.55)
+    .to(sun, { x: innerWidth * .34, y: -innerHeight * .38, duration: 1.55, ease: "power1.inOut" }, .35)
+    .to(sun, { x: innerWidth * .66, y: innerHeight * .12, scale: .72, opacity: .4, duration: 1.35, ease: "power1.inOut" }, 1.9)
+    .to(sun, { opacity: 0, duration: .22 }, 3.12)
+    .fromTo(moon, { y: 15, opacity: 0 }, { y: 0, opacity: .92, duration: .45, ease: "steps(6)", clearProps: "transform" }, 3.02)
+    .fromTo(loader.querySelectorAll("[data-startup-tile]"), { yPercent: 35, scale: .35, opacity: 0 }, { yPercent: 0, scale: 1, opacity: 1, stagger: .012, duration: .36, ease: "steps(5)" }, .1)
+    .fromTo(loader.querySelectorAll("[data-startup-copy]"), { y: 10, opacity: 0 }, { y: 0, opacity: 1, stagger: .08, duration: .3, ease: "power2.out", clearProps: "transform,opacity" }, .42)
+    .to(loader, { opacity: 0, duration: .28, ease: "power2.inOut" }, 3.72)
+    .fromTo(hero, { y: 24, opacity: .72 }, { y: 0, opacity: 1, duration: .43, ease: "power3.out", clearProps: "transform,opacity", immediateRender: false }, 3.72);
 
   function finish() {
     finished = true;

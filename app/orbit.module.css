@@ -314,11 +314,21 @@
 @media(prefers-reduced-motion:reduce){:global([data-locale-copy-fade]) .about .sceneContent > *{animation:none}}
 @media(max-width:760px){.about .stack{width:78cqw;gap:4px 7px;margin-top:8px;font-size:clamp(8px,1.8cqw,10px)}.aboutEnter{max-width:68cqw;margin-top:9px;padding:7px 9px;font-size:clamp(9px,2cqw,11px)}}
 
-.startup { position: fixed; z-index: 12; inset: 0; display: grid; place-items: center; overflow: hidden; pointer-events: none; visibility: hidden; opacity: 0; background: radial-gradient(ellipse at 50% 44%, #171c1d, #0b0e12 46%, #080b12 82%); transition: opacity .22s ease, visibility 0s linear .22s; }
-.startup::before { content: ""; position: absolute; inset: 0; opacity: .4; background-image: radial-gradient(circle, #ffe365 1.5px, transparent 2px), radial-gradient(circle, #8294b0 1px, transparent 1.5px); background-position: 8% 19%, 81% 31%; background-size: 173px 151px, 127px 113px; mask-image: linear-gradient(transparent, #000 18%, #000 80%, transparent); }
-.startup::after { content: ""; position: absolute; inset: auto 0 0; height: 25vh; opacity: .32; background: repeating-linear-gradient(90deg, transparent 0 6vw, #192230 6vw 6.4vw, transparent 6.4vw 8vw), linear-gradient(0deg, #080b12 0 16%, transparent); clip-path: polygon(0 48%, 8% 48%, 8% 24%, 13% 24%, 13% 52%, 21% 52%, 21% 30%, 28% 30%, 28% 65%, 37% 65%, 37% 37%, 43% 37%, 43% 60%, 51% 60%, 51% 28%, 58% 28%, 58% 56%, 66% 56%, 66% 20%, 72% 20%, 72% 60%, 81% 60%, 81% 35%, 88% 35%, 88% 52%, 95% 52%, 95% 25%, 100% 25%, 100% 100%, 0 100%); }
+.startup { position: fixed; z-index: 12; inset: 0; display: grid; place-items: center; overflow: hidden; pointer-events: none; visibility: hidden; opacity: 0; background: #080b12; transition: opacity .22s ease, visibility 0s linear .22s; }
 :global(html[data-portfolio-opening]) .startup { visibility: visible; opacity: 1; transition: opacity .22s ease; }
-.startupContent { position: relative; z-index: 1; width: min(330px, 76vw); text-align: center; }
+.startupScene { position: absolute; inset: 0; overflow: hidden; background: linear-gradient(#08101d 0%, #172336 56%, #d79255 100%); }
+.startupDawn, .startupDay, .startupDusk, .startupNight, .startupStars { position: absolute; inset: 0; pointer-events: none; }
+.startupDawn { opacity: 1; background: linear-gradient(180deg, #171b2d 0%, #583c48 46%, #e5a354 100%); }
+.startupDay { opacity: 0; background: linear-gradient(180deg, #548ca8 0%, #a8c1b5 54%, #f0ca81 100%); }
+.startupDusk { opacity: 0; background: linear-gradient(180deg, #282b50 0%, #8e5360 54%, #e88947 100%); }
+.startupNight { opacity: 0; background: linear-gradient(180deg, #050a1c 0%, #0c1830 57%, #172238 100%); }
+.startupStars { opacity: 0; background-image: radial-gradient(circle, #fff4cd 1px, transparent 1.7px), radial-gradient(circle, #ffd735 1px, transparent 1.8px), radial-gradient(circle, #a8c6e8 1px, transparent 1.7px); background-size: 113px 97px, 173px 151px, 241px 211px; background-position: 8% 15%, 72% 26%, 42% 8%; }
+.startupSun, .startupMoon { position: absolute; z-index: 1; display: block; image-rendering: pixelated; }
+.startupSun { left: 11vw; top: 64vh; width: clamp(36px, 6vw, 62px); aspect-ratio: 1; background: #ffd735; clip-path: polygon(25% 0,75% 0,75% 8%,92% 8%,92% 25%,100% 25%,100% 75%,92% 75%,92% 92%,75% 92%,75% 100%,25% 100%,25% 92%,8% 92%,8% 75%,0 75%,0 25%,8% 25%,8% 8%,25% 8%); filter: drop-shadow(0 0 24px #ffd735a6); }
+.startupMoon { right: 13vw; top: 24vh; width: clamp(28px, 4vw, 44px); aspect-ratio: 1; opacity: 0; background: #e9e6d5; clip-path: polygon(25% 0,75% 0,75% 8%,92% 8%,92% 25%,100% 25%,100% 75%,92% 75%,92% 92%,75% 92%,75% 100%,25% 100%,25% 92%,8% 92%,8% 75%,0 75%,0 25%,8% 25%,8% 8%,25% 8%); filter: drop-shadow(0 0 18px #dce7ff78); }
+.startupMoon::after { content: ""; position: absolute; width: 75%; aspect-ratio: 1; left: 35%; top: -12%; background: #101a2c; clip-path: inherit; }
+.startupCity { position: absolute; z-index: 2; inset: auto 0 0; display: block; width: 100%; height: min(55svh, 460px); image-rendering: pixelated; }
+.startupContent { position: relative; z-index: 3; width: min(330px, 76vw); text-align: center; text-shadow: 0 2px 18px #080b12b3; }
 .startupMeta, .startupFoot { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font: 9px var(--font-mono), monospace; letter-spacing: .1em; }
 .startupBrand { display: inline-flex; align-items: center; gap: 7px; color: var(--paper); font-weight: 700; font-size: 11px; }
 .startupBrand i { color: var(--accent); font: normal 20px/1 var(--font-body), sans-serif; }
