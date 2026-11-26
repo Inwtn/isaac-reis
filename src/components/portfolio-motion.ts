@@ -1,6 +1,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import { drawWorld } from "./pixel-world";
 
 function openPortfolio(root: HTMLElement) {
   const html = document.documentElement;
@@ -9,32 +10,33 @@ function openPortfolio(root: HTMLElement) {
   const hero = root.querySelector<HTMLElement>("[data-arrival-copy]");
   const avatar = hero?.querySelector<HTMLImageElement>('img[src="/isaac-avatar-full.png"]');
   if (!html.hasAttribute("data-portfolio-opening") || !loader || !progress || !hero) return;
+  const canvas = loader.querySelector<HTMLCanvasElement>("[data-startup-canvas]");
+  const context = canvas?.getContext("2d") ?? null;
 
   let finished = false;
   let cancelled = false;
-  const inputs = ["pointerdown", "keydown", "wheel", "touchstart", "hashchange"] as const;
-  const dawn = loader.querySelector<HTMLElement>("[data-startup-dawn]")!;
-  const day = loader.querySelector<HTMLElement>("[data-startup-day]")!;
-  const dusk = loader.querySelector<HTMLElement>("[data-startup-dusk]")!;
-  const night = loader.querySelector<HTMLElement>("[data-startup-night]")!;
-  const stars = loader.querySelector<HTMLElement>("[data-startup-stars]")!;
-  const sun = loader.querySelector<HTMLElement>("[data-startup-sun]")!;
-  const moon = loader.querySelector<HTMLElement>("[data-startup-moon]")!;
-  const windows = loader.querySelectorAll<HTMLElement>("[data-startup-windows]");
+  let dayPosition = 0;
+  let canvasWidth = 0;
+  let canvasHeight = 0;
+  const drawStartup = () => {
+    if (!canvas || !context) return;
+    const mobile = innerWidth <= 760;
+    const pixel = mobile ? 3 : 4;
+    const width = Math.max(1, Math.ceil(innerWidth / pixel));
+    const height = Math.max(1, Math.ceil(innerHeight / pixel));
+    if (canvasWidth !== width || canvasHeight !== height) {
+      canvasWidth = canvas.width = width;
+      canvasHeight = canvas.height = height;
+      context.imageSmoothingEnabled = false;
+    }
+    drawWorld(context, width, height, 0, 0, mobile, 0, dayPosition);
+  };
+  drawStartup();
+  window.addEventListener("resize", drawStartup, { passive: true });
+  const dayClock = { position: 0 };
   const entrance = gsap.timeline({ paused: true, onComplete: finish });
   entrance.to(progress, { scaleX: 1, duration: 3.65, ease: "none" }, 0)
-    .to(dawn, { opacity: 0, duration: 1.05, ease: "none" }, .45)
-    .to(day, { opacity: .76, duration: .65, ease: "none" }, .6)
-    .to(day, { opacity: 0, duration: .8, ease: "none" }, 1.65)
-    .to(dusk, { opacity: .88, duration: .6, ease: "none" }, 1.8)
-    .to(dusk, { opacity: 0, duration: .75, ease: "none" }, 2.55)
-    .to(night, { opacity: .86, duration: .85, ease: "none" }, 2.7)
-    .to(stars, { opacity: .78, duration: .8, ease: "none" }, 2.65)
-    .to(windows, { opacity: .92, duration: .8, stagger: .025, ease: "steps(5)" }, 2.55)
-    .to(sun, { x: innerWidth * .34, y: -innerHeight * .38, duration: 1.55, ease: "power1.inOut" }, .35)
-    .to(sun, { x: innerWidth * .66, y: innerHeight * .12, scale: .72, opacity: .4, duration: 1.35, ease: "power1.inOut" }, 1.9)
-    .to(sun, { opacity: 0, duration: .22 }, 3.12)
-    .fromTo(moon, { y: 15, opacity: 0 }, { y: 0, opacity: .92, duration: .45, ease: "steps(6)", clearProps: "transform" }, 3.02)
+    .to(dayClock, { position: 1, duration: 3.65, ease: "none", onUpdate: () => { dayPosition = dayClock.position; drawStartup(); } }, 0)
     .fromTo(loader.querySelectorAll("[data-startup-tile]"), { yPercent: 35, scale: .35, opacity: 0 }, { yPercent: 0, scale: 1, opacity: 1, stagger: .012, duration: .36, ease: "steps(5)" }, .1)
     .fromTo(loader.querySelectorAll("[data-startup-copy]"), { y: 10, opacity: 0 }, { y: 0, opacity: 1, stagger: .08, duration: .3, ease: "power2.out", clearProps: "transform,opacity" }, .42)
     .to(loader, { opacity: 0, duration: .28, ease: "power2.inOut" }, 3.72)
@@ -43,14 +45,8 @@ function openPortfolio(root: HTMLElement) {
   function finish() {
     finished = true;
     html.removeAttribute("data-portfolio-opening");
-    for (const event of inputs) window.removeEventListener(event, dismiss);
+    window.removeEventListener("resize", drawStartup);
   }
-  function dismiss() {
-    entrance.progress(1).pause();
-    finish();
-  }
-
-  for (const event of inputs) window.addEventListener(event, dismiss, { once: true, passive: true });
 
   const started = performance.now();
   const resources = [document.fonts.ready, avatar?.decode() ?? Promise.resolve()];
@@ -79,7 +75,7 @@ function openPortfolio(root: HTMLElement) {
     cancelled = true;
     window.clearTimeout(settle);
     window.clearTimeout(deadline);
-    for (const event of inputs) window.removeEventListener(event, dismiss);
+    window.removeEventListener("resize", drawStartup);
     entrance.revert();
     gsap.killTweensOf(progress);
     gsap.set(progress, { clearProps: "transform" });

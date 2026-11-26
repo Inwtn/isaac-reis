@@ -5,22 +5,45 @@ const TAU = Math.PI * 2;
 const BAYER = [0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
 const SUN = ["#583219","#8e4917","#bf6915","#e6961b","#ffc12a","#ffd735","#ffe365","#fff2a6"];
 const SKY = ["#080b12","#0b101b","#101728","#151e30","#1b2539"];
+const DAY_SKIES = [
+  ["#111522","#191a27","#28202c","#45302f","#78452f"],
+  ["#18263a","#21334a","#30465b","#4e5c64","#796343"],
+  ["#203852","#294965","#395a70","#526d75","#7d704f"],
+  ["#253348","#343d50","#4c4d58","#70534f","#95603c"],
+  ["#1b192b","#2a202f","#3e2b37","#674033","#9a542f"],
+  SKY,
+];
 const ROCK = ["#0b0f19","#12192a","#202a3a","#2c394e"];
+const DAY_STOPS = [0, .18, .4, .62, .82, 1];
 const mod = (n: number, m: number) => ((n % m) + m) % m;
 const noise = (n: number) => mod(Math.imul(n ^ (n >>> 11), 1597334677) >>> 0, 65536) / 65536;
 const clamp = (n: number, max: number) => Math.max(0, Math.min(max, n));
+const colorChannel = (hex: string, channel: number) => Number.parseInt(hex.slice(1 + channel * 2, 3 + channel * 2), 16);
+const mixColor = (a: string, b: string, amount: number) => `#${[0,1,2].map(channel => Math.round(colorChannel(a, channel) + (colorChannel(b, channel) - colorChannel(a, channel)) * amount).toString(16).padStart(2,"0")).join("")}`;
 
-export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, progress: number, t: number, mobile: boolean, district: number) {
+function skyAt(dayCycle: number): string[] {
+  let stop = DAY_STOPS.findIndex(value => value >= dayCycle);
+  if (stop <= 0) return DAY_SKIES[0];
+  stop = Math.min(stop, DAY_STOPS.length - 1);
+  const blend = clamp((dayCycle - DAY_STOPS[stop - 1]) / (DAY_STOPS[stop] - DAY_STOPS[stop - 1]), 1);
+  return DAY_SKIES[stop].map((color, index) => mixColor(DAY_SKIES[stop - 1][index], color, blend));
+}
+
+export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, progress: number, t: number, mobile: boolean, district: number, dayCycle?: number) {
   const phase = mod(progress, 1) * TAU;
-  const px = Math.round(w * .5 + w * .19 * Math.sin(phase));
-  const py = Math.round(h * (mobile ? .32 : .31) + h * .06 * Math.sin(phase));
-  const r = Math.round(Math.min(w * (mobile ? .30 : .145), h * .22) * (1 + .1 * Math.sin(phase)));
+  const daylight = dayCycle === undefined ? phase : dayCycle * Math.PI;
+  const px = Math.round(dayCycle === undefined ? w * .5 + w * .19 * Math.sin(phase) : w * (.08 + dayCycle * .84));
+  const py = Math.round(dayCycle === undefined ? h * (mobile ? .32 : .31) + h * .06 * Math.sin(phase) : h * (.69 - Math.sin(daylight) * .39));
+  const r = Math.round(Math.min(w * (mobile ? .30 : .145), h * .22) * (dayCycle === undefined ? 1 + .1 * Math.sin(phase) : 1));
   const horizon = Math.round(h * (.74 + .035 * Math.sin(phase)));
+  const sky = dayCycle === undefined ? SKY : skyAt(dayCycle);
   const step = (x: number, y: number, width: number, height: number, color: string) => {
     g.fillStyle = color; g.fillRect(Math.floor(x), Math.floor(y), Math.ceil(width), Math.ceil(height));
   };
-  for (let y = 0; y < h; y++) step(0,y,w,1,SKY[clamp(Math.floor(y / horizon * 4),4)]);
+  for (let y = 0; y < h; y++) step(0,y,w,1,sky[clamp(Math.floor(y / horizon * 4),4)]);
 
+  const starsAlpha = dayCycle === undefined ? 1 : clamp((dayCycle - .68) / .2, 1);
+  g.globalAlpha = starsAlpha;
   for (let i = 0; i < Math.floor(w * .77); i++) {
     const x = mod(Math.floor(noise(i + 1000) * w - progress * w * (i % 5 ? 1 : 2)), w);
     const y = Math.floor(noise(i + 2800) * horizon * .91);
@@ -31,7 +54,10 @@ export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, pro
       step(x,y-1,1,1,"#8e691c"); step(x,y+1,1,1,"#8e691c");
     }
   }
+  g.globalAlpha = 1;
   // A sun drawn on the raster grid. Integer rows keep its silhouette stepped.
+  const evening = dayCycle === undefined ? 0 : clamp((dayCycle - .67) / .23, 1);
+  if (dayCycle !== undefined) g.globalAlpha = 1 - clamp((dayCycle - .82) / .18, 1);
   for (let y = -r; y <= r; y++) {
     const edge = Math.floor(Math.sqrt(r*r - y*y));
     const left = Math.max(-edge, -px), right = Math.min(edge, w-px-1);
@@ -40,15 +66,40 @@ export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, pro
       const patch = noise(Math.floor((x + r) / 5) + Math.floor((y + r) / 3) * 107);
       const dither = (BAYER[(mod(y,4)*4)+mod(x,4)] + .5) / 16;
       const tone = clamp(Math.floor(light + dither - patch * .85), SUN.length-1);
-      step(px+x,py+y,1,1,SUN[tone]);
+      const sunColor = evening > .55 ? mixColor(SUN[tone], "#b65e20", (evening - .55) * .52) : SUN[tone];
+      step(px+x,py+y,1,1,sunColor);
     }
+  }
+  if (dayCycle !== undefined) g.globalAlpha = 1;
+  if (dayCycle !== undefined && dayCycle > .76) {
+    const moonProgress = clamp((dayCycle - .76) / .24, 1);
+    const moonX = Math.round(w * (.69 + moonProgress * .18));
+    const moonY = Math.round(h * (.26 - moonProgress * .035));
+    const moonR = Math.max(3, Math.round(r * .48));
+    const skyColorAt = (y: number) => sky[clamp(Math.floor(y / horizon * 4),4)];
+    for (let y = -moonR; y <= moonR; y++) {
+      const edge = Math.floor(Math.sqrt(moonR * moonR - y * y));
+      for (let x = -edge; x <= edge; x++) {
+        const cutX = x - moonR * .34;
+        const cutY = y + moonR * .12;
+        if (cutX * cutX + cutY * cutY < moonR * moonR * .72) continue;
+        const patch = noise(Math.floor((x + moonR) / 4) + Math.floor((y + moonR) / 3) * 83);
+        const dither = (BAYER[(mod(y,4)*4)+mod(x,4)] + .5) / 16;
+        const shade = clamp(Math.floor(2.5 + dither - patch * .9), 3);
+        step(moonX + x, moonY + y, 1, 1, ["#897443","#b89a57","#e4c76b","#fff0a6"][shade]);
+      }
+    }
+    g.globalAlpha = moonProgress;
+    step(moonX - moonR, moonY - moonR - 3, 1, 3, "#ffd735");
+    step(moonX + moonR, moonY + moonR, 2, 1, "#ffe365");
+    g.globalAlpha = 1;
   }
   for (let i=0;i<11;i++) {
     const x = mod(Math.floor(noise(9000+i) * w - progress*w),w);
     const y = Math.floor(horizon * (.25 + .63 * noise(9200+i)));
     const length = 8 + Math.floor(noise(9500+i) * w * .115);
-    step(x,y,length,1,SKY[2]); step(x+5,y+1,length,2,SKY[1]);
-    step(x+1,y-1,length*.65,1,SKY[3]);
+    step(x,y,length,1,sky[2]); step(x+5,y+1,length,2,sky[1]);
+    step(x+1,y-1,length*.65,1,sky[3]);
   }
 
   for (let layer = 0; layer < 3; layer++) {

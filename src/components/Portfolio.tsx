@@ -45,14 +45,6 @@ const projectCaptions: Record<string, Record<Locale, string>> = {
 };
 
 const startupPixels = ["..###..", ".#####.", "#######", "#######", ".#####.", "..###..", "...#..."];
-const startupBuildings = [
-  { x: 0, width: 112, height: 142 }, { x: 102, width: 82, height: 210 }, { x: 176, width: 118, height: 170 },
-  { x: 286, width: 92, height: 265 }, { x: 370, width: 132, height: 192 }, { x: 494, width: 86, height: 310 },
-  { x: 572, width: 124, height: 230 }, { x: 688, width: 92, height: 168 }, { x: 770, width: 116, height: 248 },
-  { x: 878, width: 84, height: 355 }, { x: 952, width: 132, height: 260 }, { x: 1076, width: 98, height: 195 },
-  { x: 1164, width: 122, height: 300 }, { x: 1276, width: 88, height: 220 }, { x: 1354, width: 112, height: 155 },
-];
-
 function Arrival({ locale, echo = false }: { locale: Locale; echo?: boolean }) {
   const t = dictionary[locale], a = anchors[locale];
   return <section className={styles.arrival} id={echo ? undefined : a.home} data-orbit-scene={!echo ? a.home : undefined} data-orbit-seam={echo ? "" : undefined} aria-hidden={echo || undefined}>
@@ -98,29 +90,7 @@ export function Portfolio({locale}: {locale: Locale}) {
     <script dangerouslySetInnerHTML={{ __html: preparePortfolio }} />
     <div className={styles.startup} data-startup role="status">
       <div className={styles.startupScene} aria-hidden="true">
-        <div className={styles.startupDawn} data-startup-dawn />
-        <div className={styles.startupDay} data-startup-day />
-        <div className={styles.startupDusk} data-startup-dusk />
-        <div className={styles.startupNight} data-startup-night />
-        <div className={styles.startupStars} data-startup-stars />
-        <i className={styles.startupSun} data-startup-sun />
-        <i className={styles.startupMoon} data-startup-moon />
-        <svg className={styles.startupCity} viewBox="0 0 1440 460" preserveAspectRatio="xMidYMax slice">
-          <rect x="0" y="380" width="1440" height="80" fill="#101723" />
-          {startupBuildings.map(({ x, width, height }, building) => {
-            const top = 460 - height;
-            const windowsAcross = Math.max(1, Math.floor((width - 18) / 24));
-            return <g key={x}>
-              <rect x={x} y={top} width={width} height={height} fill={building % 3 === 0 ? "#141d2a" : "#101824"} />
-              <path d={`M${x} ${top}h${Math.round(width * .22)}v-12h${Math.round(width * .28)}v12h${Math.round(width * .5)}v5h-${width}z`} fill="#1c2937" />
-              <g data-startup-windows opacity=".18">
-                {Array.from({ length: Math.max(1, Math.floor((height - 26) / 28)) }, (_, row) => Array.from({ length: windowsAcross }, (_, column) => <rect key={`${row}-${column}`} x={x + 8 + column * 24} y={top + 20 + row * 28} width="5" height="8" fill={(row + column + building) % 4 === 0 ? "#69c2c0" : "#ffd735"} />))}
-              </g>
-            </g>;
-          })}
-          <path d="M0 438H250v-8h124v12h178v-9h190v13h142v-8h158v10h175v-12h223v24H0z" fill="#080d15" />
-          <path d="M0 438H250m124 4h178m12-9h190m-48 22h142m-8-8h158m-14 10h175m0-12h223" fill="none" stroke="#ffd735" strokeWidth="4" opacity=".64" />
-        </svg>
+        <canvas className={styles.startupWorld} data-startup-canvas />
       </div>
       <div className={styles.startupContent}>
         <div className={styles.startupMeta} data-startup-copy>
