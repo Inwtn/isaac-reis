@@ -44,6 +44,8 @@ const projectCaptions: Record<string, Record<Locale, string>> = {
   "lupa-net": { pt: "Inspeciona assemblies .NET localmente", en: "Inspects .NET assemblies locally" },
 };
 
+const startupPixels = ["..###..", ".#####.", "#######", "#######", ".#####.", "..###..", "...#..."];
+
 function Arrival({ locale, echo = false }: { locale: Locale; echo?: boolean }) {
   const t = dictionary[locale], a = anchors[locale];
   return <section className={styles.arrival} id={echo ? undefined : a.home} data-orbit-scene={!echo ? a.home : undefined} data-orbit-seam={echo ? "" : undefined} aria-hidden={echo || undefined}>
@@ -89,11 +91,17 @@ export function Portfolio({locale}: {locale: Locale}) {
     <script dangerouslySetInnerHTML={{ __html: preparePortfolio }} />
     <div className={styles.startup} data-startup role="status">
       <div className={styles.startupContent}>
-        <div className={styles.startupTiles} aria-hidden="true">
-          {Array.from({ length: 9 }, (_, index) => <i key={index} data-startup-tile />)}
+        <div className={styles.startupMeta}>
+          <span className={styles.startupBrand}><i aria-hidden="true">✳</i> INWTN</span>
+          <span>{locale === "pt" ? "PORTFÓLIO DIGITAL" : "DIGITAL PORTFOLIO"}</span>
         </div>
-        <p>{locale === "pt" ? "Carregando portfólio" : "Loading portfolio"}</p>
+        <div className={styles.startupMark} aria-hidden="true">
+          {startupPixels.flatMap((row, y) => [...row].map((pixel, x) => pixel === "#" ? <i key={`${x}-${y}`} data-startup-tile /> : null))}
+        </div>
+        <p className={styles.startupName}>ISAAC ALMEIDA<span>.</span></p>
+        <p className={styles.startupCaption}>{locale === "pt" ? "PREPARANDO A EXPERIÊNCIA" : "PREPARING THE EXPERIENCE"}</p>
         <div className={styles.startupTrack} aria-hidden="true"><i data-startup-progress /></div>
+        <div className={styles.startupFoot}><span>{locale === "pt" ? "SISTEMAS ONLINE" : "SYSTEMS ONLINE"}</span><span>PIXEL / 01</span></div>
       </div>
     </div>
     <Orbit />
