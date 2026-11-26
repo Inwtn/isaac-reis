@@ -40,11 +40,13 @@ function openPortfolio(root: HTMLElement) {
   const loadCount = { value: 0 };
   const loadDuration = 3.65;
   const entrance = gsap.timeline({ paused: true, onComplete: finish });
-  entrance.fromTo(progress, { scaleX: 0 }, { scaleX: 1, duration: loadDuration, ease: "none" }, 0)
-    .to(loadCount, { value: 100, duration: loadDuration, ease: "none", onUpdate: () => {
+  progress.style.setProperty("--startup-fill", "0");
+  entrance.to(loadCount, { value: 100, duration: loadDuration, ease: "none", onUpdate: () => {
       const percentage = Math.floor(loadCount.value);
+      const fraction = Math.min(1, Math.max(0, loadCount.value / 100));
       if (progressPercent.textContent !== String(percentage)) progressPercent.textContent = String(percentage);
-      progressStar.style.left = `${Math.max(0, progressTrack.clientWidth - progressStar.offsetWidth) * loadCount.value / 100}px`;
+      progress.style.setProperty("--startup-fill", String(fraction));
+      progressStar.style.left = `${Math.max(0, progressTrack.clientWidth - progressStar.offsetWidth) * fraction}px`;
     } }, 0)
     .to(dayClock, { position: 1, duration: loadDuration, ease: "none", onUpdate: () => { dayPosition = dayClock.position; drawStartup(); } }, 0)
     .fromTo(loader.querySelector("[data-startup-copy]"), { clipPath: "inset(0 100% 0 0)", opacity: 0 }, { clipPath: "inset(0 0% 0 0)", opacity: 1, duration: .95, ease: "steps(14)", clearProps: "clipPath,opacity" }, .18)
@@ -53,6 +55,9 @@ function openPortfolio(root: HTMLElement) {
 
   function finish() {
     finished = true;
+    progress!.style.setProperty("--startup-fill", "1");
+    progressPercent!.textContent = "100";
+    progressStar!.style.left = `${Math.max(0, progressTrack!.clientWidth - progressStar!.offsetWidth)}px`;
     html.removeAttribute("data-portfolio-opening");
     window.removeEventListener("resize", drawStartup);
   }
@@ -76,8 +81,7 @@ function openPortfolio(root: HTMLElement) {
     window.clearTimeout(deadline);
     window.removeEventListener("resize", drawStartup);
     entrance.revert();
-    gsap.killTweensOf(progress);
-    gsap.set(progress, { clearProps: "transform" });
+    progress.style.removeProperty("--startup-fill");
   };
 }
 
@@ -87,7 +91,7 @@ export function attachPortfolioMotion(root: HTMLElement) {
   const localeKey = "inwtn:locale-copy-fade";
   const markLocaleSwitch = (event: MouseEvent) => {
     if (event.target instanceof Element && event.target.closest("a.language-switch")) {
-      try { sessionStorage.setItem(localeKey, "1"); } catch { /* The portal still opens normally without storage. */ }
+      try { sessionStorage.setItem(localeKey, "1"); } catch { /* The site remains usable without storage. */ }
     }
   };
   document.addEventListener("click", markLocaleSwitch, true);
@@ -109,26 +113,74 @@ export function attachPortfolioMotion(root: HTMLElement) {
     gsap.ticker.add(tick);
 
     root.dataset.portalMotion = "";
-    const sections = root.querySelectorAll<HTMLElement>("[data-scene-entry]");
-    for (const section of sections) {
-      if (section.dataset.sceneEntry === "about") continue;
-      const open = (trigger: ScrollTrigger) => {
-        const position = trigger.progress;
-        const eased = position * position * (3 - 2 * position);
-        section.style.setProperty("--portal-open", String(eased));
-        section.toggleAttribute("data-portal-passed", position >= .997);
+    const sections = Array.from(root.querySelectorAll<HTMLElement>("[data-scene-entry]"));
+    const aboutSection = sections.find(section => section.dataset.sceneEntry === "about");
+    const aboutContent = aboutSection?.querySelector<HTMLElement>(".sceneContent");
+
+    for (const [index, section] of sections.entries()) {
+      const previous = sections[index - 1];
+      if (previous) {
+        ScrollTrigger.create({
+          trigger: section,
+          // Keep the outgoing scene present until the incoming heading is
+          // clearly inside the viewport, avoiding an empty seam between them.
+          start: "top 28%",
+          end: "top top",
+          onEnter: () => previous.setAttribute("data-scene-receding", ""),
+          onEnterBack: () => previous.setAttribute("data-scene-receding", ""),
+          onLeaveBack: () => previous.removeAttribute("data-scene-receding"),
+        });
+      }
+
+      const pin = section.querySelector<HTMLElement>("[data-scene-pin]") ?? section;
+      if (section === aboutSection) {
+        if (aboutContent) {
+          // Register after the Projects pin so ScrollTrigger measures the
+          // section positions with the correct pin spacing already in place.
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: section,
+              start: "top bottom",
+              end: "center center",
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          }).fromTo(aboutContent, { opacity: .3, y: 12, scale: .97 }, { opacity: 1, y: 0, scale: 1, duration: 1, ease: "none" });
+        }
+        ScrollTrigger.create({
+          trigger: section,
+          pin,
+          pinSpacing: true,
+          anticipatePin: 1,
+          start: "center center",
+          end: () => `+=${innerHeight}`,
+        });
+        continue;
+      }
+
+      const updateOpening = (trigger: ScrollTrigger) => {
+        const progress = trigger.progress;
+        section.style.setProperty("--portal-open", String(progress * progress * (3 - 2 * progress)));
+        section.toggleAttribute("data-portal-passed", progress >= .997);
       };
       ScrollTrigger.create({
         trigger: section,
-        pin: section.querySelector<HTMLElement>(".scenePin") ?? section,
+        pin,
         pinSpacing: true,
         anticipatePin: 1,
         start: "top top",
-        end: () => "+=" + innerHeight,
-        onUpdate: open,
-        onRefresh: open,
+        end: () => `+=${pin.querySelector("details[open]") ? Math.max(innerHeight, pin.scrollHeight) : innerHeight}`,
+        onUpdate: updateOpening,
+        onRefresh: updateOpening,
       });
     }
+
+    const details = Array.from(root.querySelectorAll<HTMLDetailsElement>("details"));
+    const refreshAfterDetailsChange = () => requestAnimationFrame(() => {
+      scroller.resize();
+      ScrollTrigger.refresh();
+    });
+    for (const detail of details) detail.addEventListener("toggle", refreshAfterDetailsChange);
 
     const layout = new ResizeObserver(() => {
       scroller.resize();
@@ -138,10 +190,12 @@ export function attachPortfolioMotion(root: HTMLElement) {
     const disposeOpening = openPortfolio(root);
     return () => {
       layout.disconnect();
+      for (const detail of details) detail.removeEventListener("toggle", refreshAfterDetailsChange);
       delete root.dataset.portalMotion;
       for (const section of sections) {
         section.style.removeProperty("--portal-open");
         delete section.dataset.portalPassed;
+        delete section.dataset.sceneReceding;
       }
       disposeOpening?.();
       gsap.ticker.remove(tick);
