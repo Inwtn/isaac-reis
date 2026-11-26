@@ -92,7 +92,7 @@ export function Portfolio({locale}: {locale: Locale}) {
         <canvas className={styles.startupWorld} data-startup-canvas />
       </div>
       <div className={styles.startupContent}>
-        <p className={styles.startupName} data-startup-copy>ISAAC ALMEIDA<span>.</span></p>
+        <p className={styles.startupName} data-startup-name data-startup-copy>ISAAC ALMEIDA<span>.</span><i className={styles.startupSpark} data-startup-spark aria-hidden="true" /></p>
         <div className={styles.startupTrack} aria-hidden="true"><i data-startup-progress /></div>
       </div>
     </div>

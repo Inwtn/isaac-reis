@@ -7,9 +7,11 @@ function openPortfolio(root: HTMLElement) {
   const html = document.documentElement;
   const loader = root.querySelector<HTMLElement>("[data-startup]");
   const progress = loader?.querySelector<HTMLElement>("[data-startup-progress]");
+  const startupName = loader?.querySelector<HTMLElement>("[data-startup-name]");
+  const startupSpark = loader?.querySelector<HTMLElement>("[data-startup-spark]");
   const hero = root.querySelector<HTMLElement>("[data-arrival-copy]");
   const avatar = hero?.querySelector<HTMLImageElement>('img[src="/isaac-avatar-full.png"]');
-  if (!html.hasAttribute("data-portfolio-opening") || !loader || !progress || !hero) return;
+  if (!html.hasAttribute("data-portfolio-opening") || !loader || !progress || !startupName || !startupSpark || !hero) return;
   const canvas = loader.querySelector<HTMLCanvasElement>("[data-startup-canvas]");
   const context = canvas?.getContext("2d") ?? null;
 
@@ -29,18 +31,19 @@ function openPortfolio(root: HTMLElement) {
       canvasHeight = canvas.height = height;
       context.imageSmoothingEnabled = false;
     }
-    drawWorld(context, width, height, 0, 0, mobile, 0, dayPosition);
+    drawWorld(context, width, height, 0, performance.now(), mobile, 0, dayPosition, 1.5);
   };
   drawStartup();
   window.addEventListener("resize", drawStartup, { passive: true });
   const dayClock = { position: 0 };
   const entrance = gsap.timeline({ paused: true, onComplete: finish });
-  entrance.to(progress, { scaleX: 1, duration: 3.65, ease: "none" }, 0)
+  entrance.fromTo(progress, { scaleX: 0 }, { scaleX: 1, duration: 3.65, ease: "none" }, 0)
     .to(dayClock, { position: 1, duration: 3.65, ease: "none", onUpdate: () => { dayPosition = dayClock.position; drawStartup(); } }, 0)
-    .fromTo(loader.querySelectorAll("[data-startup-tile]"), { yPercent: 35, scale: .35, opacity: 0 }, { yPercent: 0, scale: 1, opacity: 1, stagger: .012, duration: .36, ease: "steps(5)" }, .1)
-    .fromTo(loader.querySelectorAll("[data-startup-copy]"), { y: 10, opacity: 0 }, { y: 0, opacity: 1, stagger: .08, duration: .3, ease: "power2.out", clearProps: "transform,opacity" }, .42)
-    .to(loader, { opacity: 0, duration: .28, ease: "power2.inOut" }, 3.72)
-    .fromTo(hero, { y: 24, opacity: .72 }, { y: 0, opacity: 1, duration: .43, ease: "power3.out", clearProps: "transform,opacity", immediateRender: false }, 3.72);
+    .fromTo(startupName, { clipPath: "inset(0 100% 0 0)", opacity: 0 }, { clipPath: "inset(0 0% 0 0)", opacity: 1, duration: .95, ease: "steps(14)", clearProps: "clipPath,opacity" }, .18)
+    .fromTo(startupSpark, { x: 0, opacity: 0 }, { x: startupName.offsetWidth, opacity: 1, duration: .95, ease: "steps(14)", clearProps: "opacity" }, .18)
+    .to(startupSpark, { opacity: 0, duration: .18 }, 1.12)
+    .to(loader, { opacity: 0, duration: .38, ease: "power1.out" }, 4.05)
+    .fromTo(hero, { y: 10, opacity: .9 }, { y: 0, opacity: 1, duration: .42, ease: "power2.out", clearProps: "transform,opacity", immediateRender: false }, 4.02);
 
   function finish() {
     finished = true;
@@ -50,16 +53,6 @@ function openPortfolio(root: HTMLElement) {
 
   const started = performance.now();
   const resources = [document.fonts.ready, avatar?.decode() ?? Promise.resolve()];
-  let loaded = 0;
-  for (const resource of resources) {
-    const update = () => {
-      if (!finished && !cancelled && entrance.paused() && entrance.progress() === 0) {
-        loaded++;
-        gsap.to(progress, { scaleX: loaded * .39, duration: .15, ease: "steps(5)", overwrite: true });
-      }
-    };
-    void resource.then(update, update);
-  }
   const play = () => {
     if (finished || cancelled) return;
     gsap.killTweensOf(progress);

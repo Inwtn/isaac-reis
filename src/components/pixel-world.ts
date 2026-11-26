@@ -29,7 +29,7 @@ function skyAt(dayCycle: number): string[] {
   return DAY_SKIES[stop].map((color, index) => mixColor(DAY_SKIES[stop - 1][index], color, blend));
 }
 
-export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, progress: number, t: number, mobile: boolean, district: number, dayCycle?: number) {
+export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, progress: number, t: number, mobile: boolean, district: number, dayCycle?: number, moonScale = 1) {
   const phase = mod(progress, 1) * TAU;
   const daylight = dayCycle === undefined ? phase : dayCycle * Math.PI;
   const px = Math.round(dayCycle === undefined ? w * .5 + w * .19 * Math.sin(phase) : w * (.08 + dayCycle * .84));
@@ -43,15 +43,17 @@ export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, pro
   for (let y = 0; y < h; y++) step(0,y,w,1,sky[clamp(Math.floor(y / horizon * 4),4)]);
 
   const starsAlpha = dayCycle === undefined ? 1 : clamp((dayCycle - .68) / .2, 1);
-  g.globalAlpha = starsAlpha;
   for (let i = 0; i < Math.floor(w * .77); i++) {
     const x = mod(Math.floor(noise(i + 1000) * w - progress * w * (i % 5 ? 1 : 2)), w);
     const y = Math.floor(noise(i + 2800) * horizon * .91);
-    const bright = i % 17 === 0;
+    const bright = i % 13 === 0;
+    const shimmer = .38 + (Math.sin(t * .006 + i * 1.731) + 1) * .31;
+    g.globalAlpha = starsAlpha * (bright ? shimmer : 1);
     step(x,y,1,1,bright ? "#ffd735" : i % 3 === 0 ? "#677994" : "#34445c");
-    if (bright && (Math.floor(t / 480) + i) % 5 !== 0) {
+    if (bright && shimmer > .58) {
+      g.globalAlpha = starsAlpha * Math.min(1, shimmer + .18);
       step(x-1,y,1,1,"#8e691c"); step(x+1,y,1,1,"#8e691c");
-      step(x,y-1,1,1,"#8e691c"); step(x,y+1,1,1,"#8e691c");
+      if (shimmer > .72) { step(x,y-1,1,1,"#8e691c"); step(x,y+1,1,1,"#8e691c"); }
     }
   }
   g.globalAlpha = 1;
@@ -75,7 +77,7 @@ export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, pro
     const moonProgress = clamp((dayCycle - .76) / .24, 1);
     const moonX = Math.round(w * (.69 + moonProgress * .18));
     const moonY = Math.round(h * (.26 - moonProgress * .035));
-    const moonR = Math.max(3, Math.round(r * .48));
+    const moonR = Math.max(3, Math.round(r * .48 * moonScale));
     const skyColorAt = (y: number) => sky[clamp(Math.floor(y / horizon * 4),4)];
     for (let y = -moonR; y <= moonR; y++) {
       const edge = Math.floor(Math.sqrt(moonR * moonR - y * y));
