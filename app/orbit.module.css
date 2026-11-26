@@ -322,7 +322,6 @@
 .startupContent { position: absolute; z-index: 3; left: 50%; bottom: clamp(92px, 17vh, 170px); width: min(500px, 84vw); transform: translateX(-50%); text-align: center; text-shadow: 0 2px 18px #080b12b3; }
 .startupName { position: relative; width: max-content; max-width: 100%; margin: 0 auto; color: var(--paper); font: 700 clamp(24px, 6vw, 34px)/1 var(--font-display), sans-serif; letter-spacing: .02em; }
 .startupName span { color: var(--accent); }
-.startupSpark { position: absolute; z-index: 2; top: calc(50% - 3px); left: 0; width: 6px; height: 6px; background: #fff7cd; box-shadow: 0 -5px 0 -1px var(--accent), 0 5px 0 -1px var(--accent), -5px 0 0 -1px var(--accent), 5px 0 0 -1px var(--accent), 0 0 12px 2px #ffd735b3; pointer-events: none; }
 .startupTrack { position: relative; height: 8px; margin-top: 20px; padding: 2px 0; background: linear-gradient(90deg, transparent, #ffd73520 8%, #ffe3653d 50%, #ffd73520 92%, transparent); box-shadow: 0 0 18px #ffd73520; }
 .startupTrack i { position: relative; display: block; width: 100%; height: 4px; background: repeating-linear-gradient(90deg, var(--accent) 0 9px, var(--accent-light) 9px 11px, transparent 11px 15px); filter: drop-shadow(0 0 5px #ffd735); transform: scaleX(0); transform-origin: left; }
 .startupTrack i::after { content: ""; position: absolute; top: 50%; right: -2px; width: 5px; height: 5px; background: #fff7cd; box-shadow: 0 -4px 0 -1px var(--accent), 0 4px 0 -1px var(--accent), -4px 0 0 -1px var(--accent), 4px 0 0 -1px var(--accent), 0 0 10px 2px #ffd735b3; transform: translate(50%, -50%); }

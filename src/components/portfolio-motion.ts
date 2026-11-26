@@ -7,11 +7,9 @@ function openPortfolio(root: HTMLElement) {
   const html = document.documentElement;
   const loader = root.querySelector<HTMLElement>("[data-startup]");
   const progress = loader?.querySelector<HTMLElement>("[data-startup-progress]");
-  const startupName = loader?.querySelector<HTMLElement>("[data-startup-name]");
-  const startupSpark = loader?.querySelector<HTMLElement>("[data-startup-spark]");
   const hero = root.querySelector<HTMLElement>("[data-arrival-copy]");
   const avatar = hero?.querySelector<HTMLImageElement>('img[src="/isaac-avatar-full.png"]');
-  if (!html.hasAttribute("data-portfolio-opening") || !loader || !progress || !startupName || !startupSpark || !hero) return;
+  if (!html.hasAttribute("data-portfolio-opening") || !loader || !progress || !hero) return;
   const canvas = loader.querySelector<HTMLCanvasElement>("[data-startup-canvas]");
   const context = canvas?.getContext("2d") ?? null;
 
@@ -39,9 +37,7 @@ function openPortfolio(root: HTMLElement) {
   const entrance = gsap.timeline({ paused: true, onComplete: finish });
   entrance.fromTo(progress, { scaleX: 0 }, { scaleX: 1, duration: 3.65, ease: "none" }, 0)
     .to(dayClock, { position: 1, duration: 3.65, ease: "none", onUpdate: () => { dayPosition = dayClock.position; drawStartup(); } }, 0)
-    .fromTo(startupName, { clipPath: "inset(0 100% 0 0)", opacity: 0 }, { clipPath: "inset(0 0% 0 0)", opacity: 1, duration: .95, ease: "steps(14)", clearProps: "clipPath,opacity" }, .18)
-    .fromTo(startupSpark, { x: 0, opacity: 0 }, { x: startupName.offsetWidth, opacity: 1, duration: .95, ease: "steps(14)", clearProps: "opacity" }, .18)
-    .to(startupSpark, { opacity: 0, duration: .18 }, 1.12)
+    .fromTo(loader.querySelector("[data-startup-copy]"), { clipPath: "inset(0 100% 0 0)", opacity: 0 }, { clipPath: "inset(0 0% 0 0)", opacity: 1, duration: .95, ease: "steps(14)", clearProps: "clipPath,opacity" }, .18)
     .to(loader, { opacity: 0, duration: .38, ease: "power1.out" }, 4.05)
     .fromTo(hero, { y: 10, opacity: .9 }, { y: 0, opacity: 1, duration: .42, ease: "power2.out", clearProps: "transform,opacity", immediateRender: false }, 4.02);
 
