@@ -319,10 +319,10 @@
 .startupScene { position: absolute; inset: 0; overflow: hidden; background: #080b12; }
 .startupScene::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg,#080b12df 0%,#080b1260 20%,transparent 54%),radial-gradient(ellipse at center,transparent 34%,#080b124d 100%); }
 .startupWorld { position: absolute; inset: 0; display: block; width: 100%; height: 100%; image-rendering: pixelated; }
-.startupContent { position: relative; z-index: 3; width: min(500px, 84vw); text-align: center; text-shadow: 0 2px 18px #080b12b3; }
+.startupContent { position: absolute; z-index: 3; left: 50%; bottom: clamp(92px, 17vh, 170px); width: min(500px, 84vw); transform: translateX(-50%); text-align: center; text-shadow: 0 2px 18px #080b12b3; }
 .startupName { margin: 0; color: var(--paper); font: 700 clamp(24px, 6vw, 34px)/1 var(--font-display), sans-serif; letter-spacing: .02em; }
 .startupName span { color: var(--accent); }
-.startupTrack { position: relative; height: 7px; margin-top: 28px; padding: 1px; background: #ffffff16; border: 1px solid #ffe36545; }
-.startupTrack i { display: block; width: 100%; height: 100%; background: repeating-linear-gradient(90deg, var(--accent) 0 9px, transparent 9px 12px); transform: scaleX(.08); transform-origin: left; }
+.startupTrack { position: relative; height: 8px; margin-top: 20px; padding: 2px 0; background: linear-gradient(90deg, transparent, #ffd73520 8%, #ffe3653d 50%, #ffd73520 92%, transparent); box-shadow: 0 0 18px #ffd73520; }
+.startupTrack i { display: block; width: 100%; height: 4px; background: repeating-linear-gradient(90deg, var(--accent) 0 9px, var(--accent-light) 9px 11px, transparent 11px 15px); filter: drop-shadow(0 0 5px #ffd735); transform: scaleX(.08); transform-origin: left; }
 @media(max-width:520px) { .startupContent { width: min(420px, 84vw); } }
 @media(prefers-reduced-motion:reduce) { .startup, :global(html[data-portfolio-opening]) .startup { transition: none; } }
