@@ -59,7 +59,7 @@ export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, pro
   g.globalAlpha = 1;
   // A sun drawn on the raster grid. Integer rows keep its silhouette stepped.
   const evening = dayCycle === undefined ? 0 : clamp((dayCycle - .67) / .23, 1);
-  if (dayCycle !== undefined) g.globalAlpha = 1 - clamp((dayCycle - .82) / .18, 1);
+  if (dayCycle !== undefined) g.globalAlpha = 1 - clamp((dayCycle - .72) / .18, 1);
   for (let y = -r; y <= r; y++) {
     const edge = Math.floor(Math.sqrt(r*r - y*y));
     const left = Math.max(-edge, -px), right = Math.min(edge, w-px-1);
@@ -74,7 +74,7 @@ export function drawWorld(g: CanvasRenderingContext2D, w: number, h: number, pro
   }
   if (dayCycle !== undefined) g.globalAlpha = 1;
   if (dayCycle !== undefined && dayCycle > .76) {
-    const moonProgress = clamp((dayCycle - .76) / .24, 1);
+    const moonProgress = clamp((dayCycle - .9) / .1, 1);
     const moonX = Math.round(w * (.69 + moonProgress * .18));
     const moonY = Math.round(h * (.26 - moonProgress * .035));
     const moonR = Math.max(3, Math.round(r * .48 * moonScale));
