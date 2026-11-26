@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import styles from "./orbit-world.module.css";
 
-type Chip = { x: number; y: number; vx: number; vy: number; born: number; life: number; size: number };
+type Chip = { x: number; y: number; vx: number; vy: number; born: number; life: number; size: number; color: string; alpha: number };
 
 // Width in pixels for each row of the four-point star.
 const starRows = [1, 1, 3, 5, 9, 5, 3, 1, 1];
@@ -57,11 +57,17 @@ export function PixelCursor() {
         if(elapsed >= chip.life) { chips.splice(i,1); continue; }
         const x = snap(chip.x + chip.vx * elapsed);
         const y = snap(chip.y + chip.vy * elapsed);
-        ctx.globalAlpha = (1 - elapsed / chip.life) * .52;
-        ctx.fillStyle = "#ffd735";
-        ctx.shadowColor = "#ffd735"; ctx.shadowBlur = 7;
+        const fade = 1 - elapsed / chip.life;
+        ctx.globalAlpha = fade * chip.alpha;
+        ctx.fillStyle = chip.color;
+        ctx.shadowColor = chip.color; ctx.shadowBlur = chip.size > 4 ? 7 : 3;
         ctx.fillRect(x, y, chip.size, chip.size);
         ctx.shadowBlur = 0;
+        if (chip.size >= 5 && fade > .45) {
+          ctx.globalAlpha = fade * chip.alpha * .62;
+          ctx.fillStyle = "#fff7cd";
+          ctx.fillRect(x + 1, y + 1, 2, 2);
+        }
       }
       ctx.globalAlpha = 1;
       if (root.dataset.customPointer) {
@@ -77,17 +83,33 @@ export function PixelCursor() {
       if (!frame) frame = requestAnimationFrame(draw);
       if (prevX < 0) { prevX = x; prevY = y; return; }
       const dx = x - prevX, dy = y - prevY;
-      if (now - lastEmit < 25 || Math.hypot(dx, dy) < 4) return;
+      const distance = Math.hypot(dx, dy);
+      if (now - lastEmit < 12 || distance < 2) return;
       lastEmit = now; prevX = x; prevY = y;
-      px = snap(x); py = snap(y); halo = now + 160;
-      for (let n = 0; n < 2; n++) {
-        if (chips.length >= 20) chips.shift();
-        chips.push({
-          x: px - Math.sign(dx) * n * 4, y: py - Math.sign(dy) * n * 4,
-          vx: -dx / Math.max(8, Math.hypot(dx, dy)) * .055,
-          vy: -dy / Math.max(8, Math.hypot(dx, dy)) * .055,
-          born: now, life: 150 + Math.random() * 60, size: 4,
-        });
+      px = snap(x); py = snap(y); halo = now + 220;
+      const steps = Math.max(1, Math.ceil(distance / 7));
+      const colors = ["#ffd735", "#ffe365", "#fff7cd", "#f3ad32"];
+      for (let step = 1; step <= steps; step++) {
+        const progress = step / steps;
+        const trailX = snap(x - dx * (1 - progress));
+        const trailY = snap(y - dy * (1 - progress));
+        const count = 2 + (Math.random() < .72 ? 1 : 0) + (Math.random() < .24 ? 1 : 0);
+        for (let n = 0; n < count; n++) {
+          if (chips.length >= 96) chips.shift();
+          const spread = n === 0 ? 0 : 4 + Math.random() * 8;
+          const side = Math.random() < .5 ? -1 : 1;
+          const size = n === 0 ? 4 + Math.floor(Math.random() * 3) : 2 + Math.floor(Math.random() * 4);
+          const speed = .025 + Math.random() * .045;
+          chips.push({
+            x: trailX + (n ? (Math.random() * spread * side) : 0),
+            y: trailY + (n ? (Math.random() * spread * -side) : 0),
+            vx: -dx / Math.max(8, distance) * speed + (Math.random() - .5) * .035,
+            vy: -dy / Math.max(8, distance) * speed + (Math.random() - .5) * .035,
+            born: now, life: 220 + Math.random() * 180, size,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: .62 + Math.random() * .32,
+          });
+        }
       }
       if (!frame) frame = requestAnimationFrame(draw);
     };
