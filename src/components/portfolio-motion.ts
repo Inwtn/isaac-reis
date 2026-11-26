@@ -68,11 +68,6 @@ function openPortfolio(root: HTMLElement) {
 export function attachPortfolioMotion(root: HTMLElement) {
   gsap.registerPlugin(ScrollTrigger);
   let lenis: Lenis | undefined;
-  const about = root.querySelector<HTMLElement>('[data-scene-entry="about"]');
-  const aboutContent = about?.querySelector<HTMLElement>("[data-about-content]");
-  const aboutSteps = about ? Array.from(about.querySelectorAll<HTMLElement>("[data-about-step]")) : [];
-  const canAnimateAbout = Boolean(aboutContent && aboutSteps.length === 7);
-  const seenKey = "inwtn:about-portal-seen";
   const localeKey = "inwtn:locale-copy-fade";
   const markLocaleSwitch = (event: MouseEvent) => {
     if (event.target instanceof Element && event.target.closest("a.language-switch")) {
@@ -89,67 +84,6 @@ export function attachPortfolioMotion(root: HTMLElement) {
     root.dataset.localeCopyFade = "";
     window.setTimeout(() => delete root.dataset.localeCopyFade, 280);
   }
-  let aboutPlayed = false;
-  try { aboutPlayed = sessionStorage.getItem(seenKey) === "1"; } catch { /* The one-shot can run for this page load. */ }
-  const directAbout = about ? location.hash === `#${about.id}` : false;
-  let intro: gsap.core.Timeline | undefined;
-  let introFinished = false;
-  const setAboutOpen = (value: number) => {
-    if (!about) return;
-    about.style.setProperty("--portal-open", String(value));
-    about.style.setProperty("--about-content-scale", String(value));
-  };
-  const finishAboutIntro = () => {
-    if (!about) return;
-    if (intro && intro.progress() < 1) { intro.progress(1); return; }
-    if (introFinished) return;
-    introFinished = true;
-    setAboutOpen(1);
-    about.style.removeProperty("--about-content-scale");
-    about.dataset.portalPassed = "";
-    delete about.dataset.aboutIntroPending;
-    delete about.dataset.aboutIntroActive;
-    gsap.set(aboutSteps, { clearProps: "transform,opacity" });
-    try { sessionStorage.setItem(seenKey, "1"); } catch { /* The section still finishes in its natural state. */ }
-  };
-  const startAboutIntro = () => {
-    if (!about || !aboutContent || aboutPlayed || intro) return;
-    about.removeAttribute("data-about-intro-pending");
-    about.dataset.aboutIntroActive = "";
-    const center = aboutContent.getBoundingClientRect();
-    const origins = aboutSteps.map(node => {
-      const item = node.getBoundingClientRect();
-      return {
-        x: Math.max(-70, Math.min(70, center.left + center.width / 2 - (item.left + item.width / 2)) * .28),
-        y: Math.max(-70, Math.min(70, center.top + center.height / 2 - (item.top + item.height / 2)) * .28),
-      };
-    });
-    setAboutOpen(0);
-    const opening = { value: 0 };
-    intro = gsap.timeline({ onComplete: finishAboutIntro });
-    intro.to(opening, {
-      value: 1,
-      duration: .7,
-      ease: "steps(12)",
-      onUpdate: () => setAboutOpen(opening.value),
-    }, 0);
-    aboutSteps.forEach((node, index) => {
-      const { x, y } = origins[index];
-      intro!.fromTo(node,
-        { opacity: 0, scale: .6, x, y, transformOrigin: "center center" },
-        { opacity: 1, scale: 1, x: 0, y: 0, duration: .5, ease: "back.out(1.25)", clearProps: "transform,opacity" },
-        .4 + index * .1,
-      );
-    });
-  };
-  if (about && (aboutPlayed || directAbout || !canAnimateAbout)) {
-    aboutPlayed = true;
-    setAboutOpen(1);
-    about.dataset.portalPassed = "";
-    try { sessionStorage.setItem(seenKey, "1"); } catch { /* The portal remains open for this render. */ }
-  } else if (about) {
-    about.dataset.aboutIntroPending = "";
-  }
   const motion = gsap.matchMedia(root);
   motion.add("(prefers-reduced-motion: no-preference)", () => {
     const scroller = new Lenis({ lerp: .115, stopInertiaOnNavigate: true });
@@ -161,24 +95,7 @@ export function attachPortfolioMotion(root: HTMLElement) {
     root.dataset.portalMotion = "";
     const sections = root.querySelectorAll<HTMLElement>("[data-scene-entry]");
     for (const section of sections) {
-      if (section === about) {
-        ScrollTrigger.create({
-          trigger: section,
-          pin: section.querySelector<HTMLElement>(".scenePin") ?? section,
-          pinSpacing: true,
-          anticipatePin: 1,
-          start: "top top",
-          end: () => "+=" + innerHeight,
-          onEnter: startAboutIntro,
-          onEnterBack: startAboutIntro,
-          // A fast scroll can cross both trigger boundaries in one frame.
-          // Leaving the pin must not force the entrance timeline to its end.
-          onLeave: () => { if (!intro && !introFinished) startAboutIntro(); },
-          onLeaveBack: () => { if (!intro && !introFinished) startAboutIntro(); },
-        });
-        if (aboutPlayed) finishAboutIntro();
-        continue;
-      }
+      if (section.dataset.sceneEntry === "about") continue;
       const open = (trigger: ScrollTrigger) => {
         const position = trigger.progress;
         const eased = position * position * (3 - 2 * position);
@@ -205,16 +122,11 @@ export function attachPortfolioMotion(root: HTMLElement) {
     const disposeOpening = openPortfolio(root);
     return () => {
       layout.disconnect();
-      intro?.kill();
       delete root.dataset.portalMotion;
       for (const section of sections) {
         section.style.removeProperty("--portal-open");
-        section.style.removeProperty("--about-content-scale");
         delete section.dataset.portalPassed;
-        delete section.dataset.aboutIntroPending;
-        delete section.dataset.aboutIntroActive;
       }
-      gsap.set(aboutSteps, { clearProps: "transform,opacity" });
       disposeOpening?.();
       gsap.ticker.remove(tick);
       unsubscribe();

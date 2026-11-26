@@ -13,7 +13,6 @@ import { ProjectArtwork } from "./ProjectArtwork";
 import { PixelCursor } from "@/src/components/PixelCursor";
 import { AnimatedAvatar } from "./AnimatedAvatar";
 import { ProjectLink } from "./ProjectLink";
-import { PixelPortalEnergy } from "./PixelPortalEnergy";
 import styles from "@/app/orbit.module.css";
 
 // Run before the browser can restore the previous position or jump to its old fragment.
@@ -73,7 +72,7 @@ function PortalSection({ id, heading, theme, variant, panelClass, children }: {
 }) {
   return <section id={id} className={styles.sceneTrack} data-orbit-scene={id} data-scene-entry={theme} aria-labelledby={heading}>
     <div className={styles.scenePin}>
-      <div className={styles.portalRim} aria-hidden="true">{theme === "about" && <PixelPortalEnergy />}</div>
+      {theme !== "about" && <div className={styles.portalRim} aria-hidden="true" />}
       <div className={[styles.panel, panelClass].filter(Boolean).join(" ")} data-portal-panel={variant}>
         {children}
       </div>
@@ -133,17 +132,17 @@ export function Portfolio({locale}: {locale: Locale}) {
         </div>
       </PortalSection>
       <PortalSection id={a.about} heading="about-title" theme="about" variant="full" panelClass={styles.about}>
-        <div className={styles.sceneContent} data-about-content>
-          <div className={styles.sectionSignal} data-about-signal><Signal sector="sobre" /></div>
+        <div className={styles.sceneContent}>
+          <div className={styles.sectionSignal}><Signal sector="sobre" /></div>
           <div className={styles.aboutLead}>
-            <h2 id="about-title" data-about-step>{t.aboutTitle}<span>.</span></h2>
-            <p className={styles.aboutText} data-about-step>{t.aboutDetail}</p>
+            <h2 id="about-title">{t.aboutTitle}<span>.</span></h2>
+            <p className={styles.aboutText}>{t.aboutDetail}</p>
           </div>
           <div className={styles.focusGrid}>
-            {t.focus.map(item => <div className={styles.focusItem} data-about-step data-about-focus key={item.title}><h3>{item.title}</h3><p>{item.text}</p></div>)}
+            {t.focus.map(item => <div className={styles.focusItem} key={item.title}><h3>{item.title}</h3><p>{item.text}</p></div>)}
           </div>
-          <ul className={styles.stack} data-about-step><li>Java · Spring Boot</li><li>PHP · Laravel</li><li>Python</li><li>JavaScript · React</li><li>PostgreSQL · MySQL</li><li>LLMs · RAG</li></ul>
-          <a className={styles.aboutEnter} data-about-step href={`#${a.work}`}>{locale === "pt" ? "ENTRAR NOS PROJETOS" : "ENTER PROJECTS"}<span aria-hidden="true"> ↗</span></a>
+          <ul className={styles.stack}><li>Java · Spring Boot</li><li>PHP · Laravel</li><li>Python</li><li>JavaScript · React</li><li>PostgreSQL · MySQL</li><li>LLMs · RAG</li></ul>
+          <a className={styles.aboutEnter} href={`#${a.work}`}>{locale === "pt" ? "ENTRAR NOS PROJETOS" : "ENTER PROJECTS"}<span aria-hidden="true"> ↗</span></a>
         </div>
       </PortalSection>
       <PortalSection id={a.experience} heading="experience-title" theme="experience" variant="compact">
