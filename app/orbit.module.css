@@ -65,7 +65,7 @@
   .sceneTrack[data-scene-entry="work"] { --portal-content-drop: 15svh; }
   .sceneTrack[data-scene-entry="experience"] { --portal-tone: #f0a46a; --portal-frame: #43282b; --portal-cut: 28px; }
   .sceneTrack[data-scene-entry="education"] { --portal-tone: #a9cde8; --portal-frame: #293946; --portal-cut: 60px; }
-  .sceneTrack[data-scene-entry="contact"] { --portal-tone: #ffe094; --portal-frame: #493927; --portal-cut: 52px; }
+  .sceneTrack[data-scene-entry="contact"] { --portal-tone: #ffe094; --portal-frame: #493927; --portal-cut: 52px; --portal-content-drop: 10svh; }
   .orbit[data-portal-motion] .sceneTrack:not([data-scene-entry="about"]):not(:target):not([data-portal-passed]):not(:has(:focus-visible)) :is(.portalRim, .panel) {
     --portal-x: calc((1 - var(--portal-open)) * var(--portal-side) + var(--portal-inset, 0px));
     --portal-right: calc(100% - var(--portal-x));
